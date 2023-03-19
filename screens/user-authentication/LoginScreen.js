@@ -12,6 +12,8 @@ const LoginScreen = () => {
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState(false);
 
+    const isButtonActive = !(emailError || passwordError) && !(email.length==0 || password.length ==0);
+
     function getEmail(email) {
         setEmail(email);
     }
@@ -27,7 +29,6 @@ const LoginScreen = () => {
     function getPasswordError(error) {
         setPasswordError(error);
     }
-
 
     return (
         <View style={styles.container}>
@@ -50,7 +51,7 @@ const LoginScreen = () => {
                 <Text style={styles.accRequestText}>{"Don't have an account?"}{' '}<Text style={styles.createAccText}>{'Create Account'}</Text></Text>
             </View>
             <View style={styles.submitBtnContainer}>
-                <GetStartedBtn active={!(emailError || passwordError) && !(email.length==0 || password.length ==0)}/>
+                <GetStartedBtn active={isButtonActive}/>
             </View>
         </View>
     );
