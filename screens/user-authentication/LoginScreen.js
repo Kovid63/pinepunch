@@ -5,14 +5,15 @@ import { colors } from '../../colors'
 import FormInput from '../../components/FormInput';
 import GoogleBtn from '../../components/GoogleBtn';
 import GetStartedBtn from '../../components/GetStartedBtn';
-const LoginScreen = () => {
+
+const LoginScreen = ({ navigation }) => {
 
     const [email, setEmail] = useState('');
     const [emailError, setEmailError] = useState(false);
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState(false);
 
-    const isButtonActive = !(emailError || passwordError) && !(email.length==0 || password.length ==0);
+    const isButtonActive = !(emailError || passwordError) && !(email.length == 0 || password.length == 0);
 
     function getEmail(email) {
         setEmail(email);
@@ -30,28 +31,38 @@ const LoginScreen = () => {
         setPasswordError(error);
     }
 
+    function createAccount() {
+        navigation.navigate('CreateAccountScreen');
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.welcome}>
                 <Text style={styles.welcomeText}>{'Hello,\nWelcome Back!'}</Text>
             </View>
+            {
+            isButtonActive && (
+            <View style={styles.textContainer}>
+                <Text style={styles.text}>{'Water is life. Water is a basic human need. In various lines of life, humans need water.'}</Text>
+            </View>
+            )}
             <View style={styles.form}>
-                <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError}/>
-                <FormInput secure={true} placeholder={'Password'} getValue={getPassword} getError={getPasswordError}/>
+                <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
+                <FormInput secure={true} placeholder={'Password'} getValue={getPassword} getError={getPasswordError} />
             </View>
             <View style={styles.borderContainer}>
-                <View style={styles.line}/>
-                    <Text style={styles.lineText}>{'or'}</Text>
-                <View style={styles.line}/>
+                <View style={styles.line} />
+                <Text style={styles.lineText}>{'or'}</Text>
+                <View style={styles.line} />
             </View>
             <View style={styles.btnGoogleContainer}>
-                <GoogleBtn/>
+                <GoogleBtn />
             </View>
             <View style={styles.createAccContainer}>
-                <Text style={styles.accRequestText}>{"Don't have an account?"}{' '}<Text style={styles.createAccText}>{'Create Account'}</Text></Text>
+                <Text style={styles.accRequestText}>{"Don't have an account?"}{' '}<Text onPress={createAccount} style={styles.createAccText}>{'Create Account'}</Text></Text>
             </View>
             <View style={styles.submitBtnContainer}>
-                <GetStartedBtn active={isButtonActive}/>
+                <GetStartedBtn active={isButtonActive} />
             </View>
         </View>
     );
@@ -76,8 +87,17 @@ const styles = StyleSheet.create({
         color: colors.black[0]
     },
 
+    textContainer: {
+        alignItems: 'center'
+    },
+
+    text: {
+        fontFamily: 'Poppins',
+        fontSize: 16,
+        color: '#898989'
+    },
+
     form: {
-        marginTop: '10%',
         justifyContent: 'space-between'
     },
 
@@ -103,7 +123,7 @@ const styles = StyleSheet.create({
     },
 
     btnGoogleContainer: {
-        
+
     },
 
     createAccContainer: {
@@ -115,7 +135,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins',
         fontSize: 13
     },
-    
+
     createAccText: {
         fontFamily: 'PoppinsSemiBold',
         color: colors.primary[0]
