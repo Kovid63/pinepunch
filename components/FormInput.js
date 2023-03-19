@@ -1,8 +1,8 @@
-import { View, StyleSheet, Image, Text, TextInput  } from 'react-native'
-import React, { useState } from 'react'
+import { View, StyleSheet, Image, Text, TextInput } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { colors } from '../colors'
 
-const FormInput = ({ placeholder, getValue, secure }) => {
+const FormInput = ({ placeholder, getValue, secure, getError }) => {
 
   const [focus, setFocus] = useState(false)
   const [error, setError] = useState(false)
@@ -29,6 +29,12 @@ const FormInput = ({ placeholder, getValue, secure }) => {
     }
     setError(false);
   }
+
+
+  useEffect(() => {
+    return () => getError(!error)
+  },[error])
+
 
   return (
     <View style={styles.container}>

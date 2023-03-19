@@ -4,10 +4,13 @@ import { StyleSheet } from 'react-native';
 import { colors } from '../../colors'
 import FormInput from '../../components/FormInput';
 import GoogleBtn from '../../components/GoogleBtn';
+import GetStartedBtn from '../../components/GetStartedBtn';
 const LoginScreen = () => {
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState('');
+    const [emailError, setEmailError] = useState(false);
+    const [password, setPassword] = useState('');
+    const [passwordError, setPasswordError] = useState(false);
 
     function getEmail(email) {
         setEmail(email);
@@ -17,22 +20,37 @@ const LoginScreen = () => {
         setPassword(password);
     }
 
+    function getEmailError(error) {
+        setEmailError(error);
+    }
+
+    function getPasswordError(error) {
+        setPasswordError(error);
+    }
+
+
     return (
         <View style={styles.container}>
             <View style={styles.welcome}>
                 <Text style={styles.welcomeText}>{'Hello,\nWelcome Back!'}</Text>
             </View>
             <View style={styles.form}>
-                <FormInput placeholder={'Email'} getValue={getEmail} />
-                <FormInput secure={true} placeholder={'Password'} getValue={getPassword} />
+                <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError}/>
+                <FormInput secure={true} placeholder={'Password'} getValue={getPassword} getError={getPasswordError}/>
             </View>
             <View style={styles.borderContainer}>
                 <View style={styles.line}/>
                     <Text style={styles.lineText}>{'or'}</Text>
                 <View style={styles.line}/>
             </View>
-            <View style={styles.btnContainer}>
+            <View style={styles.btnGoogleContainer}>
                 <GoogleBtn/>
+            </View>
+            <View style={styles.createAccContainer}>
+                <Text style={styles.accRequestText}>{"Don't have an account?"}{' '}<Text style={styles.createAccText}>{'Create Account'}</Text></Text>
+            </View>
+            <View style={styles.submitBtnContainer}>
+                <GetStartedBtn active={!(emailError || passwordError) && !(email.length==0 || password.length ==0)}/>
             </View>
         </View>
     );
@@ -43,11 +61,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.background,
-        paddingHorizontal: '5%'
+        paddingHorizontal: '5%',
+        justifyContent: 'space-evenly'
     },
 
     welcome: {
-        marginTop: '20%',
+        marginTop: '15%'
     },
 
     welcomeText: {
@@ -57,7 +76,7 @@ const styles = StyleSheet.create({
     },
 
     form: {
-        marginTop: '20%',
+        marginTop: '10%',
         justifyContent: 'space-between'
     },
 
@@ -65,7 +84,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         height: 30,
         paddingHorizontal: '8%',
-        marginTop: '5%',
         alignItems: 'center',
         justifyContent: 'space-between'
     },
@@ -83,9 +101,29 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins'
     },
 
-    btnContainer: {
-        marginTop: '5%'
+    btnGoogleContainer: {
+        
+    },
+
+    createAccContainer: {
+        alignItems: 'center',
+        marginTop: '25%'
+    },
+
+    accRequestText: {
+        fontFamily: 'Poppins',
+        fontSize: 13
+    },
+    
+    createAccText: {
+        fontFamily: 'PoppinsSemiBold',
+        color: colors.primary[0]
+    },
+
+    submitBtnContainer: {
+        alignItems: 'center'
     }
+
 });
 
 export default LoginScreen;
