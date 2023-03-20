@@ -3,10 +3,10 @@ import React from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../colors'
 
-const GetStartedBtn = ({ active }) => {
+const SubmitBtn = ({ active, text, onPress }) => {
   return (
-    <TouchableOpacity activeOpacity={active ? 0 : 1} style={[styles.container, active ? { backgroundColor: colors.primary[0] } : { backgroundColor: colors.black[5] }]}>
-      <Text style={styles.btnText}>Get Started</Text>
+    <TouchableOpacity onPress={onPress} disabled={active? false : true} activeOpacity={active ? 0.5 : 1} style={[styles.container, active ? { backgroundColor: colors.primary[0] } : { backgroundColor: colors.black[5] }]}>
+      <Text style={styles.btnText}>{text}</Text>
     </TouchableOpacity>
   )
 }
@@ -28,4 +28,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default GetStartedBtn
+export default SubmitBtn

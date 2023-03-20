@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native';
 import { colors } from '../../colors'
 import FormInput from '../../components/FormInput';
 import GoogleBtn from '../../components/GoogleBtn';
-import GetStartedBtn from '../../components/GetStartedBtn';
+import SubmitBtn from '../../components/SubmitBtn';
 
 const LoginScreen = ({ navigation }) => {
 
@@ -62,7 +62,7 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.accRequestText}>{"Don't have an account?"}{' '}<Text onPress={createAccount} style={styles.createAccText}>{'Create Account'}</Text></Text>
             </View>
             <View style={styles.submitBtnContainer}>
-                <GetStartedBtn active={isButtonActive} />
+                <SubmitBtn active={isButtonActive} text={'Get Started'}/>
             </View>
         </View>
     );

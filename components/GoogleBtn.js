@@ -6,7 +6,7 @@ import { colors } from '../colors'
 
 const GoogleBtn = () => {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity activeOpacity={0.5} style={styles.container}>
         <View style={styles.content}>
             <Image style={styles.googleLogo} source={require('../assets/google.png')}/>
             <Text style={styles.googleText}>{'Google'}</Text>

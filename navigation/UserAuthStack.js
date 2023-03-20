@@ -4,6 +4,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "../screens/user-authentication/LoginScreen";
 import CreateAccountScreen from "../screens/user-authentication/CreateAccountScreen";
+import ForgotPasswordEmail from "../screens/user-authentication/ForgotPasswordEmail";
+import ForgotPasswordWithNewPassword from "../screens/user-authentication/ForgotPasswordWithNewPassword";
 
 export const UserAuthStack = () => {
     const Stack = createStackNavigator();
@@ -32,9 +34,11 @@ export const UserAuthStack = () => {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator screenOptions={options} initialRouteName="LoginScreen">
+            <Stack.Navigator screenOptions={options} initialRouteName="ForgotPasswordEmail">
                 <Stack.Screen name="LoginScreen" component={LoginScreen} />
                 <Stack.Screen name="CreateAccountScreen" component={CreateAccountScreen} />
+                <Stack.Screen name="ForgotPasswordEmail" component={ForgotPasswordEmail} />
+                <Stack.Screen name="ForgotPasswordWithNewPassword" component={ForgotPasswordWithNewPassword} />
             </Stack.Navigator>
         </NavigationContainer>
     );
