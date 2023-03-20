@@ -34,7 +34,7 @@ export const UserAuthStack = () => {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator screenOptions={options} initialRouteName="ForgotPasswordEmail">
+            <Stack.Navigator screenOptions={options} initialRouteName="LoginScreen">
                 <Stack.Screen name="LoginScreen" component={LoginScreen} />
                 <Stack.Screen name="CreateAccountScreen" component={CreateAccountScreen} />
                 <Stack.Screen name="ForgotPasswordEmail" component={ForgotPasswordEmail} />
