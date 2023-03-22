@@ -1,8 +1,9 @@
 import * as Font from 'expo-font';
 import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from './contexts/UserContext';
-import HomeSeller from './screens/home/HomeSeller';
+import Home from './screens/home/Home';
 import { UserAuthStack } from './navigation/UserAuthStack';
+import TabNavigation from './navigation/TabNavigation';
 
 const Auth = () => {
 
@@ -25,7 +26,7 @@ const Auth = () => {
     }
 
     return (
-        isUserLoggedIn ? <HomeSeller /> : <UserAuthStack />
+        isUserLoggedIn ? <TabNavigation /> : <UserAuthStack />
     )
 }
 

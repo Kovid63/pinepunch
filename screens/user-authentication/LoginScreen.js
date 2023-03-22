@@ -35,6 +35,10 @@ const LoginScreen = ({ navigation }) => {
         navigation.navigate('CreateAccountScreen');
     }
 
+    function forgotPasswordHandler(){
+        navigation.navigate('ForgotPasswordEmail');
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.welcome}>
@@ -49,6 +53,9 @@ const LoginScreen = ({ navigation }) => {
             <View style={styles.form}>
                 <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
                 <FormInput secure={true} placeholder={'Password'} getValue={getPassword} getError={getPasswordError} />
+            </View>
+            <View style={styles.forgotPasswordTextContainer}>
+                <Text onPress={forgotPasswordHandler} style={styles.forgotPasswordText}>{'Forgot Password'}</Text>
             </View>
             <View style={styles.borderContainer}>
                 <View style={styles.line} />
@@ -143,6 +150,16 @@ const styles = StyleSheet.create({
 
     submitBtnContainer: {
         alignItems: 'center'
+    },
+
+    forgotPasswordTextContainer: {
+        marginLeft: '14%'
+    },
+
+    forgotPasswordText: {
+        fontFamily: 'Poppins',
+        fontSize: 14,
+        color: colors.alerts.error
     }
 
 });

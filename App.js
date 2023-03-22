@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
-import { UserAuthStack } from './navigation/UserAuthStack';
 import { UserContext } from './contexts/UserContext';
 import Auth from './Auth';
+import { ModeContext } from './contexts/ModeContext';
 
 export default function App() {
 
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
+  const [mode, setMode] = useState('Seller');
 
   return (
-    <UserContext.Provider value={{isUserLoggedIn, setIsUserLoggedIn}}>
-      <View style={styles.container}>
-        <StatusBar style="auto" />
-        <Auth />
-      </View>
+    <UserContext.Provider value={{ isUserLoggedIn, setIsUserLoggedIn }}>
+      <ModeContext.Provider value={{ mode, setMode }}>
+        <View style={styles.container}>
+          <StatusBar style="auto" />
+          <Auth />
+        </View>
+      </ModeContext.Provider>
     </UserContext.Provider>
   );
 }
