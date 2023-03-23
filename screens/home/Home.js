@@ -44,13 +44,14 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     paddingHorizontal: '8%',
-    justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     marginTop: '15%',
     alignItems: 'center'
   },
 
   modeBtnContainer: {
-    width: '73%'
+    width: '73%',
+    marginLeft: '10%'
   },
 
   bellIconContainer: {
@@ -63,6 +64,12 @@ const styles = StyleSheet.create({
   bellIcon: {
     height: 30,
     width: 30
+  },
+
+  searchBarContainer:{
+    width: '85%',
+    alignSelf: 'center',
+    marginTop: '5%'
   }
 
 });

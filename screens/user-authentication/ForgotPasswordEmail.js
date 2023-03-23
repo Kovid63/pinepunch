@@ -20,7 +20,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
     setEmailError(error);
   }
 
-  function loginAccount() {
+  function loginPageHandler() {
     navigation.navigate('LoginScreen');
   }
 
@@ -38,7 +38,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
         <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
       </View>
       <View style={styles.loginAccContainer}>
-        <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginAccount} style={styles.loginAccText}>{'Login'}</Text></Text>
+        <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
       </View>
       <View style={styles.submitBtnContainer}>
         <SubmitBtn onPress={nextHandler} active={isButtonActive} text={'Next'} />

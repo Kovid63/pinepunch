@@ -30,7 +30,7 @@ const ForgotPasswordWithNewPassword = ({ navigation }) => {
     setConfirmPasswordError(error);
   }
 
-  function loginAccount() {
+  function loginPageHandler() {
     navigation.navigate('LoginScreen');
   }
 
@@ -45,7 +45,7 @@ const ForgotPasswordWithNewPassword = ({ navigation }) => {
         <FormInput secure={true} placeholder={'Confirm Password'} getValue={getConfirmPassword} getError={getConfirmPasswordError} />
       </View>
       <View style={styles.loginAccContainer}>
-        <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginAccount} style={styles.loginAccText}>{'Login'}</Text></Text>
+        <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
       </View>
       <View style={styles.submitBtnContainer}>
         <SubmitBtn active={isButtonActive} text={'Reset Password'} />

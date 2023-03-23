@@ -1,10 +1,11 @@
 import { View, Text } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
 import FormInput from '../../components/FormInput'
 import CheckBox from '../../components/CheckBox'
 import SubmitBtn from '../../components/SubmitBtn'
+import { UserContext } from '../../contexts/UserContext'
 
 const CreateAccountScreen = ({navigation}) => {
 
@@ -15,6 +16,8 @@ const CreateAccountScreen = ({navigation}) => {
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState(false);
     const [isCheckboxTicked, setIsCheckBoxTicked] = useState(false);
+
+    const { setIsUserLoggedIn } = useContext(UserContext);
 
     const isButtonActive = !(emailError || passwordError || companyError) && !(email.length == 0 || password.length == 0 || company.length == 0) && isCheckboxTicked;
 
@@ -42,7 +45,7 @@ const CreateAccountScreen = ({navigation}) => {
         setPasswordError(error);
     }
 
-    function loginAccount() {
+    function loginPageHandler() {
         navigation.goBack();
     }
 
@@ -50,6 +53,12 @@ const CreateAccountScreen = ({navigation}) => {
         setIsCheckBoxTicked(status);
     }
 
+    function createAccountHandler(){
+        // for testing
+        setIsUserLoggedIn(true)
+        // for production
+        {/* todo */}
+    }
 
 
     return (
@@ -67,10 +76,10 @@ const CreateAccountScreen = ({navigation}) => {
                 <Text style={styles.agreeText}>{'I Agree to the'}<Text style={{color: colors.primary[0]}}>{' '}{'Terms of Service'}</Text><Text>{' '}{'and'}</Text><Text style={{color: colors.primary[0]}}>{' '}{'Privacy Policy'}</Text></Text>
             </View>
             <View style={styles.loginAccContainer}>
-                <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginAccount} style={styles.loginAccText}>{'Login'}</Text></Text>
+                <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
             </View>
             <View style={styles.submitBtnContainer}>
-                <SubmitBtn active={isButtonActive} text={'Get Started'}/>
+                <SubmitBtn onPress={createAccountHandler} active={isButtonActive} text={'Get Started'}/>
             </View>
         </View>
     )

@@ -7,7 +7,7 @@ import { ModeContext } from './contexts/ModeContext';
 
 export default function App() {
 
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [mode, setMode] = useState('Seller');
 
   return (

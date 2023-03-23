@@ -1,10 +1,11 @@
 import { View, Text } from 'react-native';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { colors } from '../../colors'
 import FormInput from '../../components/FormInput';
 import GoogleBtn from '../../components/GoogleBtn';
 import SubmitBtn from '../../components/SubmitBtn';
+import { UserContext } from '../../contexts/UserContext';
 
 const LoginScreen = ({ navigation }) => {
 
@@ -12,6 +13,8 @@ const LoginScreen = ({ navigation }) => {
     const [emailError, setEmailError] = useState(false);
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState(false);
+
+    const { setIsUserLoggedIn } = useContext(UserContext);
 
     const isButtonActive = !(emailError || passwordError) && !(email.length == 0 || password.length == 0);
 
@@ -37,6 +40,13 @@ const LoginScreen = ({ navigation }) => {
 
     function forgotPasswordHandler(){
         navigation.navigate('ForgotPasswordEmail');
+    }
+
+    function loginHandler(){
+        // for testing
+        setIsUserLoggedIn(true)
+        // for production
+        {/* todo */}
     }
 
     return (
@@ -69,7 +79,7 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.accRequestText}>{"Don't have an account?"}{' '}<Text onPress={createAccount} style={styles.createAccText}>{'Create Account'}</Text></Text>
             </View>
             <View style={styles.submitBtnContainer}>
-                <SubmitBtn active={isButtonActive} text={'Get Started'}/>
+                <SubmitBtn onPress={loginHandler} active={isButtonActive} text={'Get Started'}/>
             </View>
         </View>
     );
