@@ -4,11 +4,12 @@ import { StyleSheet, View } from 'react-native';
 import { UserContext } from './contexts/UserContext';
 import Auth from './Auth';
 import { ModeContext } from './contexts/ModeContext';
+import { MODE_SELLER } from './constants';
 
 export default function App() {
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-  const [mode, setMode] = useState('Seller');
+  const [mode, setMode] = useState(MODE_SELLER);
 
   return (
     <UserContext.Provider value={{ isUserLoggedIn, setIsUserLoggedIn }}>

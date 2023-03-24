@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native'
 import { colors } from '../colors';
 import { ModeContext } from '../contexts/ModeContext';
 import { TouchableOpacity } from 'react-native';
+import { MODE_BUYER, MODE_SELLER } from '../constants';
 
 const ModeBtn = () => {
 
@@ -15,11 +16,11 @@ const ModeBtn = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => modeChangeHandler('Buyer')} activeOpacity={0.5} style={[styles.mode, mode == 'Buyer'? {backgroundColor: colors.primary[0]}:{}]}>
-        <Text style={[styles.modeText, mode == 'Buyer'? {color: colors.offWhite[1]}:{color: colors.black[4]}]}>{'Buyer Mode'}</Text>
+      <TouchableOpacity onPress={() => modeChangeHandler(MODE_BUYER)} activeOpacity={0.5} style={[styles.mode, mode == MODE_BUYER? {backgroundColor: colors.primary[0]}:{}]}>
+        <Text style={[styles.modeText, mode == MODE_BUYER? {color: colors.offWhite[1]}:{color: colors.black[4]}]}>{'Buyer Mode'}</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => modeChangeHandler('Seller')} activeOpacity={0.5} style={[styles.mode, mode == 'Seller'? {backgroundColor: colors.primary[0]}:{}]}>
-        <Text style={[styles.modeText, mode == 'Seller'? {color: colors.offWhite[1]}:{color: colors.black[4]}]}>{'Seller Mode'}</Text>
+      <TouchableOpacity onPress={() => modeChangeHandler(MODE_SELLER)} activeOpacity={0.5} style={[styles.mode, mode == MODE_SELLER? {backgroundColor: colors.primary[0]}:{}]}>
+        <Text style={[styles.modeText, mode == MODE_SELLER? {color: colors.offWhite[1]}:{color: colors.black[4]}]}>{'Seller Mode'}</Text>
       </TouchableOpacity>
     </View>
   )
