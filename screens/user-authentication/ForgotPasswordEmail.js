@@ -1,16 +1,22 @@
-import { View, Text } from 'react-native'
-import React, { useState } from 'react'
-import { StyleSheet } from 'react-native'
-import { colors } from '../../colors'
-import FormInput from '../../components/FormInput'
-import SubmitBtn from '../../components/SubmitBtn'
+import { View, Text } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { colors } from '../../colors';
+import FormInput from '../../components/FormInput';
+import SubmitBtn from '../../components/SubmitBtn';
+import { TextInput } from 'react-native';
+import { Pressable } from 'react-native';
+import { Keyboard } from 'react-native';
 
 const ForgotPasswordEmail = ({ navigation }) => {
 
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
+  const [isEmailSent, setIsEmailSent] = useState(false);
+  const [otpValue, setOtpValue] = useState(['', '', '', ''])
 
-  const isButtonActive = !(emailError) && !(email.length == 0);
+  const inputRefs = useRef([]);
+  const isButtonActive = isEmailSent? true : !(emailError) && !(email.length == 0);
 
   function getEmail(email) {
     setEmail(email);
@@ -25,25 +31,64 @@ const ForgotPasswordEmail = ({ navigation }) => {
   }
 
   function nextHandler() {
-    isButtonActive? navigation.navigate('ForgotPasswordWithNewPassword') : null;
+    isButtonActive ? setIsEmailSent(true) : null;
+  }
+
+  function handleTextChange(text, index) {
+
+    const value = [...otpValue];
+    value[index] = text;
+    setOtpValue(value);
+
+    if (index <= 2 && value[index].length == 1) {
+      const wait = setTimeout(() => {
+        inputRefs.current[index + 1].focus();
+      }, 60);
+      return () => clearTimeout(wait);
+    }
+
+    if (index > 0 && value[index].length === 0) {
+      const wait = setTimeout(() => {
+        inputRefs.current[index - 1].focus();
+      }, 60);
+      return () => clearTimeout(wait);
+    }
+
   }
 
 
   return (
-    <View style={styles.container}>
+    <Pressable onPress={() => Keyboard.dismiss()} style={styles.container}>
       <View style={styles.welcome}>
         <Text style={styles.welcomeText}>{'Forgot\nPassword'}</Text>
       </View>
-      <View style={styles.form}>
+      {!isEmailSent && (<><View style={styles.form}>
         <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
       </View>
+      </>)}
+      {
+        isEmailSent && (
+          <>
+            <View style={styles.otpInputContainer}>
+              {
+                otpValue.map((slotValue, index) => (
+                  <TextInput selectionColor={'#B3B1B0'} keyboardType="number-pad" value={slotValue} style={styles.otpInput} onChangeText={(text) => handleTextChange(text, index)} maxLength={1} key={index} ref={(ref) => inputRefs.current[index] = ref} />
+                ))
+              }
+            </View>
+            <View>
+              <Text style={styles.message}>{'Please enter 4 digit code you received on your email.'}</Text>
+            </View>
+          </>
+        )
+      }
       <View style={styles.loginAccContainer}>
         <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
       </View>
       <View style={styles.submitBtnContainer}>
-        <SubmitBtn onPress={nextHandler} active={isButtonActive} text={'Next'} />
+        <SubmitBtn onPress={nextHandler} active={isButtonActive} text={isEmailSent? 'Verify':'Next'} />
       </View>
-    </View>
+    </Pressable>
   )
 }
 
@@ -86,6 +131,29 @@ const styles = StyleSheet.create({
 
   submitBtnContainer: {
     alignItems: 'center'
+  },
+
+  otpInputContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginTop: '15%'
+  },
+
+  otpInput: {
+    borderBottomWidth: 4,
+    width: '20%',
+    textAlign: 'center',
+    borderColor: '#D9D9D9',
+    fontFamily: 'PoppinsSemiBold',
+    fontSize: 16
+  },
+
+  message: {
+    fontFamily: 'Poppins',
+    width: '90%',
+    fontSize: 16,
+    marginLeft: '5%',
+    color: '#B3B1B0'
   }
 
 })
