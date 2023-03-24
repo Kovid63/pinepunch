@@ -5,6 +5,7 @@ import LoginScreen from "../screens/user-authentication/LoginScreen";
 import CreateAccountScreen from "../screens/user-authentication/CreateAccountScreen";
 import ForgotPasswordEmail from "../screens/user-authentication/ForgotPasswordEmail";
 import ForgotPasswordWithNewPassword from "../screens/user-authentication/ForgotPasswordWithNewPassword";
+import PasswordUpdated from "../screens/user-authentication/PasswordUpdated";
 
 export const UserAuthStack = () => {
 
@@ -22,6 +23,7 @@ export const UserAuthStack = () => {
                 <Stack.Screen name="CreateAccountScreen" component={CreateAccountScreen} />
                 <Stack.Screen name="ForgotPasswordEmail" component={ForgotPasswordEmail} />
                 <Stack.Screen name="ForgotPasswordWithNewPassword" component={ForgotPasswordWithNewPassword} />
+                <Stack.Screen name="PasswordUpdated" component={PasswordUpdated} />
             </Stack.Navigator>
         </NavigationContainer>
     );

@@ -34,6 +34,11 @@ const ForgotPasswordWithNewPassword = ({ navigation }) => {
     navigation.navigate('LoginScreen');
   }
 
+  function resetPasswordHandler() {
+    navigation.popToTop();
+    navigation.navigate('PasswordUpdated');
+  }
+
 
   return (
     <View style={styles.container}>
@@ -48,7 +53,7 @@ const ForgotPasswordWithNewPassword = ({ navigation }) => {
         <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
       </View>
       <View style={styles.submitBtnContainer}>
-        <SubmitBtn active={isButtonActive} text={'Reset Password'} />
+        <SubmitBtn onPress={resetPasswordHandler} active={isButtonActive} text={'Reset Password'} />
       </View>
     </View>
   )

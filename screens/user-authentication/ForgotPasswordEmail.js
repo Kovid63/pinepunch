@@ -30,6 +30,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
     navigation.navigate('LoginScreen');
   }
 
+
   function nextHandler() {
     isButtonActive ? setIsEmailSent(true) : null;
   }
