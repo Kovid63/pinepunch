@@ -16,7 +16,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
   const [otpValue, setOtpValue] = useState(['', '', '', ''])
 
   const inputRefs = useRef([]);
-  const isButtonActive = isEmailSent? true : !(emailError) && !(email.length == 0);
+  const isButtonActive = isEmailSent ? otpValue.join().replace(/[,]/g,'').length === 4 : !(emailError) && !(email.length == 0);
 
   function getEmail(email) {
     setEmail(email);
@@ -34,6 +34,13 @@ const ForgotPasswordEmail = ({ navigation }) => {
     isButtonActive ? setIsEmailSent(true) : null;
   }
 
+  function verifyHandler() {
+    // for testing
+    navigation.navigate('ForgotPasswordWithNewPassword');
+    // for production
+    {/* todo */ }
+  }
+
   function handleTextChange(text, index) {
 
     const value = [...otpValue];
@@ -43,14 +50,14 @@ const ForgotPasswordEmail = ({ navigation }) => {
     if (index <= 2 && value[index].length == 1) {
       const wait = setTimeout(() => {
         inputRefs.current[index + 1].focus();
-      }, 60);
+      }, 20);
       return () => clearTimeout(wait);
     }
 
     if (index > 0 && value[index].length === 0) {
       const wait = setTimeout(() => {
         inputRefs.current[index - 1].focus();
-      }, 60);
+      }, 20);
       return () => clearTimeout(wait);
     }
 
@@ -86,7 +93,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
         <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
       </View>
       <View style={styles.submitBtnContainer}>
-        <SubmitBtn onPress={nextHandler} active={isButtonActive} text={isEmailSent? 'Verify':'Next'} />
+        <SubmitBtn onPress={isEmailSent ? verifyHandler : nextHandler} active={isButtonActive} text={isEmailSent ? 'Verify' : 'Next'} />
       </View>
     </Pressable>
   )
