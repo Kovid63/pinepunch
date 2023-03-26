@@ -12,6 +12,42 @@ export const itemsForSale = [
         price: 20000,
         quantity: 10,
     },
+    {
+        itemName: 'Item Name',
+        image: 'https://cdn.pixabay.com/photo/2016/06/12/20/27/macro-1452987__340.jpg',
+        price: 20000,
+        quantity: 10,
+    },
+    {
+        itemName: 'Item Name',
+        image: 'https://cdn.pixabay.com/photo/2016/06/12/20/27/macro-1452987__340.jpg',
+        price: 20000,
+        quantity: 10,
+    },
+    {
+        itemName: 'Item Name',
+        image: 'https://cdn.pixabay.com/photo/2016/06/12/20/27/macro-1452987__340.jpg',
+        price: 20000,
+        quantity: 10,
+    },
+    {
+        itemName: 'Item Name',
+        image: 'https://cdn.pixabay.com/photo/2016/06/12/20/27/macro-1452987__340.jpg',
+        price: 20000,
+        quantity: 10,
+    },
+    {
+        itemName: 'Item Name',
+        image: 'https://cdn.pixabay.com/photo/2016/06/12/20/27/macro-1452987__340.jpg',
+        price: 20000,
+        quantity: 10,
+    },
+    {
+        itemName: 'Item Name',
+        image: 'https://cdn.pixabay.com/photo/2016/06/12/20/27/macro-1452987__340.jpg',
+        price: 20000,
+        quantity: 10,
+    },
 ]
 
 export const scrapForSale = [
