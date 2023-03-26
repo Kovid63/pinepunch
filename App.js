@@ -8,7 +8,7 @@ import { MODE_SELLER } from './constants';
 
 export default function App() {
 
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
   const [mode, setMode] = useState(MODE_SELLER);
 
   return (

@@ -4,7 +4,6 @@ export const itemsForSale = [
         image: 'https://cdn.pixabay.com/photo/2016/06/12/20/27/macro-1452987__340.jpg',
         price: 20000,
         quantity: 10,
-        ownedItem: true
     },
 
     {
@@ -12,15 +11,15 @@ export const itemsForSale = [
         image: 'https://cdn.pixabay.com/photo/2016/06/12/20/27/macro-1452987__340.jpg',
         price: 20000,
         quantity: 10,
-        ownedItem: true
     },
+]
 
+export const scrapForSale = [
     {
         itemName: 'Item Scrap',
         image: 'https://cdn.pixabay.com/photo/2016/06/12/20/27/macro-1452987__340.jpg',
         price: 200,
         quantity: 10,
-        ownedItem: false
     },
 
     {
@@ -28,6 +27,5 @@ export const itemsForSale = [
         image: 'https://cdn.pixabay.com/photo/2016/06/12/20/27/macro-1452987__340.jpg',
         price: 300,
         quantity: 10,
-        ownedItem: false
-    }
+    },
 ]
