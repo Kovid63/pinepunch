@@ -18,7 +18,11 @@ const Home = ({navigation}) => {
   function showAllProductHandler(){
         navigation.navigate('Product', {
           products: itemsForSale
-        })
+        });
+  }
+
+  function addProductHandler(){
+    navigation.navigate('CategoryStack');
   }
 
 
@@ -45,7 +49,7 @@ const Home = ({navigation}) => {
         <Text style={styles.addProductText}>{'Add a product to sell'}</Text>
       </View>
       <View style={styles.addBtnContainer}>
-        <Button text={'Add'} />
+        <Button onPress={addProductHandler} text={'Add'} />
       </View>
       <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: '5%'}}>
         <View style={styles.middle}>

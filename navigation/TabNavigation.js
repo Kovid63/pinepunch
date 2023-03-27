@@ -4,7 +4,7 @@ import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { View } from 'react-native';
 import Svg, { Path } from "react-native-svg";
-import Category from '../screens/category/Category';
+import Category from '../screens/category/AddProduct';
 import { ModeContext } from '../contexts/ModeContext';
 import { HomeStack } from './HomeStack';
 
