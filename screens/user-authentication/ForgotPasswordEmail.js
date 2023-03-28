@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native';
-import React, { useRef, useState } from 'react';
+import { View, Text, BackHandler } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { colors } from '../../colors';
 import FormInput from '../../components/FormInput';
@@ -13,10 +13,11 @@ const ForgotPasswordEmail = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
-  const [otpValue, setOtpValue] = useState(['', '', '', ''])
+  const [otpValue, setOtpValue] = useState('');
 
-  const inputRefs = useRef([]);
-  const isButtonActive = isEmailSent ? otpValue.join().replace(/[,]/g,'').length === 4 : !(emailError) && !(email.length == 0);
+  const inputRef = useRef();
+
+  const isButtonActive = isEmailSent ? otpValue.length === 4 : !(emailError) && !(email.length == 0);
 
   function getEmail(email) {
     setEmail(email);
@@ -42,28 +43,9 @@ const ForgotPasswordEmail = ({ navigation }) => {
     {/* todo */ }
   }
 
-  function handleTextChange(text, index) {
-
-    const value = [...otpValue];
-    value[index] = text;
-    setOtpValue(value);
-
-    if (index <= 2 && value[index].length == 1) {
-      const wait = setTimeout(() => {
-        inputRefs.current[index + 1].focus();
-      }, 20);
-      return () => clearTimeout(wait);
-    }
-
-    if (index > 0 && value[index].length === 0) {
-      const wait = setTimeout(() => {
-        inputRefs.current[index - 1].focus();
-      }, 20);
-      return () => clearTimeout(wait);
-    }
-
+  function inputPressHandler(){
+    inputRef.current.isFocused()? inputRef.current.blur() : inputRef.current.focus();
   }
-
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()} style={styles.container}>
@@ -79,8 +61,8 @@ const ForgotPasswordEmail = ({ navigation }) => {
           <>
             <View style={styles.otpInputContainer}>
               {
-                otpValue.map((slotValue, index) => (
-                  <TextInput selectionColor={'#B3B1B0'} keyboardType="number-pad" value={slotValue} style={styles.otpInput} onChangeText={(text) => handleTextChange(text, index)} maxLength={1} key={index} ref={(ref) => inputRefs.current[index] = ref} />
+                [1,2,3,4].map((_, index) => (
+                  <Text onPress={inputPressHandler} key={index} style={styles.otpInput}>{otpValue[index]}</Text>
                 ))
               }
             </View>
@@ -90,6 +72,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
           </>
         )
       }
+      <TextInput maxLength={4} keyboardType={'number-pad'} value={otpValue.toString()} onChangeText={(value) => setOtpValue(value)} ref={inputRef} style={{opacity: 0}}/>
       <View style={styles.loginAccContainer}>
         <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
       </View>
@@ -124,7 +107,7 @@ const styles = StyleSheet.create({
 
   loginAccContainer: {
     alignItems: 'center',
-    marginTop: '85%'
+    marginTop: '75%'
   },
 
   accRequestText: {
@@ -144,7 +127,8 @@ const styles = StyleSheet.create({
   otpInputContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginTop: '15%'
+    marginTop: '15%',
+    height: 30
   },
 
   otpInput: {

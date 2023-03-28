@@ -17,7 +17,6 @@ const CreateAccountScreen = ({navigation}) => {
     const [passwordError, setPasswordError] = useState(false);
     const [isCheckboxTicked, setIsCheckBoxTicked] = useState(false);
 
-    const { setIsUserLoggedIn } = useContext(UserContext);
 
     const isButtonActive = !(emailError || passwordError || companyError) && !(email.length == 0 || password.length == 0 || company.length == 0) && isCheckboxTicked;
 
@@ -54,10 +53,9 @@ const CreateAccountScreen = ({navigation}) => {
     }
 
     function createAccountHandler(){
-        // for testing
-        setIsUserLoggedIn(true)
-        // for production
-        {/* todo */}
+        navigation.navigate('VerifyEmail', {
+            email: email
+        });
     }
 
 
