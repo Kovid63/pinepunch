@@ -4,9 +4,9 @@ import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import { View } from 'react-native';
 import Svg, { Path } from "react-native-svg";
-import Category from '../screens/category/AddProduct';
 import { ModeContext } from '../contexts/ModeContext';
 import { HomeStack } from './HomeStack';
+import { CategoryStack } from './CategoryStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -16,7 +16,7 @@ const TabNavigation = () => {
 
     return (
         <NavigationContainer>
-            <Tab.Navigator initialRouteName={'HomeStack'}
+            <Tab.Navigator initialRouteName={'CategoryStack'}
                 screenOptions={{
                     tabBarShowLabel: false,
                     headerShown: false,
@@ -26,7 +26,7 @@ const TabNavigation = () => {
                         elevation: 0,
                         borderTopWidth: 0,
                         height: 80,
-                        paddingHorizontal: 20,
+                        paddingHorizontal: 20
                     },
                     tabBarBackground: () => (
                         <View
@@ -83,7 +83,7 @@ const TabNavigation = () => {
 
                 <Tab.Screen
                     name="CategoryStack"
-                    component={Category}
+                    component={CategoryStack}
                     options={{
                         tabBarIcon: ({ focused }) => (
                             <View
@@ -126,7 +126,7 @@ const TabNavigation = () => {
 
                 {mode == 'Seller' ? <Tab.Screen
                     name="EditStack"
-                    component={Category}
+                    component={HomeStack}
                     options={{
                         tabBarIcon: ({ focused }) => (
                             <View
@@ -159,7 +159,7 @@ const TabNavigation = () => {
                     }}
                 /> : <Tab.Screen
                     name="LikeStack"
-                    component={Category}
+                    component={HomeStack}
                     options={{
                         tabBarIcon: ({ focused }) => (
                             <View
@@ -196,7 +196,7 @@ const TabNavigation = () => {
 
                 <Tab.Screen
                     name="ProfileStack"
-                    component={Category}
+                    component={HomeStack}
                     options={{
                         tabBarIcon: ({ focused }) => (
                             <View

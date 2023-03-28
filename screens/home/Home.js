@@ -59,7 +59,7 @@ const Home = ({navigation}) => {
           <Text onPress={showAllProductHandler} style={styles.viewAllText}>{'View All'}</Text>
         </View>
         <View style={styles.listContainer}>
-          <FlatList showsHorizontalScrollIndicator={false} horizontal data={itemsForSale} renderItem={ListRender} />
+          <FlatList showsHorizontalScrollIndicator={false} horizontal data={itemsForSale.slice(0,2)} renderItem={ListRender} />
         </View>
         <View style={styles.middle}>
           <View>
@@ -67,7 +67,7 @@ const Home = ({navigation}) => {
           </View>
         </View>
         <View style={styles.listContainer}>
-          <FlatList contentContainerStyle={{paddingBottom: 90}} showsHorizontalScrollIndicator={false} horizontal data={scrapForSale} renderItem={ListRender} />
+          <FlatList contentContainerStyle={{paddingBottom: 90}} showsHorizontalScrollIndicator={false} horizontal data={scrapForSale.slice(0,2)} renderItem={ListRender} />
         </View>
       </ScrollView>
     </View>

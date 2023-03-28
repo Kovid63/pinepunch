@@ -1,6 +1,6 @@
-export const category = [
+export const categories = [
     {
-        item_name: "SHEETS",
+        category_name: "SHEETS",
         type: "Sheet Metal",
         parameters: [
             {
@@ -18,27 +18,72 @@ export const category = [
                 predefined: true,
                 options: ["A","B","C"]
             }
-        ]
+        ],
+        description_required: false
     },
     {
-        item_name: "PIPE",
+        category_name: "PIPE",
         type: "Pipe",
+        description_required: true
     },
     {
-        item_name: "Section",
+        category_name: "Section",
         type: "Section",
+        description_required: true
     },
     {
-        item_name: "Fastness",
+        category_name: "Fastness",
         type: "Fastness",
+        description_required: true
     },
     {
-        item_name: "BOUGHT OUT",
+        category_name: "BOUGHT OUT",
         type: "Bought Out",
+        description_required: true
     },
     {
-        item_name: "Tools",
+        category_name: "Tools",
         type: "Tools",
+        description_required: true
     },
-
+    {
+        category_name: "Machinery",
+        type: "Machinery",
+        parameters: [
+            {
+                param_name: "Grade",
+                predefined: true,
+                options: ["A","B","C"]
+            }
+        ],
+        description_required: true
+    },
+    {
+        category_name: "Machinery",
+        type: "Machinery",
+        parameters: [
+            {
+                param_name: "Grade",
+                predefined: true,
+                options: ["A","B","C"]
+            }
+        ],
+        description_required: true
+    },
+    {
+        category_name: "Plant",
+        type: "Plant",
+        parameters: [
+            {
+                param_name: "Location",
+                predefined: false,
+            }
+        ],
+        description_required: true
+    },
+    {
+        category_name: "Others",
+        type: "Others",
+        description_required: true
+    },
 ]
