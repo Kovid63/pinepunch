@@ -13,7 +13,7 @@ export const CategoryStack = () => {
 
 
     return (
-        <Stack.Navigator screenOptions={options} initialRouteName="FillProduct">
+        <Stack.Navigator screenOptions={options} initialRouteName="AddProduct">
             <Stack.Screen name="AddProduct" component={AddProduct} />
             <Stack.Screen name="FillProduct" component={FillProduct} />
         </Stack.Navigator>

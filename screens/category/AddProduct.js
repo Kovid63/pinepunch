@@ -5,8 +5,8 @@ import { colors } from '../../colors'
 
 const AddProduct = ({ navigation }) => {
 
-  function categoryClickHandler(){
-    navigation.navigate('FillProduct', {})
+  function categoryClickHandler(category){
+    navigation.navigate('FillProduct', category)
   }
 
   return (
@@ -19,7 +19,7 @@ const AddProduct = ({ navigation }) => {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.categoryListContainer}>
         {
           categories.map((category, index) => (
-            <TouchableOpacity onPress={categoryClickHandler} activeOpacity={0.4} key={index} style={styles.categoryContainer}>
+            <TouchableOpacity onPress={() => categoryClickHandler(category)} activeOpacity={0.4} key={index} style={styles.categoryContainer}>
               <Text style={styles.categoryText}>{category.category_name}</Text>
             </TouchableOpacity>
           ))
