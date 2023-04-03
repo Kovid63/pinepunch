@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import React, { useContext, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { colors } from '../../colors'
@@ -50,7 +50,7 @@ const LoginScreen = ({ navigation }) => {
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
             <View style={styles.welcome}>
                 <Text style={styles.welcomeText}>{'Hello,\nWelcome Back!'}</Text>
             </View>
@@ -81,7 +81,7 @@ const LoginScreen = ({ navigation }) => {
             <View style={styles.submitBtnContainer}>
                 <SubmitBtn onPress={loginHandler} active={isButtonActive} text={'Get Started'}/>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -91,11 +91,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.background,
         paddingHorizontal: '5%',
-        justifyContent: 'space-evenly'
     },
 
     welcome: {
-        marginTop: '15%'
+        marginTop: '20%'
     },
 
     welcomeText: {
@@ -145,7 +144,7 @@ const styles = StyleSheet.create({
 
     createAccContainer: {
         alignItems: 'center',
-        marginTop: '25%'
+        marginTop: '45%'
     },
 
     accRequestText: {
@@ -159,11 +158,14 @@ const styles = StyleSheet.create({
     },
 
     submitBtnContainer: {
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: '5%',
+        marginBottom: 20
     },
 
     forgotPasswordTextContainer: {
-        marginLeft: '14%'
+        marginLeft: '14%',
+        marginTop: '5%'
     },
 
     forgotPasswordText: {

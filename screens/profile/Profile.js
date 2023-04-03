@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { View, Text, StyleSheet, Image, ScrollView } from 'react-native'
 import React, { useContext } from 'react'
 import { colors } from '../../colors'
 import ModeBtn from '../../components/ModeBtn'
@@ -14,6 +14,7 @@ const Profile = () => {
       <View style={styles.modeBtnContainer}>
         <ModeBtn />
       </View>
+      <ScrollView showsVerticalScrollIndicator={false}>
       {
         mode === MODE_SELLER ?
           <View>
@@ -51,6 +52,7 @@ const Profile = () => {
           <Text style={styles.infoText}>{'Electronic City, Bangalore'}</Text>
         </View>
       </View>
+      </ScrollView>
     </View>
   )
 }
@@ -61,8 +63,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: '8%',
-    justifyContent: 'space-evenly',
-    paddingBottom: 100
   },
   modeBtnContainer: {
     width: '73%',
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
 
   bannerContainer: {
-    height: '45%',
+    height: 175,
     width: '100%',
     alignSelf: 'center',
     marginTop: '10%'
@@ -107,6 +107,7 @@ const styles = StyleSheet.create({
 
   profileNameContainer: {
     alignSelf: 'center',
+    marginTop: '5%'
   },
 
   profileName: {
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
 
   settingsBtnContainer: {
     alignSelf: 'center',
-    marginTop: '8%',
+    marginTop: '5%',
     backgroundColor: '#F8F8F8',
     paddingHorizontal: 30,
     paddingVertical: 15,
@@ -130,7 +131,8 @@ const styles = StyleSheet.create({
   },
 
   profileInfoContainer: {
-    marginTop: '5%'
+    marginTop: '5%',
+    marginBottom: 100
   },
 
   infoTitle: {
