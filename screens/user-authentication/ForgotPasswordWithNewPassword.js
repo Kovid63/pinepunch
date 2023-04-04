@@ -4,6 +4,7 @@ import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
 import FormInput from '../../components/FormInput'
 import SubmitBtn from '../../components/SubmitBtn'
+import { ScrollView } from 'react-native'
 
 const ForgotPasswordWithNewPassword = ({ navigation }) => {
 
@@ -41,7 +42,7 @@ const ForgotPasswordWithNewPassword = ({ navigation }) => {
 
 
   return (
-    <View style={styles.container}>
+    <ScrollView keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false} style={styles.container}>
       <View style={styles.welcome}>
         <Text style={styles.welcomeText}>{'Forgot\nPassword'}</Text>
       </View>
@@ -53,9 +54,9 @@ const ForgotPasswordWithNewPassword = ({ navigation }) => {
         <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
       </View>
       <View style={styles.submitBtnContainer}>
-        <SubmitBtn onPress={resetPasswordHandler} active={isButtonActive} text={'Reset Password'} />
+        <SubmitBtn onPress={resetPasswordHandler} fill={isButtonActive} active={isButtonActive} text={'Reset Password'} />
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -63,8 +64,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    paddingHorizontal: '5%',
-    justifyContent: 'space-evenly'
+    paddingHorizontal: '5%'
   },
 
   welcome: {
@@ -78,12 +78,13 @@ const styles = StyleSheet.create({
   },
 
   form: {
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    marginTop: '15%'
   },
 
   loginAccContainer: {
     alignItems: 'center',
-    marginTop: '85%'
+    marginTop: '80%'
   },
 
   accRequestText: {
@@ -97,7 +98,9 @@ const styles = StyleSheet.create({
   },
 
   submitBtnContainer: {
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: '10%',
+    marginBottom: 30
   }
 
 })

@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, ScrollView } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
@@ -60,7 +60,7 @@ const CreateAccountScreen = ({navigation}) => {
 
 
     return (
-        <View style={styles.container}>
+        <ScrollView keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false} style={styles.container}>
             <View style={styles.create}>
                 <Text style={styles.createText}>{'Create New Account'}</Text>
             </View>
@@ -77,9 +77,9 @@ const CreateAccountScreen = ({navigation}) => {
                 <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
             </View>
             <View style={styles.submitBtnContainer}>
-                <SubmitBtn onPress={createAccountHandler} active={isButtonActive} text={'Get Started'}/>
+                <SubmitBtn fill={isButtonActive} onPress={createAccountHandler} active={isButtonActive} text={'Get Started'}/>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -88,8 +88,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.background,
-        paddingHorizontal: '5%',
-        justifyContent: 'space-evenly'
+        paddingHorizontal: '5%'
     },
 
     create: {
@@ -103,13 +102,15 @@ const styles = StyleSheet.create({
     },
 
     form: {
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        marginTop: '5%'
     },
 
     boxBtnContainer: {
         marginHorizontal: '3%',
         flexDirection: 'row',
-        width: '70%'
+        width: '70%',
+        marginTop: '8%'
     },
 
     agreeText: {
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
 
     loginAccContainer: {
         alignItems: 'center',
-        marginTop: '25%'
+        marginTop: '45%'
     },
 
     accRequestText: {
@@ -135,7 +136,9 @@ const styles = StyleSheet.create({
     },
 
     submitBtnContainer: {
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 30,
+        marginTop: '10%'
     }
 })
 

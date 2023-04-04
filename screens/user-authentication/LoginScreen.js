@@ -50,7 +50,7 @@ const LoginScreen = ({ navigation }) => {
     }
 
     return (
-        <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
+        <ScrollView keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false} style={styles.container}>
             <View style={styles.welcome}>
                 <Text style={styles.welcomeText}>{'Hello,\nWelcome Back!'}</Text>
             </View>
@@ -79,7 +79,7 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.accRequestText}>{"Don't have an account?"}{' '}<Text onPress={createAccount} style={styles.createAccText}>{'Create Account'}</Text></Text>
             </View>
             <View style={styles.submitBtnContainer}>
-                <SubmitBtn onPress={loginHandler} active={isButtonActive} text={'Get Started'}/>
+                <SubmitBtn onPress={loginHandler} fill={isButtonActive} active={isButtonActive} text={'Get Started'}/>
             </View>
         </ScrollView>
     );
@@ -122,7 +122,8 @@ const styles = StyleSheet.create({
         height: 30,
         paddingHorizontal: '8%',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        marginTop: '5%'
     },
 
     line: {
@@ -139,12 +140,12 @@ const styles = StyleSheet.create({
     },
 
     btnGoogleContainer: {
-
+        marginTop: '8%'
     },
 
     createAccContainer: {
         alignItems: 'center',
-        marginTop: '45%'
+        marginTop: '35%'
     },
 
     accRequestText: {
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
 
     submitBtnContainer: {
         alignItems: 'center',
-        marginTop: '5%',
+        marginTop: '10%',
         marginBottom: 20
     },
 

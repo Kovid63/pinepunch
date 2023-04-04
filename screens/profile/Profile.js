@@ -4,17 +4,22 @@ import { colors } from '../../colors'
 import ModeBtn from '../../components/ModeBtn'
 import { ModeContext } from '../../contexts/ModeContext'
 import { MODE_SELLER } from '../../constants'
+import { TouchableOpacity } from 'react-native'
 
-const Profile = () => {
+const Profile = ({navigation}) => {
 
   const { mode } = useContext(ModeContext);
+
+  function settingsPageHandler(){
+    navigation.navigate('Settings')
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.modeBtnContainer}>
         <ModeBtn />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
       {
         mode === MODE_SELLER ?
           <View>
@@ -39,9 +44,9 @@ const Profile = () => {
       <View style={styles.profileNameContainer}>
         <Text style={styles.profileName}>{'PinePunch'}</Text>
       </View>
-      <View style={styles.settingsBtnContainer}>
+      <TouchableOpacity onPress={settingsPageHandler} activeOpacity={0.4} style={styles.settingsBtnContainer}>
         <Text style={styles.settingsBtnText}>{'Settings Page'}</Text>
-      </View>
+      </TouchableOpacity>
       <View style={styles.profileInfoContainer}>
         <Text style={styles.infoTitle}>{'Company Name'}</Text>
         <View style={styles.infoContainer}>

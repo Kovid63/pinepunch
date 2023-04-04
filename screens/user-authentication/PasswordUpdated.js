@@ -16,7 +16,7 @@ const PasswordUpdated = ({ navigation }) => {
                 <Text style={styles.welcomeText}>{'Password Updated!'}</Text>
             </View>
             <View style={styles.submitBtnContainer}>
-                <SubmitBtn onPress={loginHandler} active={true} text={'Login'} />
+                <SubmitBtn onPress={loginHandler} fill={true} active={true} text={'Login'} />
             </View>
         </View>
     )

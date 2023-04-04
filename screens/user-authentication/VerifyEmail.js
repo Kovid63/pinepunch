@@ -7,6 +7,7 @@ import { colors } from '../../colors'
 import { Image } from 'react-native'
 import SubmitBtn from '../../components/SubmitBtn'
 import { UserContext } from '../../contexts/UserContext'
+import { ScrollView } from 'react-native'
 
 const VerifyEmail = ({ navigation, route }) => {
 
@@ -26,7 +27,7 @@ const VerifyEmail = ({ navigation, route }) => {
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={backPressHandler} style={styles.bellIconContainer}>
                     <Svg style={styles.bellIcon} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
@@ -48,7 +49,7 @@ const VerifyEmail = ({ navigation, route }) => {
                 <Text style={styles.createText}>{'Verify Your Email'}</Text>
             </View>
             <View style={styles.middle}>
-                <Text style={styles.middleText}>{'You have entered "'}<Text style={{ color: colors.primary[0] }}>{route.params.email}</Text>{'".\nPlease check your email.'}</Text>
+                <Text style={styles.middleText}>{'You have entered "'}<Text style={{ color: colors.primary[0] }}>{'route.params.email'}</Text>{'".\nPlease check your email.'}</Text>
             </View>
             <View style={styles.imageContainer}>
                 <Image style={styles.image} source={require('../../assets/emailverify.png')} />
@@ -62,7 +63,7 @@ const VerifyEmail = ({ navigation, route }) => {
             <View style={styles.submitBtnContainer}>
                 <SubmitBtn onPress={verifyEmailHandler} active={isEmailverified} text={'Continue'} />
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -71,13 +72,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.background,
         paddingHorizontal: '5%',
-        justifyContent: 'space-evenly'
     },
 
     header: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginTop: '5%',
+        marginTop: '15%',
         justifyContent: 'space-between'
     },
 
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     },
 
     create: {
-        marginTop: '2%'
+        marginTop: '5%'
     },
 
     createText: {
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     },
 
     middle: {
-        marginTop: '2%'
+        marginTop: '5%'
     },
 
     middleText: {
@@ -116,11 +116,11 @@ const styles = StyleSheet.create({
     imageContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: '2%'
+        marginTop: '5%'
     },
 
     message: {
-        marginTop: '2%',
+        marginTop: '10%',
     },
 
     messageText: {
@@ -131,10 +131,12 @@ const styles = StyleSheet.create({
     },
 
     submitBtnContainer: {
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 30,
     },
+
     warning: {
-        marginTop: '2%',
+        marginTop: '10%',
     },
 
     warningText: {

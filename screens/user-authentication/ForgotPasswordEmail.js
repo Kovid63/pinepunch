@@ -7,6 +7,7 @@ import SubmitBtn from '../../components/SubmitBtn';
 import { TextInput } from 'react-native';
 import { Pressable } from 'react-native';
 import { Keyboard } from 'react-native';
+import { ScrollView } from 'react-native';
 
 const ForgotPasswordEmail = ({ navigation }) => {
 
@@ -43,42 +44,44 @@ const ForgotPasswordEmail = ({ navigation }) => {
     {/* todo */ }
   }
 
-  function inputPressHandler(){
-    inputRef.current.isFocused()? inputRef.current.blur() : inputRef.current.focus();
+  function inputPressHandler() {
+    inputRef.current.isFocused() ? inputRef.current.blur() : inputRef.current.focus();
   }
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()} style={styles.container}>
-      <View style={styles.welcome}>
-        <Text style={styles.welcomeText}>{'Forgot\nPassword'}</Text>
-      </View>
-      {!isEmailSent && (<><View style={styles.form}>
-        <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
-      </View>
-      </>)}
-      {
-        isEmailSent && (
-          <>
-            <View style={styles.otpInputContainer}>
-              {
-                [1,2,3,4].map((_, index) => (
-                  <Text onPress={inputPressHandler} key={index} style={styles.otpInput}>{otpValue[index]}</Text>
-                ))
-              }
-            </View>
-            <View>
-              <Text style={styles.message}>{'Please enter 4 digit code you received on your email.'}</Text>
-            </View>
-          </>
-        )
-      }
-      <TextInput maxLength={4} keyboardType={'number-pad'} value={otpValue.toString()} onChangeText={(value) => setOtpValue(value)} ref={inputRef} style={{opacity: 0}}/>
-      <View style={styles.loginAccContainer}>
-        <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
-      </View>
-      <View style={styles.submitBtnContainer}>
-        <SubmitBtn onPress={isEmailSent ? verifyHandler : nextHandler} active={isButtonActive} text={isEmailSent ? 'Verify' : 'Next'} />
-      </View>
+      <ScrollView style={{flex: 1}} keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
+        <View style={styles.welcome}>
+          <Text style={styles.welcomeText}>{'Forgot\nPassword'}</Text>
+        </View>
+        {!isEmailSent && (<><View style={styles.form}>
+          <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
+        </View>
+        </>)}
+        {
+          isEmailSent && (
+            <>
+              <View style={styles.otpInputContainer}>
+                {
+                  [1, 2, 3, 4].map((_, index) => (
+                    <Text onPress={inputPressHandler} key={index} style={styles.otpInput}>{otpValue[index]}</Text>
+                  ))
+                }
+              </View>
+              <View>
+                <Text style={styles.message}>{'Please enter 4 digit code you received on your email.'}</Text>
+              </View>
+            </>
+          )
+        }
+        <TextInput maxLength={4} keyboardType={'number-pad'} value={otpValue.toString()} onChangeText={(value) => setOtpValue(value)} ref={inputRef} style={{ opacity: 0 }} />
+        <View style={styles.loginAccContainer}>
+          <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
+        </View>
+        <View style={styles.submitBtnContainer}>
+          <SubmitBtn onPress={isEmailSent ? verifyHandler : nextHandler} fill={isButtonActive} active={isButtonActive} text={isEmailSent ? 'Verify' : 'Next'} />
+        </View>
+      </ScrollView>
     </Pressable>
   )
 }
@@ -102,12 +105,13 @@ const styles = StyleSheet.create({
   },
 
   form: {
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    marginTop: '30%'
   },
 
   loginAccContainer: {
     alignItems: 'center',
-    marginTop: '75%'
+    marginTop: '80%'
   },
 
   accRequestText: {
@@ -121,13 +125,15 @@ const styles = StyleSheet.create({
   },
 
   submitBtnContainer: {
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: '10%',
+    marginBottom: 30
   },
 
   otpInputContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    marginTop: '15%',
+    marginTop: '20%',
     height: 30
   },
 
@@ -145,7 +151,8 @@ const styles = StyleSheet.create({
     width: '90%',
     fontSize: 16,
     marginLeft: '5%',
-    color: '#B3B1B0'
+    color: '#B3B1B0',
+    marginTop: '10%'
   }
 
 })
