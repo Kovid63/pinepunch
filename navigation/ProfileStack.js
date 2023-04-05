@@ -13,7 +13,7 @@ export const ProfileStack = () => {
 
 
     return (
-        <Stack.Navigator screenOptions={options} initialRouteName="Settings">
+        <Stack.Navigator screenOptions={options} initialRouteName="Profile">
             <Stack.Screen name="Profile" component={Profile} />
             <Stack.Screen name="Settings" component={Settings} />
         </Stack.Navigator>
