@@ -22,15 +22,21 @@ const Settings = () => {
                     fillRule="evenodd"
                 />
             </Svg>
+        },
+        {
+            name: ''
         }
     ]
 
-    const SettingSlot = () => {
+    const SettingSlot = ({slot}) => {
 
         return (
             <View style={{ justifyContent: 'space-between', flexDirection: 'row' }}>
-                <View>
-                    {settingSlotData[0].icon}
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View>
+                        {slot.icon}
+                    </View>
+                    <Text>{slot.name}</Text>
                 </View>
                 <View>
 
@@ -46,7 +52,11 @@ const Settings = () => {
                 <Text style={styles.titleText}>{'Account'}</Text>
             </View>
             <ScrollView style={styles.scroll} showsHorizontalScrollIndicator={false}>
-                <SettingSlot />
+                {
+                    settingSlotData.map((slot, index) => (
+                        <SettingSlot slot={slot}/>
+                    ))
+                }
             </ScrollView>
             <View style={styles.submitBtnContainer}>
                 <SubmitBtn active={true} outline={true} text={'Log Out'} />
