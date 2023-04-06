@@ -10,6 +10,7 @@ import Button from '../../components/Button';
 import { itemsForSale, scrapForSale } from '../../dummydata/dummydata';
 import { ScrollView } from 'react-native';
 import { ListRender } from '../../components/ListRender';
+import { MODE_SELLER } from '../../constants';
 
 const Home = ({navigation}) => {
 
@@ -45,6 +46,8 @@ const Home = ({navigation}) => {
       <View style={styles.searchBarContainer}>
         <SearchBar />
       </View>
+      {mode === MODE_SELLER? 
+      <>
       <View style={styles.addProductTextContainer}>
         <Text style={styles.addProductText}>{'Add a product to sell'}</Text>
       </View>
@@ -70,6 +73,16 @@ const Home = ({navigation}) => {
           <FlatList contentContainerStyle={{paddingBottom: 90}} showsHorizontalScrollIndicator={false} horizontal data={scrapForSale.slice(0,2)} renderItem={ListRender} />
         </View>
       </ScrollView>
+      </>
+      :
+      <>
+      <View style={styles.bannerImage}>
+        <Image style={{height: '100%', width: '100%', borderRadius: 41}} source={{uri: 'https://eurobalt.net/wp-content/uploads/2019/05/Sintered-parts-for-Automotive-845x321.jpg'}}/>
+        <View style={{position: 'absolute', height: 40, width: '45%', backgroundColor: '#FFFFFF', borderRadius: 16}}>
+         
+        </View>
+      </View>
+      </>}
     </View>
   );
 }
@@ -110,6 +123,15 @@ const styles = StyleSheet.create({
     width: '85%',
     alignSelf: 'center',
     marginTop: '3%',
+  },
+
+  bannerImage: {
+    width: '95%',
+    height: 150,
+    alignSelf: 'center',
+    marginTop: '10%',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   addProductTextContainer: {
