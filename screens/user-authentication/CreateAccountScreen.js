@@ -6,8 +6,9 @@ import FormInput from '../../components/FormInput'
 import CheckBox from '../../components/CheckBox'
 import SubmitBtn from '../../components/SubmitBtn'
 import { UserContext } from '../../contexts/UserContext'
+import { BASE_URL } from '@env';
 
-const CreateAccountScreen = ({navigation}) => {
+const CreateAccountScreen = ({ navigation }) => {
 
     const [company, setCompany] = useState('');
     const [companyError, setCompanyError] = useState(false);
@@ -48,14 +49,32 @@ const CreateAccountScreen = ({navigation}) => {
         navigation.goBack();
     }
 
-    function getCheckboxStatus(status){
+    function getCheckboxStatus(status) {
         setIsCheckBoxTicked(status);
     }
 
-    function createAccountHandler(){
-        navigation.navigate('VerifyEmail', {
-            email: email
-        });
+    async function createAccountHandler() {
+        try {
+            fetch(BASE_URL + 'api/v1/merchant/register', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    merchant_name: company
+                })
+            }).then((response) => {
+                if(response.ok){
+                    return response.json();
+                }
+            }).then((data) => {
+                console.log(data);
+            })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
 
@@ -65,19 +84,19 @@ const CreateAccountScreen = ({navigation}) => {
                 <Text style={styles.createText}>{'Create New Account'}</Text>
             </View>
             <View style={styles.form}>
-                <FormInput placeholder={'Company Name'} getValue={getCompany} getError={getCompanyError}/>
-                <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError}/>
-                <FormInput secure={true} placeholder={'Password'} getValue={getPassword} getError={getPasswordError}/>
+                <FormInput placeholder={'Company Name'} getValue={getCompany} getError={getCompanyError} />
+                <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
+                <FormInput secure={true} placeholder={'Password'} getValue={getPassword} getError={getPasswordError} />
             </View>
             <View style={styles.boxBtnContainer}>
-                <CheckBox isActive={getCheckboxStatus}/>
-                <Text style={styles.agreeText}>{'I Agree to the'}<Text style={{color: colors.primary[0]}}>{' '}{'Terms of Service'}</Text><Text>{' '}{'and'}</Text><Text style={{color: colors.primary[0]}}>{' '}{'Privacy Policy'}</Text></Text>
+                <CheckBox isActive={getCheckboxStatus} />
+                <Text style={styles.agreeText}>{'I Agree to the'}<Text style={{ color: colors.primary[0] }}>{' '}{'Terms of Service'}</Text><Text>{' '}{'and'}</Text><Text style={{ color: colors.primary[0] }}>{' '}{'Privacy Policy'}</Text></Text>
             </View>
             <View style={styles.loginAccContainer}>
                 <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
             </View>
             <View style={styles.submitBtnContainer}>
-                <SubmitBtn fill={isButtonActive} onPress={createAccountHandler} active={isButtonActive} text={'Get Started'}/>
+                <SubmitBtn fill={isButtonActive} onPress={createAccountHandler} active={isButtonActive} text={'Get Started'} />
             </View>
         </ScrollView>
     )
