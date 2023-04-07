@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { Path, Svg } from "react-native-svg";
 
 export const SettingsSlot = ({ slot }, key) => (
-    <View key={key} style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', marginTop: '3%' }}>
+    <TouchableOpacity key={key} style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', marginTop: '3%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={{ height: 45, width: 45, backgroundColor: '#F8F8F8', alignItems: 'center', justifyContent: 'center', borderRadius: 25 }}>
                 <View style={{ height: 25, width: 25 }}>
@@ -15,7 +15,7 @@ export const SettingsSlot = ({ slot }, key) => (
                 <Text style={{ marginLeft: 15, fontFamily: 'Poppins', fontSize: 15 }}>{slot.name}</Text>
             </View>
         </View>
-        <TouchableOpacity>
+        <View>
             <Svg style={{
                 height: 30,
                 width: 30,
@@ -37,6 +37,6 @@ export const SettingsSlot = ({ slot }, key) => (
                     d="M0 0h32v32H0z"
                 />
             </Svg>
-        </TouchableOpacity>
-    </View>
+        </View>
+    </TouchableOpacity>
 )

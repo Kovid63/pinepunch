@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, FlatList, Image } from 'react-native';
-import React, { useContext } from 'react';
+import { View, Text, TouchableOpacity, FlatList, Image, Dimensions } from 'react-native';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { ModeContext } from '../../contexts/ModeContext';
 import ModeBtn from '../../components/ModeBtn';
@@ -10,21 +10,62 @@ import Button from '../../components/Button';
 import { itemsForSale, scrapForSale } from '../../dummydata/dummydata';
 import { ScrollView } from 'react-native';
 import { ListRender } from '../../components/ListRender';
-import { MODE_SELLER } from '../../constants';
+import { MODE_BUYER, MODE_SELLER } from '../../constants';
+import { homeBuyerAd } from '../../data/homeBuyerAd';
+import { AdRender } from '../../components/AdRender';
+import { homeCategory } from '../../data/homeCategory';
+import { BuyerListRender } from '../../components/BuyerListRender';
 
-const Home = ({navigation}) => {
+const Home = ({ navigation }) => {
 
   const { mode } = useContext(ModeContext);
+  const { width } = Dimensions.get('window');
 
-  function showAllProductHandler(){
-        navigation.navigate('Product', {
-          products: itemsForSale
-        });
+  const [adIndex, setAdIndex] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState(homeCategory[0]);
+
+  const adRef = useRef();
+
+
+  function showAllProductHandler() {
+    navigation.navigate('Product', {
+      products: itemsForSale
+    });
   }
 
-  function addProductHandler(){
+  function addProductHandler() {
     navigation.navigate('CategoryStack');
   }
+
+  const onMomentumScrollEndHandler = (event) => {
+    const contentOffset = event.nativeEvent.contentOffset.x; // get the x-axis offset of the content
+    const viewSize = event.nativeEvent.layoutMeasurement.width; // get the width of the viewport
+    const index = Math.round(contentOffset / viewSize); // calculate the index of the item closest to the center of the screen
+    setAdIndex(index);
+  };
+
+  function scrollToIndex(index) {
+    // Get the offset of the item at the given index
+    const offset = index * width;
+    // Use the scrollToOffset method to scroll to the desired offset
+    setAdIndex(index);
+    adRef.current.scrollToOffset({ offset, animated: true });
+  };
+
+  function onSelectCategoryHandler(item) {
+    setSelectedCategory(item);
+  }
+
+  useEffect(() => {
+    if (mode === MODE_BUYER) {
+      var currentIndex = adIndex;
+      const adInterval = setInterval(() => {
+        currentIndex < homeBuyerAd.length - 1 ? currentIndex += 1 : currentIndex = 0;
+        scrollToIndex(currentIndex);
+      }, 10000);
+      return () => clearInterval(adInterval);
+    }
+  }, [mode])
 
 
   return (
@@ -46,43 +87,96 @@ const Home = ({navigation}) => {
       <View style={styles.searchBarContainer}>
         <SearchBar />
       </View>
-      {mode === MODE_SELLER? 
-      <>
-      <View style={styles.addProductTextContainer}>
-        <Text style={styles.addProductText}>{'Add a product to sell'}</Text>
-      </View>
-      <View style={styles.addBtnContainer}>
-        <Button onPress={addProductHandler} text={'Add'} />
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: '5%'}}>
-        <View style={styles.middle}>
-          <View>
-            <Text style={styles.addProductText}>{'Items for sale'}</Text>
+      {mode === MODE_SELLER ?
+        <>
+          <View style={styles.addProductTextContainer}>
+            <Text style={styles.addProductText}>{'Add a product to sell'}</Text>
           </View>
-          <Text onPress={showAllProductHandler} style={styles.viewAllText}>{'View All'}</Text>
-        </View>
-        <View style={styles.listContainer}>
-          <FlatList showsHorizontalScrollIndicator={false} horizontal data={itemsForSale.slice(0,2)} renderItem={ListRender} />
-        </View>
-        <View style={styles.middle}>
-          <View>
-            <Text style={styles.addProductText}>{'Scrap for sale'}</Text>
+          <View style={styles.addBtnContainer}>
+            <Button onPress={addProductHandler} text={'Add'} />
           </View>
-        </View>
-        <View style={styles.listContainer}>
-          <FlatList contentContainerStyle={{paddingBottom: 90}} showsHorizontalScrollIndicator={false} horizontal data={scrapForSale.slice(0,2)} renderItem={ListRender} />
-        </View>
-      </ScrollView>
-      </>
-      :
-      <>
-      <View style={styles.bannerImage}>
-        <Image style={{height: '100%', width: '100%', borderRadius: 41}} source={{uri: 'https://eurobalt.net/wp-content/uploads/2019/05/Sintered-parts-for-Automotive-845x321.jpg'}}/>
-        <View style={{position: 'absolute', height: 40, width: '45%', backgroundColor: '#FFFFFF', borderRadius: 16}}>
-         
-        </View>
-      </View>
-      </>}
+          <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: '5%' }}>
+            <View style={styles.middle}>
+              <View>
+                <Text style={styles.addProductText}>{'Items for sale'}</Text>
+              </View>
+              <Text onPress={showAllProductHandler} style={styles.viewAllText}>{'View All'}</Text>
+            </View>
+            <View style={styles.listContainer}>
+              <FlatList
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                data={itemsForSale.slice(0, 2)}
+                renderItem={ListRender} />
+            </View>
+            <View style={styles.middle}>
+              <View>
+                <Text style={styles.addProductText}>{'Scrap for sale'}</Text>
+              </View>
+            </View>
+            <View style={styles.listContainer}>
+              <FlatList
+                contentContainerStyle={{ paddingBottom: 90 }}
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                data={scrapForSale.slice(0, 2)}
+                renderItem={ListRender} />
+            </View>
+          </ScrollView>
+        </>
+        :
+        <>
+          <View>
+            <FlatList
+              ref={adRef}
+              horizontal
+              data={homeBuyerAd}
+              renderItem={AdRender}
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              scrollEventThrottle={16}
+              onMomentumScrollEnd={onMomentumScrollEndHandler} />
+          </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: '-4%', marginBottom: '5%' }}>
+            {
+              homeBuyerAd.map((banner, index) => (
+                <View key={index} style={[{ height: 10, width: 10, borderRadius: 5, marginHorizontal: 5 }, index === adIndex ? { backgroundColor: 'white' } : { backgroundColor: '#D9D9D9' }]} />
+              ))
+            }
+          </View>
+          <ScrollView>
+            <View style={styles.middle}>
+              <View>
+                <Text style={styles.addProductText}>{'Category'}</Text>
+              </View>
+              <Text style={styles.viewAllText}>{'View All'}</Text>
+            </View>
+            <View style={{ marginTop: '5%' }}>
+              <FlatList horizontal showsHorizontalScrollIndicator={false} data={homeCategory} renderItem={({ item }) => {
+                return (
+                  <TouchableOpacity onPress={() => onSelectCategoryHandler(item)} activeOpacity={0.7} style={[{ height: 50, paddingHorizontal: 15, marginLeft: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }, selectedCategory === item ? { backgroundColor: colors.primary[0] } : { backgroundColor: '#F8F8F8' }]}>
+                    <Text style={[{ fontFamily: 'Poppins' }, selectedCategory === item ? { color: '#FFFFFF' } : { color: '#B3B1B0' }]}>{item}</Text>
+                  </TouchableOpacity>
+                )
+              }} />
+            </View>
+            <View style={styles.middle}>
+              <View>
+                <Text style={styles.addProductText}>{'New Arrivals'}</Text>
+              </View>
+              <Text style={styles.viewAllText}>{'View All'}</Text>
+            </View>
+            <View style={styles.listContainer}>
+              <FlatList
+                contentContainerStyle={{ paddingBottom: 90 }}
+                showsHorizontalScrollIndicator={false}
+                horizontal
+                data={scrapForSale.slice(0, 2)}
+                renderItem={BuyerListRender} />
+            </View>
+          </ScrollView>
+        </>
+      }
     </View>
   );
 }
@@ -126,7 +220,7 @@ const styles = StyleSheet.create({
   },
 
   bannerImage: {
-    width: '95%',
+    width: 100,
     height: 150,
     alignSelf: 'center',
     marginTop: '10%',
