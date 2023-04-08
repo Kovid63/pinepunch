@@ -9,10 +9,11 @@ import { MODE_BUYER, MODE_SELLER } from './constants';
 export default function App() {
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-  const [mode, setMode] = useState(MODE_BUYER);
+  const [userData, setUserData] = useState({email: '', merchantName: '', sessionId: null, merchantStatus: '', merchantId: null});
+  const [mode, setMode] = useState(MODE_SELLER);
   
   return (
-    <UserContext.Provider value={{ isUserLoggedIn, setIsUserLoggedIn }}>
+    <UserContext.Provider value={{ isUserLoggedIn, setIsUserLoggedIn, userData, setUserData }}>
       <ModeContext.Provider value={{ mode, setMode }}>
         <View style={styles.container}>
           <StatusBar style="auto" />

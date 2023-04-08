@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { colors } from '../../colors'
 import Header from '../../components/Header'
@@ -8,11 +8,19 @@ import SubmitBtn from '../../components/SubmitBtn'
 import { settingAccount } from '../../data/settingsAccount'
 import { settingHelp } from '../../data/settingsHelp'
 import { SettingsSlot } from '../../components/SettingsSlot'
-
+import { UserContext } from '../../contexts/UserContext'
+import * as SecureStore from 'expo-secure-store';
 const Settings = ({ navigation }) => {
+
+    const { setIsUserLoggedIn } = useContext(UserContext);
 
     function backPressHandler() {
         navigation.goBack();
+    }
+
+    async function logOutUserHandler(){
+        await SecureStore.deleteItemAsync('sessionId');
+        setIsUserLoggedIn(false);
     }
 
     return (
@@ -37,7 +45,7 @@ const Settings = ({ navigation }) => {
                 }
             </ScrollView>
             <View style={styles.submitBtnContainer}>
-                <SubmitBtn active={true} outline={true} text={'Log Out'} />
+                <SubmitBtn onPress={logOutUserHandler} active={true} outline={true} text={'Log Out'} />
             </View>
         </View>
     )

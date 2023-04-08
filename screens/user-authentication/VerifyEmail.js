@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import { Path, Svg } from 'react-native-svg'
@@ -8,47 +8,94 @@ import { Image } from 'react-native'
 import SubmitBtn from '../../components/SubmitBtn'
 import { UserContext } from '../../contexts/UserContext'
 import { ScrollView } from 'react-native'
-
+import { TextInput } from 'react-native'
+import { Pressable } from 'react-native'
+import { BASE_URL } from '@env';
+import { Keyboard } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const VerifyEmail = ({ navigation, route }) => {
 
-    const [isEmailverified, setIsEmailverified] = useState(false);
+    //const [isEmailverified, setIsEmailverified] = useState(false);
+    const [otpValue, setOtpValue] = useState('');
+    const { setIsUserLoggedIn, userData, setUserData } = useContext(UserContext);
 
-    const { setIsUserLoggedIn } = useContext(UserContext);
+    const isButtonActive = otpValue.length === 4;
 
-    function verifyEmailHandler(){
+    console.log(userData)
+
+    const inputRef = useRef();
+
+    function inputPressHandler() {
+        inputRef.current.isFocused() ? inputRef.current.blur() : inputRef.current.focus();
+    }
+
+    async function verifyEmailHandler() {
+        
         // for testing
-        setIsUserLoggedIn(true);
+        //setIsUserLoggedIn(true);
+
         // for production
-        {/* todo */}
+        try {
+            fetch(BASE_URL + 'api/v1/authentication/merchant/user/verify_register_otp', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-USER-SESSION-ID": userData.sessionId
+                },
+                body: JSON.stringify({
+                    otp_id: route.params.otpId,
+                    otp: otpValue
+                })
+            }).then((response) => {
+                if (response.ok) {
+                    response.json()
+                        .then((data) => {
+                            setUserData({ ...userData, merchantStatus: data.merchant_status });
+                            setIsUserLoggedIn(true);
+                        })
+                } else {
+                    console.log(response.status);
+                }
+            })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     function backPressHandler() {
         navigation.goBack();
     }
 
+    useEffect(() => {
+        (async function init() {
+            await AsyncStorage.setItem('user', JSON.stringify(userData));
+        })();
+    }, [userData]);
+
     return (
-        <ScrollView style={styles.container}>
-            <View style={styles.header}>
-                <TouchableOpacity onPress={backPressHandler} style={styles.bellIconContainer}>
-                    <Svg style={styles.bellIcon} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                        <Path
-                            d="M20 25a1 1 0 0 1-.71-.29l-8-8a1 1 0 0 1 0-1.42l8-8a1 1 0 1 1 1.42 1.42L13.41 16l7.3 7.29a1 1 0 0 1 0 1.42A1 1 0 0 1 20 25Z"
-                            data-name="Layer 2"
-                            fill={'#FFFFFF'}
-                        />
-                        <Path
-                            style={{
-                                fill: "none",
-                            }}
-                            d="M0 0h32v32H0z"
-                        />
-                    </Svg>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.create}>
-                <Text style={styles.createText}>{'Verify Your Email'}</Text>
-            </View>
-            <View style={styles.middle}>
+        <Pressable onPress={() => Keyboard.dismiss()} style={styles.container}>
+            <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
+                <View style={styles.header}>
+                    <TouchableOpacity onPress={backPressHandler} style={styles.bellIconContainer}>
+                        <Svg style={styles.bellIcon} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                            <Path
+                                d="M20 25a1 1 0 0 1-.71-.29l-8-8a1 1 0 0 1 0-1.42l8-8a1 1 0 1 1 1.42 1.42L13.41 16l7.3 7.29a1 1 0 0 1 0 1.42A1 1 0 0 1 20 25Z"
+                                data-name="Layer 2"
+                                fill={'#FFFFFF'}
+                            />
+                            <Path
+                                style={{
+                                    fill: "none",
+                                }}
+                                d="M0 0h32v32H0z"
+                            />
+                        </Svg>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.create}>
+                    <Text style={styles.createText}>{'Verify Your Email'}</Text>
+                </View>
+                {/* <View style={styles.middle}>
                 <Text style={styles.middleText}>{'You have entered "'}<Text style={{ color: colors.primary[0] }}>{'route.params.email'}</Text>{'".\nPlease check your email.'}</Text>
             </View>
             <View style={styles.imageContainer}>
@@ -59,11 +106,23 @@ const VerifyEmail = ({ navigation, route }) => {
             </View>
             {!isEmailverified && (<View style={styles.warning}>
                 <Text style={styles.warningText}>{'Email is not verified yet.'}</Text>
-            </View>)}
-            <View style={styles.submitBtnContainer}>
-                <SubmitBtn onPress={verifyEmailHandler} active={isEmailverified} text={'Continue'} />
-            </View>
-        </ScrollView>
+            </View>)} */}
+                <View style={styles.otpInputContainer}>
+                    {
+                        [1, 2, 3, 4].map((_, index) => (
+                            <Text onPress={inputPressHandler} key={index} style={styles.otpInput}>{otpValue[index]}</Text>
+                        ))
+                    }
+                </View>
+                <View>
+                    <Text style={styles.otpMessage}>{'Please enter 4 digit code you received on your email.'}</Text>
+                </View>
+                <TextInput maxLength={4} keyboardType={'number-pad'} value={otpValue.toString()} onChangeText={(value) => setOtpValue(value)} ref={inputRef} style={{ opacity: 0 }} />
+                <View style={styles.submitBtnContainer}>
+                    <SubmitBtn onPress={verifyEmailHandler} active={isButtonActive} fill={isButtonActive} text={'Continue'} />
+                </View>
+            </ScrollView>
+        </Pressable>
     )
 }
 
@@ -148,8 +207,33 @@ const styles = StyleSheet.create({
 
     submitBtnContainer: {
         alignItems: 'center',
-        marginTop: '2%',
+        marginTop: '75%'
     },
+
+    otpInputContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        marginTop: '20%',
+        height: 30
+    },
+
+    otpInput: {
+        borderBottomWidth: 4,
+        width: '20%',
+        textAlign: 'center',
+        borderColor: '#D9D9D9',
+        fontFamily: 'PoppinsSemiBold',
+        fontSize: 16
+    },
+
+    otpMessage: {
+        fontFamily: 'Poppins',
+        width: '90%',
+        fontSize: 16,
+        marginLeft: '5%',
+        color: '#B3B1B0',
+        marginTop: '10%'
+    }
 })
 
 export default VerifyEmail
