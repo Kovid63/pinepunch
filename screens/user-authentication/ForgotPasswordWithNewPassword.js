@@ -5,8 +5,9 @@ import { colors } from '../../colors'
 import FormInput from '../../components/FormInput'
 import SubmitBtn from '../../components/SubmitBtn'
 import { ScrollView } from 'react-native'
+import { BASE_URL } from '@env';
 
-const ForgotPasswordWithNewPassword = ({ navigation }) => {
+const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
 
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordError, setNewPasswordError] = useState(false);
@@ -35,9 +36,34 @@ const ForgotPasswordWithNewPassword = ({ navigation }) => {
     navigation.navigate('LoginScreen');
   }
 
-  function resetPasswordHandler() {
-    navigation.popToTop();
-    navigation.navigate('PasswordUpdated');
+  async function resetPasswordHandler() {
+    try {
+      const response = await fetch(BASE_URL + 'api/v1/authentication/merchant/user/update_password', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "X-USER-SESSION-ID": route.params.sessionId
+        },
+        body: JSON.stringify({
+          password: newPassword,
+        })
+      });
+      
+      if (!response.ok) {
+        return console.log(response.status);
+      }
+
+      console.log(response.status);
+      const data = await response.json();
+      console.log(data);
+      navigation.popToTop();
+      navigation.navigate('PasswordUpdated');
+
+    } catch (error) {
+      console.log(error);
+    }
+
+    
   }
 
 

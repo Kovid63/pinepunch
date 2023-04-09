@@ -4,7 +4,6 @@ import { StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import { Path, Svg } from 'react-native-svg'
 import { colors } from '../../colors'
-import { Image } from 'react-native'
 import SubmitBtn from '../../components/SubmitBtn'
 import { UserContext } from '../../contexts/UserContext'
 import { ScrollView } from 'react-native'
@@ -12,7 +11,9 @@ import { TextInput } from 'react-native'
 import { Pressable } from 'react-native'
 import { BASE_URL } from '@env';
 import { Keyboard } from 'react-native'
+import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+
 const VerifyEmail = ({ navigation, route }) => {
 
     //const [isEmailverified, setIsEmailverified] = useState(false);
@@ -21,8 +22,6 @@ const VerifyEmail = ({ navigation, route }) => {
 
     const isButtonActive = otpValue.length === 4;
 
-    console.log(userData)
-
     const inputRef = useRef();
 
     function inputPressHandler() {
@@ -30,33 +29,29 @@ const VerifyEmail = ({ navigation, route }) => {
     }
 
     async function verifyEmailHandler() {
-        
-        // for testing
-        //setIsUserLoggedIn(true);
-
-        // for production
         try {
-            fetch(BASE_URL + 'api/v1/authentication/merchant/user/verify_register_otp', {
+            const response = await fetch(BASE_URL + 'api/v1/authentication/merchant/user/verify_register_otp', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
-                    "X-USER-SESSION-ID": userData.sessionId
+                    "X-USER-SESSION-ID": userData.session_id
                 },
                 body: JSON.stringify({
                     otp_id: route.params.otpId,
                     otp: otpValue
                 })
-            }).then((response) => {
-                if (response.ok) {
-                    response.json()
-                        .then((data) => {
-                            setUserData({ ...userData, merchantStatus: data.merchant_status });
-                            setIsUserLoggedIn(true);
-                        })
-                } else {
-                    console.log(response.status);
-                }
-            })
+            });
+
+            if (!response.ok) {
+                return console.log(response.status);
+            }
+
+            const data = await response.json();
+            await AsyncStorage.setItem('USER_INFO', JSON.stringify({...userData, merchant_status: data.merchant_status}));
+            const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
+            setUserData(local);
+            setIsUserLoggedIn(true);
+
         } catch (error) {
             console.log(error);
         }
@@ -66,11 +61,6 @@ const VerifyEmail = ({ navigation, route }) => {
         navigation.goBack();
     }
 
-    useEffect(() => {
-        (async function init() {
-            await AsyncStorage.setItem('user', JSON.stringify(userData));
-        })();
-    }, [userData]);
 
     return (
         <Pressable onPress={() => Keyboard.dismiss()} style={styles.container}>

@@ -8,7 +8,7 @@ import SubmitBtn from '../../components/SubmitBtn'
 import { UserContext } from '../../contexts/UserContext'
 import { BASE_URL } from '@env';
 import * as SecureStore from 'expo-secure-store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const CreateAccountScreen = ({ navigation }) => {
 
@@ -20,7 +20,7 @@ const CreateAccountScreen = ({ navigation }) => {
     const [passwordError, setPasswordError] = useState(false);
     const [isCheckboxTicked, setIsCheckBoxTicked] = useState(false);
 
-    const { userData, setUserData } = useContext(UserContext)
+    const { setUserData } = useContext(UserContext)
 
     const isButtonActive = !(emailError || passwordError || companyError) && !(email.length == 0 || password.length == 0 || company.length == 0) && isCheckboxTicked;
 
@@ -58,22 +58,21 @@ const CreateAccountScreen = ({ navigation }) => {
 
 
     async function otpTriggerHandler(sessionId) {
+
         try {
-            fetch(BASE_URL + 'api/v1/authentication/merchant/user/send_register_otp', {
+            const response = await fetch(BASE_URL + 'api/v1/authentication/merchant/user/send_register_otp', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
                     "X-USER-SESSION-ID": sessionId
                 }
-            }).then((response) => {
-                if (response.ok) {
-                    return response.json();
-                }
-            }).then((data) => {
-                 navigation.navigate('VerifyEmail', {
-                    otpId: data.otp_id
-                 })
-            })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                navigation.navigate('VerifyEmail', { otpId: data.otp_id });
+            }
+        
         } catch (error) {
             console.log(error);
         }
@@ -81,7 +80,7 @@ const CreateAccountScreen = ({ navigation }) => {
 
     async function createAccountHandler() {
         try {
-            fetch(BASE_URL + 'api/v1/merchant/register', {
+            const response = await fetch(BASE_URL + 'api/v1/merchant/register', {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -91,28 +90,25 @@ const CreateAccountScreen = ({ navigation }) => {
                     password: password,
                     merchant_name: company
                 })
-            }).then((response) => {
-                if (response.ok) {
-                    response.json()
-                    .then(async (data) => {
-                        await SecureStore.setItemAsync('sessionId', data.session_id);
-                        setUserData({...userData, merchantName: company, email: email, sessionId: data.session_id, merchantStatus: data.merchant_status, merchantId: data.merchant_id});
-                        await otpTriggerHandler(data.session_id);
-                    })
-                }else{
-                    console.log(response.status);
-                }
-            })
+            });
+
+            if (!response.ok) {
+                return console.log(response.status);
+            }
+
+            const data = await response.json();
+            await SecureStore.setItemAsync('SESSION_ID', data.session_id);
+            await AsyncStorage.setItem('USER_INFO', JSON.stringify(data));
+            const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
+            setUserData(local);
+            await otpTriggerHandler(data.session_id);
+        
         } catch (error) {
             console.log(error);
         }
     }
 
-    useEffect(() => {
-        (async function init() {
-            await AsyncStorage.setItem('user', JSON.stringify(userData));
-        })();
-    }, [userData]);
+    
 
     return (
         <ScrollView keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false} style={styles.container}>

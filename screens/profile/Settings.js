@@ -19,7 +19,7 @@ const Settings = ({ navigation }) => {
     }
 
     async function logOutUserHandler(){
-        await SecureStore.deleteItemAsync('sessionId');
+        await SecureStore.deleteItemAsync('SESSION_ID');
         setIsUserLoggedIn(false);
     }
 

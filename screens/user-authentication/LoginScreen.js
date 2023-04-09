@@ -1,11 +1,14 @@
 import { View, Text, ScrollView } from 'react-native';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { colors } from '../../colors'
 import FormInput from '../../components/FormInput';
 import GoogleBtn from '../../components/GoogleBtn';
 import SubmitBtn from '../../components/SubmitBtn';
 import { UserContext } from '../../contexts/UserContext';
+import { BASE_URL } from '@env';
+import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
 
@@ -14,7 +17,7 @@ const LoginScreen = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState(false);
 
-    const { setIsUserLoggedIn } = useContext(UserContext);
+    const { setIsUserLoggedIn, setUserData } = useContext(UserContext);
 
     const isButtonActive = !(emailError || passwordError) && !(email.length == 0 || password.length == 0);
 
@@ -38,15 +41,36 @@ const LoginScreen = ({ navigation }) => {
         navigation.navigate('CreateAccountScreen');
     }
 
-    function forgotPasswordHandler(){
+    function forgotPasswordHandler() {
         navigation.navigate('ForgotPasswordEmail');
     }
 
-    function loginHandler(){
-        // for testing
-        setIsUserLoggedIn(true)
-        // for production
-        {/* todo */}
+    async function loginHandler() {
+        try {
+            const response = await fetch(BASE_URL + 'api/v1/authentication/merchant/login', {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
+
+            if (!response.ok) {
+                return console.log(response.status);
+            }
+
+            const data = await response.json();
+            await SecureStore.setItemAsync('SESSION_ID', data.session_id);
+            await AsyncStorage.setItem('USER_INFO', JSON.stringify(data));
+            const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
+            setUserData(local);
+            setIsUserLoggedIn(true);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -55,11 +79,11 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.welcomeText}>{'Hello,\nWelcome Back!'}</Text>
             </View>
             {
-            isButtonActive && (
-            <View style={styles.textContainer}>
-                <Text style={styles.text}>{'Water is life. Water is a basic human need. In various lines of life, humans need water.'}</Text>
-            </View>
-            )}
+                isButtonActive && (
+                    <View style={styles.textContainer}>
+                        <Text style={styles.text}>{'Water is life. Water is a basic human need. In various lines of life, humans need water.'}</Text>
+                    </View>
+                )}
             <View style={styles.form}>
                 <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
                 <FormInput secure={true} placeholder={'Password'} getValue={getPassword} getError={getPasswordError} />
@@ -79,7 +103,7 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.accRequestText}>{"Don't have an account?"}{' '}<Text onPress={createAccount} style={styles.createAccText}>{'Create Account'}</Text></Text>
             </View>
             <View style={styles.submitBtnContainer}>
-                <SubmitBtn onPress={loginHandler} fill={isButtonActive} active={isButtonActive} text={'Get Started'}/>
+                <SubmitBtn onPress={loginHandler} fill={isButtonActive} active={isButtonActive} text={'Get Started'} />
             </View>
         </ScrollView>
     );
@@ -145,7 +169,7 @@ const styles = StyleSheet.create({
 
     createAccContainer: {
         alignItems: 'center',
-        marginTop: '35%'
+        marginTop: '30%'
     },
 
     accRequestText: {

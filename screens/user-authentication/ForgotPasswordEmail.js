@@ -8,6 +8,7 @@ import { TextInput } from 'react-native';
 import { Pressable } from 'react-native';
 import { Keyboard } from 'react-native';
 import { ScrollView } from 'react-native';
+import { BASE_URL } from '@env';
 
 const ForgotPasswordEmail = ({ navigation }) => {
 
@@ -15,6 +16,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
   const [emailError, setEmailError] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [otpValue, setOtpValue] = useState('');
+  const [otpId, setOtpId] = useState('');
 
   const inputRef = useRef();
 
@@ -33,15 +35,57 @@ const ForgotPasswordEmail = ({ navigation }) => {
   }
 
 
-  function nextHandler() {
-    isButtonActive ? setIsEmailSent(true) : null;
+  async function nextHandler() {
+    try {
+      const response = await fetch(BASE_URL + 'api/v1/authentication/merchant/user/send_forgot_password_otp', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email
+        })
+      });
+      
+      if (!response.ok) {
+        return console.log(response.status);
+      }
+
+      const data = await response.json();
+      setIsEmailSent(true);
+      setOtpId(data.otp_id);
+
+    } catch (error) {
+      console.log(error);
+    }
   }
 
-  function verifyHandler() {
-    // for testing
-    navigation.navigate('ForgotPasswordWithNewPassword');
-    // for production
-    {/* todo */ }
+  async function verifyHandler() {
+    try {
+      const response = await fetch(BASE_URL + 'api/v1/authentication/merchant/user/verify_forgot_password_otp', {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          otp_id: otpId,
+          otp: otpValue
+        })
+      });
+      
+      if (!response.ok) {
+        return console.log(response.status);
+      }
+
+      const data = await response.json();
+      navigation.navigate('ForgotPasswordWithNewPassword', {
+        sessionId: data.session_id
+      })
+
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function inputPressHandler() {
@@ -50,7 +94,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()} style={styles.container}>
-      <ScrollView style={{flex: 1}} keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
+      <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
         <View style={styles.welcome}>
           <Text style={styles.welcomeText}>{'Forgot\nPassword'}</Text>
         </View>
