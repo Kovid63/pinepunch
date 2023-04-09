@@ -9,7 +9,7 @@ import { UserContext } from '../../contexts/UserContext'
 import { ScrollView } from 'react-native'
 import { TextInput } from 'react-native'
 import { Pressable } from 'react-native'
-import { BASE_URL } from '@env';
+import { BASE_URL, VERIFY_REGISTER_OTP } from '@env';
 import { Keyboard } from 'react-native'
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -30,7 +30,7 @@ const VerifyEmail = ({ navigation, route }) => {
 
     async function verifyEmailHandler() {
         try {
-            const response = await fetch(BASE_URL + 'api/v1/authentication/merchant/user/verify_register_otp', {
+            const response = await fetch(BASE_URL + VERIFY_REGISTER_OTP, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",

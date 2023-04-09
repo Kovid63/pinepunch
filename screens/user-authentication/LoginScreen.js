@@ -6,7 +6,7 @@ import FormInput from '../../components/FormInput';
 import GoogleBtn from '../../components/GoogleBtn';
 import SubmitBtn from '../../components/SubmitBtn';
 import { UserContext } from '../../contexts/UserContext';
-import { BASE_URL } from '@env';
+import { BASE_URL, LOGIN } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -47,7 +47,7 @@ const LoginScreen = ({ navigation }) => {
 
     async function loginHandler() {
         try {
-            const response = await fetch(BASE_URL + 'api/v1/authentication/merchant/login', {
+            const response = await fetch(BASE_URL + LOGIN, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",

@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { UserContext } from './contexts/UserContext';
 import { UserAuthStack } from './navigation/UserAuthStack';
 import TabNavigation from './navigation/TabNavigation';
-import { BASE_URL } from '@env';
+import { BASE_URL, GET_DETAILS } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -30,7 +30,7 @@ const Auth = () => {
             const sessionId = await SecureStore.getItemAsync('SESSION_ID');
             if (sessionId) {
                 try {
-                    const response = await fetch(BASE_URL + 'api/v1/merchant/get_details', {
+                    const response = await fetch(BASE_URL + GET_DETAILS, {
                         method: 'GET',
                         headers: {
                             "Content-Type": "application/json",

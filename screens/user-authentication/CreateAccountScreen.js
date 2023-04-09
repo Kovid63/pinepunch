@@ -6,7 +6,7 @@ import FormInput from '../../components/FormInput'
 import CheckBox from '../../components/CheckBox'
 import SubmitBtn from '../../components/SubmitBtn'
 import { UserContext } from '../../contexts/UserContext'
-import { BASE_URL } from '@env';
+import { BASE_URL, REGISTER, SEND_REGISTER_OTP } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
@@ -60,7 +60,7 @@ const CreateAccountScreen = ({ navigation }) => {
     async function otpTriggerHandler(sessionId) {
 
         try {
-            const response = await fetch(BASE_URL + 'api/v1/authentication/merchant/user/send_register_otp', {
+            const response = await fetch(BASE_URL + SEND_REGISTER_OTP, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -80,7 +80,7 @@ const CreateAccountScreen = ({ navigation }) => {
 
     async function createAccountHandler() {
         try {
-            const response = await fetch(BASE_URL + 'api/v1/merchant/register', {
+            const response = await fetch(BASE_URL + REGISTER, {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",

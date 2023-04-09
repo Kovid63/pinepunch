@@ -5,7 +5,7 @@ import { colors } from '../../colors'
 import FormInput from '../../components/FormInput'
 import SubmitBtn from '../../components/SubmitBtn'
 import { ScrollView } from 'react-native'
-import { BASE_URL } from '@env';
+import { BASE_URL, UPDATE_PASSWORD } from '@env';
 
 const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
 
@@ -38,7 +38,7 @@ const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
 
   async function resetPasswordHandler() {
     try {
-      const response = await fetch(BASE_URL + 'api/v1/authentication/merchant/user/update_password', {
+      const response = await fetch(BASE_URL + UPDATE_PASSWORD, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -53,9 +53,7 @@ const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
         return console.log(response.status);
       }
 
-      console.log(response.status);
       const data = await response.json();
-      console.log(data);
       navigation.popToTop();
       navigation.navigate('PasswordUpdated');
 

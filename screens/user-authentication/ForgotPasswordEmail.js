@@ -8,7 +8,7 @@ import { TextInput } from 'react-native';
 import { Pressable } from 'react-native';
 import { Keyboard } from 'react-native';
 import { ScrollView } from 'react-native';
-import { BASE_URL } from '@env';
+import { BASE_URL, SEND_FORGOT_PASSWORD_OTP, VERIFY_FORGOT_PASSWORD_OTP } from '@env';
 
 const ForgotPasswordEmail = ({ navigation }) => {
 
@@ -37,7 +37,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
 
   async function nextHandler() {
     try {
-      const response = await fetch(BASE_URL + 'api/v1/authentication/merchant/user/send_forgot_password_otp', {
+      const response = await fetch(BASE_URL + SEND_FORGOT_PASSWORD_OTP, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +62,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
 
   async function verifyHandler() {
     try {
-      const response = await fetch(BASE_URL + 'api/v1/authentication/merchant/user/verify_forgot_password_otp', {
+      const response = await fetch(BASE_URL + VERIFY_FORGOT_PASSWORD_OTP, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
