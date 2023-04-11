@@ -5,7 +5,7 @@ import { UserAuthStack } from './navigation/UserAuthStack';
 import TabNavigation from './navigation/TabNavigation';
 import { BASE_URL, GET_DETAILS } from '@env';
 import * as SecureStore from 'expo-secure-store';
-import { ToastAndroid } from 'react-native';
+import { Platform, ToastAndroid, AlertIOS } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Auth = () => {
@@ -40,7 +40,8 @@ const Auth = () => {
 
                     const data = await response.json();
                     if (data.error) {
-                        return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+                        if(Platform.OS === 'android') return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+                        else return AlertIOS.alert(data.error.description)
                     }
                     const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
                     setUserData(local);
