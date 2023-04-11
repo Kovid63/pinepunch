@@ -1,11 +1,12 @@
-import { View, Text, TextInput } from 'react-native'
+import { TextInput } from 'react-native'
 import React from 'react'
 import { Path, Svg } from 'react-native-svg'
 import { StyleSheet } from 'react-native'
+import { Pressable } from 'react-native'
 
-const SearchBar = () => {
+const SearchBar = ({editable, onPress}) => {
   return (
-    <View style={styles.container}>
+    <Pressable onPress={onPress} style={styles.container}>
       <Svg
         style={{
           fillRule: "evenodd",
@@ -22,8 +23,8 @@ const SearchBar = () => {
       >
         <Path d="M16.206 17.266a8.466 8.466 0 0 1-5.456 1.984c-4.691 0-8.5-3.809-8.5-8.5s3.809-8.5 8.5-8.5 8.5 3.809 8.5 8.5a8.466 8.466 0 0 1-1.984 5.456l3.264 3.264a.749.749 0 1 1-1.06 1.06l-3.264-3.264ZM10.75 3.75c3.863 0 7 3.137 7 7s-3.137 7-7 7-7-3.137-7-7 3.137-7 7-7Z" />
       </Svg>
-      <TextInput selectionColor={'#B3B1B0'} style={styles.input} placeholder={'Search your Product'}/>
-    </View>
+      <TextInput editable={editable} selectionColor={'#B3B1B0'} style={styles.input} placeholder={'Search your Product'}/>
+    </Pressable>
   )
 }
 

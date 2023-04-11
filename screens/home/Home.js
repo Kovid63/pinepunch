@@ -56,6 +56,10 @@ const Home = ({ navigation }) => {
     setSelectedCategory(item);
   }
 
+  function searchBarHandler(){
+    navigation.navigate('Search');
+  }
+
   useEffect(() => {
     if (mode === MODE_BUYER) {
       var currentIndex = adIndex;
@@ -85,7 +89,7 @@ const Home = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.searchBarContainer}>
-        <SearchBar />
+        <SearchBar editable={false} onPress={searchBarHandler}/>
       </View>
       {mode === MODE_SELLER ?
         <>
