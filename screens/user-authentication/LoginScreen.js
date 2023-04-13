@@ -9,6 +9,8 @@ import { UserContext } from '../../contexts/UserContext';
 import { BASE_URL, LOGIN } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ToastAndroid } from 'react-native';
+import { Alert } from 'react-native';
 
 const LoginScreen = ({ navigation }) => {
 
@@ -58,15 +60,21 @@ const LoginScreen = ({ navigation }) => {
                 })
             });
 
-            if (!response.ok) {
-                return console.log(response.status);
+            const data = await response.json();
+
+            if (data.error) {
+                if (Platform.OS === 'android') {
+                    return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+                }
+                else {
+                    return Alert.alert(data.error.description);
+                }
             }
 
-            const data = await response.json();
             await SecureStore.setItemAsync('SESSION_ID', data.session_id);
-            await AsyncStorage.setItem('USER_INFO', JSON.stringify(data));
-            const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
-            setUserData(local);
+            // await AsyncStorage.setItem('USER_INFO', JSON.stringify(data));
+            // const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
+            // setUserData(local);
             setIsUserLoggedIn(true);
         } catch (error) {
             console.log(error);

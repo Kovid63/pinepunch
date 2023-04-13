@@ -13,6 +13,8 @@ import { BASE_URL, VERIFY_REGISTER_OTP } from '@env';
 import { Keyboard } from 'react-native'
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { ToastAndroid } from 'react-native'
+import { Alert } from 'react-native'
 
 const VerifyEmail = ({ navigation, route }) => {
 
@@ -42,14 +44,20 @@ const VerifyEmail = ({ navigation, route }) => {
                 })
             });
 
-            if (!response.ok) {
-                return console.log(response.status);
+            const data = await response.json();
+
+            if (data.error) {
+                if (Platform.OS === 'android') {
+                    return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+                }
+                else {
+                    return Alert.alert(data.error.description);
+                }
             }
 
-            const data = await response.json();
-            await AsyncStorage.setItem('USER_INFO', JSON.stringify({...userData, merchant_status: data.merchant_status}));
-            const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
-            setUserData(local);
+            // await AsyncStorage.setItem('USER_INFO', JSON.stringify({...userData, merchant_status: data.merchant_status}));
+            // const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
+            // setUserData(local);
             setIsUserLoggedIn(true);
 
         } catch (error) {

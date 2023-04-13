@@ -7,6 +7,7 @@ import { BASE_URL, GET_DETAILS } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { Platform, ToastAndroid, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LoadingContext } from './contexts/LoadingContext';
 
 const Auth = () => {
 
@@ -39,6 +40,7 @@ const Auth = () => {
                     });
 
                     const data = await response.json();
+                    setIsLoading(false);
 
                     if (data.error) {
                         if (Platform.OS === 'android') {
@@ -48,10 +50,9 @@ const Auth = () => {
                             return Alert.alert(data.error.description);
                         }
                     }
-                    
-                    const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
-                    setUserData(local);
-                    setIsLoading(false);
+
+                    // const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
+                    // setUserData(local);
                     setIsUserLoggedIn(true);
 
                 } catch (error) {
@@ -69,7 +70,13 @@ const Auth = () => {
     }
 
     if (!isLoading) return (
-        isUserLoggedIn ? <TabNavigation /> : <UserAuthStack />
+        <>
+            <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
+                {
+                    isUserLoggedIn ? <TabNavigation /> : <UserAuthStack />
+                }
+            </LoadingContext.Provider>
+        </>
     )
 }
 
