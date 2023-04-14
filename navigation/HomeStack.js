@@ -13,7 +13,7 @@ export const HomeStack = () => {
     }
 
     return (
-        <Stack.Navigator screenOptions={options} initialRouteName="Search">
+        <Stack.Navigator screenOptions={options} initialRouteName="Home">
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Product" component={Product} />
             <Stack.Screen name="Search" component={Search} />

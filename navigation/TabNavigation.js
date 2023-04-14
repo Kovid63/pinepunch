@@ -17,7 +17,7 @@ const TabNavigation = () => {
 
     return (
         <NavigationContainer>
-            <Tab.Navigator initialRouteName={'HomeStack'}
+            <Tab.Navigator initialRouteName={'CategoryStack'}
                 screenOptions={{
                     tabBarShowLabel: false,
                     headerShown: false,
