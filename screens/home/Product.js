@@ -42,7 +42,7 @@ const Product = ({ route, navigation }) => {
                     <Text style={styles.addProductText}>{'Items for sale'}</Text>
                 </View>
             </View>
-            <FlatList contentContainerStyle={{paddingHorizontal: '3%', paddingBottom: 90}} showsVerticalScrollIndicator={false} data={route.params.products} renderItem={ListRender} numColumns={2}/>
+            <FlatList contentContainerStyle={{alignItems: 'center', paddingBottom: 90}} showsVerticalScrollIndicator={false} data={route.params.products} renderItem={ListRender} numColumns={2}/>
         </View>
     )
 }

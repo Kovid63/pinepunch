@@ -13,6 +13,7 @@ export default function App() {
   const [userData, setUserData] = useState({email: '', merchant_name: '', merchant_status: '', merchant_id: null});
   const [mode, setMode] = useState(MODE_BUYER);
 
+
   return (
     <UserContext.Provider value={{ isUserLoggedIn, setIsUserLoggedIn, userData, setUserData }}>
       <ModeContext.Provider value={{ mode, setMode }}>

@@ -11,6 +11,7 @@ import { ModeContext } from '../../contexts/ModeContext'
 import { MODE_SELLER } from '../../constants'
 import { ListRender } from '../../components/ListRender'
 import { itemsForSale } from '../../dummydata/dummydata'
+import { BuyerCategoryListRender } from '../../components/BuyerCategoryListRender'
 
 const FillProduct = ({ navigation, route }) => {
 
@@ -18,6 +19,10 @@ const FillProduct = ({ navigation, route }) => {
 
     function backPressHandler(){
         navigation.goBack();
+    }
+
+    function productDetailHandler(){
+        navigation.navigate('ProductDetail');
     }
 
     return (
@@ -53,7 +58,7 @@ const FillProduct = ({ navigation, route }) => {
                 </>
                 :
                 <>
-                <FlatList contentContainerStyle={{paddingHorizontal: '3%', paddingBottom: 90}} showsVerticalScrollIndicator={false} data={itemsForSale} renderItem={ListRender} numColumns={2}/>
+                <FlatList style={{marginTop: 20}} contentContainerStyle={{paddingBottom: 90, alignItems: 'center'}} showsVerticalScrollIndicator={false} data={itemsForSale} renderItem={item => <BuyerCategoryListRender onPress={productDetailHandler} {...item}/>} numColumns={2}/>
                 </>
             }
         </View>

@@ -30,7 +30,7 @@ const Search = ({ navigation }) => {
                 <SearchBar editable={true} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: '10%' }}>
-                <TouchableOpacity onPress={{}} style={styles.iconContainer}>
+                <TouchableOpacity style={styles.iconContainer}>
                     <Svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 36" style={[styles.icon, { transform: [{ rotateY: '180deg' }] }]}>
                         <Path
                             d="M23.43 16.83A1 1 0 0 0 22 18.24L25.72 22H7.83a1 1 0 0 0 0 2h17.89L22 27.7a1 1 0 1 0 1.42 1.41L29.53 23Z"
