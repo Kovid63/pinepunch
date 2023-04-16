@@ -1,5 +1,5 @@
 import { View, Text, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
 import { TouchableOpacity } from 'react-native'
@@ -7,12 +7,22 @@ import { Path, Svg } from 'react-native-svg'
 import { TextInput } from 'react-native'
 import { OptionRender } from '../../components/OptionRender'
 import Header from '../../components/Header'
+import { ModeContext } from '../../contexts/ModeContext'
+import { MODE_SELLER } from '../../constants'
+import { ListRender } from '../../components/ListRender'
+import { itemsForSale } from '../../dummydata/dummydata'
 
 const FillProduct = ({ navigation, route }) => {
 
+    const { mode } = useContext(ModeContext);
+
+    function backPressHandler(){
+        navigation.goBack();
+    }
+
     return (
         <View style={styles.container}>
-            <Header pageTitle={'Details Of Item'}/>
+            <Header onPress={backPressHandler} pageTitle={mode === MODE_SELLER ? 'Details Of Item' : 'Category'}/>
             <View style={styles.categoryContainer}>
                 <Text style={styles.categoryText}>{route.params.type}</Text>
             </View>
@@ -37,6 +47,15 @@ const FillProduct = ({ navigation, route }) => {
                     : <></>}
 
             </View>
+            {
+                mode === MODE_SELLER? 
+                <>
+                </>
+                :
+                <>
+                <FlatList contentContainerStyle={{paddingHorizontal: '3%', paddingBottom: 90}} showsVerticalScrollIndicator={false} data={itemsForSale} renderItem={ListRender} numColumns={2}/>
+                </>
+            }
         </View>
     )
 }
