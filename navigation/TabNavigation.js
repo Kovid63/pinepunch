@@ -8,6 +8,7 @@ import { ModeContext } from '../contexts/ModeContext';
 import { HomeStack } from './HomeStack';
 import { CategoryStack } from './CategoryStack';
 import { ProfileStack } from './ProfileStack';
+import { FavouriteStack } from './FavouriteStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -159,8 +160,8 @@ const TabNavigation = () => {
                         ),
                     }}
                 /> : <Tab.Screen
-                    name="LikeStack"
-                    component={HomeStack}
+                    name="FavouriteStack"
+                    component={FavouriteStack}
                     options={{
                         tabBarIcon: ({ focused }) => (
                             <View

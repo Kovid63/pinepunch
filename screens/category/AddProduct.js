@@ -18,7 +18,7 @@ const AddProduct = ({ navigation }) => {
     <View style={styles.container}>
       {mode === MODE_SELLER ? <><View style={styles.header}>
         <View>
-          <Text style={styles.addProductText}>{'Category of item to sell'}</Text>
+          <Text style={styles.headingText}>{'Category of item to sell'}</Text>
         </View>
       </View>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.categoryListContainer}>
@@ -64,7 +64,7 @@ const AddProduct = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <View style={styles.header}>
-            <Text style={styles.addProductText}>{'Category'}</Text>
+            <Text style={styles.headingText}>{'Category'}</Text>
           </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.categoryListContainer}>
             {
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     marginTop: '15%'
   },
 
-  addProductText: {
+  headingText: {
     fontFamily: 'PoppinsSemiBold',
     fontSize: 17
   },

@@ -56,7 +56,7 @@ const Search = ({ navigation }) => {
                 </View>
             </View>
             <View style={{ marginTop: '10%' }}>
-                <Text style={styles.addProductText}>{'Recent Views'}</Text>
+                <Text style={styles.headingText}>{'Recent Views'}</Text>
                 <ScrollView keyboardShouldPersistTaps={'handled'}>
                     {
                         recentViewed.map((recent, index) => (
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
         width: 30
     },
 
-    addProductText: {
+    headingText: {
         fontFamily: 'PoppinsSemiBold',
         fontSize: 17
     },

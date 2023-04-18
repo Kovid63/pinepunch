@@ -94,7 +94,7 @@ const Home = ({ navigation }) => {
       {mode === MODE_SELLER ?
         <>
           <View style={styles.addProductTextContainer}>
-            <Text style={styles.addProductText}>{'Add a product to sell'}</Text>
+            <Text style={styles.headingText}>{'Add a product to sell'}</Text>
           </View>
           <View style={styles.addBtnContainer}>
             <Button onPress={addProductHandler} text={'Add'} />
@@ -102,7 +102,7 @@ const Home = ({ navigation }) => {
           <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: '5%' }}>
             <View style={styles.middle}>
               <View>
-                <Text style={styles.addProductText}>{'Items for sale'}</Text>
+                <Text style={styles.headingText}>{'Items for sale'}</Text>
               </View>
               <Text onPress={showAllProductHandler} style={styles.viewAllText}>{'View All'}</Text>
             </View>
@@ -115,7 +115,7 @@ const Home = ({ navigation }) => {
             </View>
             <View style={styles.middle}>
               <View>
-                <Text style={styles.addProductText}>{'Scrap for sale'}</Text>
+                <Text style={styles.headingText}>{'Scrap for sale'}</Text>
               </View>
             </View>
             <View style={styles.listContainer}>
@@ -151,7 +151,7 @@ const Home = ({ navigation }) => {
           <ScrollView>
             <View style={styles.middle}>
               <View>
-                <Text style={styles.addProductText}>{'Category'}</Text>
+                <Text style={styles.headingText}>{'Category'}</Text>
               </View>
               <Text style={styles.viewAllText}>{'View All'}</Text>
             </View>
@@ -166,7 +166,7 @@ const Home = ({ navigation }) => {
             </View>
             <View style={styles.middle}>
               <View>
-                <Text style={styles.addProductText}>{'New Arrivals'}</Text>
+                <Text style={styles.headingText}>{'New Arrivals'}</Text>
               </View>
               <Text style={styles.viewAllText}>{'View All'}</Text>
             </View>
@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     marginLeft: '8%'
   },
 
-  addProductText: {
+  headingText: {
     fontFamily: 'PoppinsSemiBold',
     fontSize: 17
   },

@@ -39,7 +39,7 @@ const Product = ({ route, navigation }) => {
             </View>
             <View style={styles.middle}>
                 <View>
-                    <Text style={styles.addProductText}>{'Items for sale'}</Text>
+                    <Text style={styles.headingText}>{'Items for sale'}</Text>
                 </View>
             </View>
             <FlatList contentContainerStyle={{alignItems: 'center', paddingBottom: 90}} showsVerticalScrollIndicator={false} data={route.params.products} renderItem={ListRender} numColumns={2}/>
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
         marginTop: '5%'
     },
 
-    addProductText: {
+    headingText: {
         fontFamily: 'PoppinsSemiBold',
         fontSize: 17
     },
