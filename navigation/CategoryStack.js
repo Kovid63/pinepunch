@@ -2,6 +2,8 @@ import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/
 import AddProduct from "../screens/category/AddProduct";
 import FillProduct from "../screens/category/FillProduct";
 import ProductDetail from "../screens/category/ProductDetail";
+import CompanyPage from "../screens/category/CompanyPage";
+import ContactSeller from "../screens/category/ContactSeller";
 
 export const CategoryStack = () => {
 
@@ -18,6 +20,8 @@ export const CategoryStack = () => {
             <Stack.Screen name="AddProduct" component={AddProduct} />
             <Stack.Screen name="FillProduct" component={FillProduct} />
             <Stack.Screen name="ProductDetail" component={ProductDetail} />
+            <Stack.Screen name="CompanyPage" component={CompanyPage} />
+            <Stack.Screen name="ContactSeller" component={ContactSeller} />
         </Stack.Navigator>
     )
 }
