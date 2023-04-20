@@ -11,7 +11,7 @@ export default function App() {
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
   const [userData, setUserData] = useState({email: '', merchant_name: '', merchant_status: '', merchant_id: null});
-  const [mode, setMode] = useState(MODE_BUYER);
+  const [mode, setMode] = useState(MODE_SELLER);
 
 
   return (

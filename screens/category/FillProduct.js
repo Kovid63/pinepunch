@@ -1,4 +1,4 @@
-import { View, Text, FlatList } from 'react-native'
+import { View, Text, FlatList, ScrollView } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
@@ -17,49 +17,84 @@ const FillProduct = ({ navigation, route }) => {
 
     const { mode } = useContext(ModeContext);
 
-    function backPressHandler(){
+
+    const HeaderComponentFlatList = () => {
+        return (
+            <>
+                <View style={styles.categoryContainer}>
+                    <Text style={styles.categoryText}>{route.params.type}</Text>
+                </View>
+                <View style={{ alignItems: 'center' }}>
+                    <View style={styles.parameterContainer}>
+                        <Text style={styles.parameterText}>{'Product Name'}</Text>
+                        <TextInput style={styles.parameterInput} placeholder='Item Name 1' />
+                    </View>
+                    {route.params.parameters ?
+                        route.params.parameters.map((parameter, index) => {
+                            return (
+                                <View key={index} style={styles.parameterContainer}>
+                                    <Text style={styles.parameterText}>{parameter.param_name}</Text>
+                                    {
+                                        parameter.predefined ?
+                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} />)} data={parameter.options} />
+                                            : <TextInput style={styles.parameterInput} placeholder={parameter.param_name} />
+                                    }
+                                </View>
+                            )
+                        })
+                        : <></>}
+
+                </View>
+            </>
+        )
+    }
+
+    function backPressHandler() {
         navigation.goBack();
     }
 
-    function productDetailHandler(){
+    function productDetailHandler() {
         navigation.navigate('ProductDetail');
     }
 
+
     return (
         <View style={styles.container}>
-            <Header onPress={backPressHandler} pageTitle={mode === MODE_SELLER ? 'Details Of Item' : 'Category'}/>
-            <View style={styles.categoryContainer}>
-                <Text style={styles.categoryText}>{route.params.type}</Text>
-            </View>
-            <View style={{ alignItems: 'center' }}>
-                <View style={styles.parameterContainer}>
-                    <Text style={styles.parameterText}>{'Product Name'}</Text>
-                    <TextInput style={styles.parameterInput} placeholder='Item Name 1' />
-                </View>
-                {route.params.parameters ?
-                    route.params.parameters.map((parameter, index) => {
-                        return (
-                            <View key={index} style={styles.parameterContainer}>
-                                <Text style={styles.parameterText}>{parameter.param_name}</Text>
-                                {
-                                    parameter.predefined ?
-                                        <FlatList showsHorizontalScrollIndicator={false} style={{marginLeft: '2%'}} horizontal renderItem={item => (<OptionRender {...item}/>)} data={parameter.options} />
-                                        : <TextInput style={styles.parameterInput} placeholder={parameter.param_name} />
-                                }
-                            </View>
-                        )
-                    })
-                    : <></>}
-
-            </View>
+            <Header onPress={backPressHandler} pageTitle={mode === MODE_SELLER ? 'Details Of Item' : 'Category'} />
             {
-                mode === MODE_SELLER? 
-                <>
-                </>
-                :
-                <>
-                <FlatList style={{marginTop: 20}} contentContainerStyle={{paddingBottom: 90, alignItems: 'center'}} showsVerticalScrollIndicator={false} data={itemsForSale} renderItem={item => <BuyerCategoryListRender onPress={productDetailHandler} {...item}/>} numColumns={2}/>
-                </>
+                mode === MODE_SELLER ?
+                    <ScrollView>
+                        <View style={styles.categoryContainer}>
+                            <Text style={styles.categoryText}>{route.params.type}</Text>
+                        </View>
+                        <View style={{ alignItems: 'center' }}>
+                            <View style={styles.parameterContainer}>
+                                <Text style={styles.parameterText}>{'Product Name'}</Text>
+                                <TextInput style={styles.parameterInput} placeholder='Item Name 1' />
+                            </View>
+                            {route.params.parameters ?
+                                route.params.parameters.map((parameter, index) => {
+                                    return (
+                                        <View key={index} style={styles.parameterContainer}>
+                                            <Text style={styles.parameterText}>{parameter.param_name}</Text>
+                                            {
+                                                parameter.predefined ?
+                                                    <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} />)} data={parameter.options} />
+                                                    : <TextInput style={styles.parameterInput} placeholder={parameter.param_name} />
+                                            }
+                                        </View>
+                                    )
+                                })
+                                :
+                                <></>
+                            }
+                            <View style={{height: 180, width: '90%', backgroundColor: '#F8F8F8', marginTop: 10, borderRadius: 5}}>
+                                <Text style={[styles.parameterText, {marginHorizontal: '2%', marginTop: 5}]}>{'Product images'}</Text>
+                            </View>
+                        </View>
+                    </ScrollView>
+                    :
+                    <FlatList ListHeaderComponentStyle={{ width: '100%' }} ListHeaderComponent={HeaderComponentFlatList} style={{ marginTop: 20 }} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={itemsForSale} renderItem={item => <BuyerCategoryListRender onPress={productDetailHandler} {...item} />} numColumns={2} />
             }
         </View>
     )
@@ -76,7 +111,7 @@ const styles = StyleSheet.create({
     categoryContainer: {
         height: 50,
         backgroundColor: colors.primary[0],
-        marginTop: '15%',
+        marginTop: '5%',
         borderRadius: 16,
         justifyContent: 'center'
     },

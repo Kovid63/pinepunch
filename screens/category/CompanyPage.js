@@ -9,7 +9,7 @@ import { FlatList } from 'react-native'
 import { itemsForSale } from '../../dummydata/dummydata'
 import { BuyerCategoryListRender } from '../../components/BuyerCategoryListRender'
 
-const CompanyPage = ({navigation, route}) => {
+const CompanyPage = ({ navigation, route }) => {
 
     const HeaderComponentFlatlist = () => {
         return (<>
@@ -25,11 +25,11 @@ const CompanyPage = ({navigation, route}) => {
         </>)
     }
 
-    function backPressHandler(){
+    function backPressHandler() {
         navigation.goBack();
     }
 
-    function productDetailHandler(){
+    function productDetailHandler() {
         navigation.navigate('ProductDetail');
     }
 
