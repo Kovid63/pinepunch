@@ -1,14 +1,12 @@
 import React, { useState } from "react"
-import { Text } from "react-native"
+import { Text, TouchableOpacity } from "react-native"
 import { View } from "react-native"
+import { colors } from "../colors"
 
-export const OptionRender = ({ item }) => {
-
-    const [selected, setSelected] = useState(0)
-
+export const OptionRender = ({ item, onPress, selected }) => {
     return (
-        <View style={{ paddingVertical: 5, backgroundColor: '#FFFFFF', marginHorizontal: 10, paddingHorizontal: 10 }}>
-            <Text style={{fontFamily: 'Poppins', color: '#B3B1B0'}}>{item}</Text>
-        </View>
+        <TouchableOpacity onPress={() => onPress(item)} style={[{ paddingVertical: 5, marginHorizontal: 10, width: 28}, selected === item? {backgroundColor: colors.primary[0]} : {backgroundColor: '#FFFFFF',}]}>
+            <Text style={[{fontFamily: 'Poppins', textAlign: 'center'}, selected === item? {color: '#FFFFFF'}:{color: '#B3B1B0'}]}>{item}</Text>
+        </TouchableOpacity>
     )
 }
