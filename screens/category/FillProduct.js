@@ -16,6 +16,7 @@ import { Image } from 'react-native'
 import { productImagesIcon } from '../../data/productImagesIcon'
 import DropDownMenu from '../../components/DropDownMenu'
 import { units } from '../../data/units'
+import ProductFillSlot from '../../components/ProductFillSlot'
 
 const FillProduct = ({ navigation, route }) => {
 
@@ -78,22 +79,9 @@ const FillProduct = ({ navigation, route }) => {
                                 <Text style={styles.parameterText}>{'Product Name'}</Text>
                                 <TextInput style={styles.parameterInput} placeholder='Item Name 1' />
                             </View>
-                            {route.params.parameters ?
+                            <ProductFillSlot/>
+                            {/* {route.params.parameters ?
                                 route.params.parameters.map((parameter, index) => {
-
-                                    // function parameterValueHandler(val) {
-                                    //     let arr = {paramName: parameter.param_name, currentValue: val}
-                                    //     const index = product.findIndex(obj => obj.paramName === arr.paramName);
-                                    //     if (index === -1) {
-                                    //         setProduct([...product, arr])
-                                    //     } else {
-                                    //         const newArr = [...product];
-                                    //         newArr.splice(index, 1, arr);
-                                    //         setProduct(newArr);
-                                    //     }
-
-                                    // }
-
                                     return (
                                         <View key={index} style={styles.parameterContainer}>
                                             <Text style={styles.parameterText}>{parameter.param_name}</Text>
@@ -122,7 +110,7 @@ const FillProduct = ({ navigation, route }) => {
                                 })
                                 :
                                 <></>
-                            }
+                            } */}
                             <View style={{ height: 200, width: '90%', backgroundColor: '#F8F8F8', marginTop: 10, borderRadius: 5 }}>
                                 <Text style={[styles.parameterText, { marginHorizontal: '2%', marginTop: 5 }]}>{'Product images'}</Text>
                                 <View style={{ height: '65%', width: '90%', alignSelf: 'center' }}>

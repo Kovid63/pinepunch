@@ -9,7 +9,7 @@ import { MODE_BUYER, MODE_SELLER } from './constants';
 
 export default function App() {
 
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [userData, setUserData] = useState({email: '', merchant_name: '', merchant_status: '', merchant_id: null});
   const [mode, setMode] = useState(MODE_SELLER);
 
