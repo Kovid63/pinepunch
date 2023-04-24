@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ScrollView } from 'react-native'
+import { View, Text, FlatList, ScrollView, Alert, Linking, Platform, PermissionsAndroid, PermissionsIOS } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
@@ -17,15 +17,19 @@ import { productImagesIcon } from '../../data/productImagesIcon'
 import DropDownMenu from '../../components/DropDownMenu'
 import { units } from '../../data/units'
 import ProductFillSlot from '../../components/ProductFillSlot'
+import * as ImagePicker from 'expo-image-picker';
 
 const FillProduct = ({ navigation, route }) => {
 
     const { mode } = useContext(ModeContext);
 
     const [value, setValue] = useState(units[0]);
-    const [product, setProduct] = useState([]);
-
-    console.log(product);
+    const [productParameters, setProductParameters] = useState([]);
+    const [productImage, setProductImage] = useState('');
+    const [productName, setProductName] = useState('');
+    const [productQuantity, setProductQuantity] = useState(0);
+    const [productPrice, setProductPrice] = useState(0);
+    const [productDescription, setProductDescription] = useState('');
 
     const HeaderComponentFlatList = () => {
         return (
@@ -36,7 +40,7 @@ const FillProduct = ({ navigation, route }) => {
                 <View style={{ alignItems: 'center' }}>
                     <View style={styles.parameterContainer}>
                         <Text style={styles.parameterText}>{'Product Name'}</Text>
-                        <TextInput style={styles.parameterInput} placeholder='Item Name 1' />
+                        <TextInput editable={false} style={styles.parameterInput} placeholder='Item Name 1' />
                     </View>
                     {route.params.parameters ?
                         route.params.parameters.map((parameter, index) => {
@@ -45,7 +49,7 @@ const FillProduct = ({ navigation, route }) => {
                                     <Text style={styles.parameterText}>{parameter.param_name}</Text>
                                     {
                                         parameter.predefined ?
-                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} onPress={() => console.log('logged')} />)} data={parameter.options} />
+                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} onPress={() => console.log('buyer mode category clicked to be made')} />)} data={parameter.options} />
                                             : <TextInput style={styles.parameterInput} placeholder={parameter.param_name} />
                                     }
                                 </View>
@@ -66,6 +70,72 @@ const FillProduct = ({ navigation, route }) => {
         navigation.navigate('ProductDetail');
     }
 
+    async function imagePickHandler(type) {
+
+        const cameraPermission = await ImagePicker.getCameraPermissionsAsync();
+        const mediaPermission = await ImagePicker.getMediaLibraryPermissionsAsync();
+        if (!cameraPermission.granted || !mediaPermission.granted) {
+            if (!cameraPermission.canAskAgain || !mediaPermission.canAskAgain) {
+                return Alert.alert('Permission Required', 'Please grant access for camera and media to add photos.', [
+                    {
+                        text: 'cancel',
+                        style: 'cancel'
+                    },
+                    {
+                        text: 'Open Settings',
+                        onPress: () => {
+                            if (Platform.OS === 'ios') {
+                                Linking.openURL('app-settings:');
+                            } else {
+                                Linking.openSettings();
+                            }
+                        }
+                    }
+                ])
+            }
+            await ImagePicker.requestCameraPermissionsAsync();
+            await ImagePicker.requestMediaLibraryPermissionsAsync();
+        }
+
+        if (type === 'Media') {
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [16, 9],
+                quality: 1,
+            });
+
+            if (!result.canceled) {
+                setProductImage(result.assets[0].uri);
+            }
+            return;
+        }
+
+        if (type === 'Camera') {
+            const result = await ImagePicker.launchCameraAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                aspect: [16, 9],
+                quality: 1,
+            });
+
+            if (!result.canceled) {
+                setProductImage(result.assets[0].uri);
+            }
+            return;
+        }
+    }
+
+    function submitProductHandler() {
+        navigation.navigate('ProductDetail', {
+            name: productName,
+            parameters: productParameters,
+            image: [productImage],
+            quantity: productQuantity + value,
+            price: productPrice,
+            description: productDescription
+        })
+    }
 
     return (
         <View style={styles.container}>
@@ -79,37 +149,14 @@ const FillProduct = ({ navigation, route }) => {
                         <View style={{ alignItems: 'center', paddingBottom: 90 }}>
                             <View style={styles.parameterContainer}>
                                 <Text style={styles.parameterText}>{'Product Name'}</Text>
-                                <TextInput style={styles.parameterInput} placeholder='Item Name 1' />
+                                <TextInput style={styles.parameterInput} placeholder='Item Name 1' onChangeText={(name) => { setProductName(name) }} />
                             </View>
 
                             {route.params.parameters ?
                                 route.params.parameters.map((parameter, index) => {
-                                    
+
                                     return (
-                                        <ProductFillSlot name={parameter.param_name} options={parameter.options} product={product} setProduct={setProduct}/>
-                                        // <View key={index} style={styles.parameterContainer}>
-                                        //     <Text style={styles.parameterText}>{parameter.param_name}</Text>
-                                        //     {
-                                        //         parameter.predefined ?
-                                        //             <View style={{ flexDirection: 'row' }}>
-                                        //                 <View style={{ width: '60%' }}>
-                                        //                     <FlatList showsHorizontalScrollIndicator={false} style={{ marginRight: '2%' }} horizontal renderItem={item => (<OptionRender {...item} />)} data={parameter.options} />
-                                        //                 </View>
-                                        //                 <TextInput onFocus={() => {}} style={{
-                                        //                     marginLeft: 2,
-                                        //                     backgroundColor: '#FFFFFF',
-                                        //                     paddingHorizontal: 2,
-                                        //                     fontFamily: 'Poppins',
-                                        //                     fontSize: 12,
-                                        //                     color: '#B3B1B0',
-                                        //                     fontSize: 14,
-                                        //                     width: 50,
-                                        //                     textAlign: 'center'
-                                        //                 }} />
-                                        //             </View>
-                                        //             : <TextInput style={styles.parameterInput} placeholder={parameter.param_name} />
-                                        //     }
-                                        // </View>
+                                        <ProductFillSlot key={index} name={parameter.param_name} options={parameter.options} productParameters={productParameters} setProductParameters={setProductParameters} />
                                     )
                                 })
                                 :
@@ -118,13 +165,13 @@ const FillProduct = ({ navigation, route }) => {
                             <View style={{ height: 200, width: '90%', backgroundColor: '#F8F8F8', marginTop: 10, borderRadius: 5 }}>
                                 <Text style={[styles.parameterText, { marginHorizontal: '2%', marginTop: 5 }]}>{'Product images'}</Text>
                                 <View style={{ height: '65%', width: '90%', alignSelf: 'center' }}>
-                                    <Image />
+                                    <Image style={{ height: '100%', width: '100%' }} source={productImage.length != 0 ? { uri: productImage } : {}} />
                                 </View>
                                 <View style={{ flexDirection: 'row', alignSelf: 'flex-end', justifyContent: 'center', marginRight: '1%', marginTop: '1%' }}>
                                     {
                                         productImagesIcon.map((icon, index) => {
                                             return (
-                                                <TouchableOpacity key={index} style={{ height: 25, width: 25, marginHorizontal: '1%' }}>
+                                                <TouchableOpacity onPress={() => imagePickHandler(icon.type)} key={index} style={{ height: 25, width: 25, marginHorizontal: '1%' }}>
                                                     {icon.icon}
                                                 </TouchableOpacity>
                                             )
@@ -142,16 +189,43 @@ const FillProduct = ({ navigation, route }) => {
                                 marginTop: '3%'
                             }}>
                                 <Text style={styles.parameterText}>{'Quantity'}</Text>
-                                <TextInput maxLength={5} style={[styles.parameterInput, { width: '22%', textAlign: 'center', height: 25 }]} />
+                                <TextInput maxLength={5} style={[styles.parameterInput, { width: '22%', textAlign: 'center', height: 25 }]} onChangeText={(quantity) => { setProductQuantity(quantity) }} />
                                 <View style={{ marginLeft: '5%' }}>
                                     <DropDownMenu value={value} setValue={setValue} />
                                 </View>
                             </View>
                             <View style={styles.parameterContainer}>
                                 <Text style={styles.parameterText}>{'Price'}</Text>
-                                <TextInput style={[styles.parameterInput, { fontSize: 14 }]} />
+                                <TextInput style={[styles.parameterInput, { fontSize: 14 }]} onChangeText={(price) => { setProductPrice(price) }} />
                             </View>
-                            <TouchableOpacity activeOpacity={0.6} style={{ alignSelf: 'flex-end', height: 60, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 30, backgroundColor: colors.primary[0], marginTop: '10%', borderRadius: 16, marginRight: '5%' }}>
+                            {
+                                route.params.description_required ?
+                                    <View style={{
+                                        width: '90%',
+                                        paddingVertical: 5,
+                                        backgroundColor: '#F8F8F8',
+                                        borderRadius: 5,
+                                        flexDirection: 'row',
+                                        paddingHorizontal: '2%',
+                                        marginTop: '3%'
+                                    }}>
+                                        <Text style={styles.parameterText}>{'Description'}</Text>
+                                        <TextInput multiline style={[{
+                                            marginLeft: '1%',
+                                            backgroundColor: 'white',
+                                            width: '50%',
+                                            paddingHorizontal: '3%',
+                                            fontFamily: 'Poppins',
+                                            fontSize: 12,
+                                            color: '#B3B1B0',
+                                            fontSize: 14,
+                                            textAlignVertical: 'top',
+                                            paddingVertical: 2
+                                        }, { height: 200, width: '62%' }]} onChangeText={(description) => { setProductDescription(description) }} />
+                                    </View>
+                                    : <></>
+                            }
+                            <TouchableOpacity onPress={submitProductHandler} activeOpacity={0.6} style={{ alignSelf: 'flex-end', height: 60, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 30, backgroundColor: colors.primary[0], marginTop: '10%', borderRadius: 16, marginRight: '5%' }}>
                                 <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF' }}>{'Preview and Submit'}</Text>
                             </TouchableOpacity>
                         </View>
@@ -203,7 +277,7 @@ const styles = StyleSheet.create({
     },
 
     parameterInput: {
-        marginLeft: '5%',
+        marginLeft: '1%',
         backgroundColor: 'white',
         width: '50%',
         paddingHorizontal: '3%',

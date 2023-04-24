@@ -72,7 +72,7 @@ const CreateAccountScreen = ({ navigation }) => {
 
             if (response.ok) {
                 const data = await response.json();
-                navigation.navigate('VerifyEmail', { otpId: data.otp_id });
+                navigation.navigate('VerifyEmail', { otpId: data.otp_id, sessionId: sessionId });
             }
         
         } catch (error) {

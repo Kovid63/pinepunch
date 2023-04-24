@@ -4,26 +4,26 @@ import { FlatList } from 'react-native'
 import { OptionRender } from './OptionRender'
 import { TextInput } from 'react-native'
 
-const ProductFillSlot = ({ name, options, product, setProduct }) => {
+const ProductFillSlot = ({ name, options, productParameters, setProductParameters }, key) => {
 
   const [selectedParameter, setSelectedParameter] = useState(null)
 
   useEffect(() => {
 
     let arr = { paramName: name, currentValue: selectedParameter }
-    const index = product.findIndex(obj => obj.paramName === arr.paramName);
+    const index = productParameters.findIndex(obj => obj.paramName === arr.paramName);
     if (index === -1) {
-      setProduct([...product, arr])
+      setProductParameters([...productParameters, arr])
     } else {
-      const newArr = [...product];
+      const newArr = [...productParameters];
       newArr.splice(index, 1, arr);
-      setProduct(newArr);
+      setProductParameters(newArr);
     }
 
   }, [selectedParameter])
 
   return (
-    <View style={styles.container}>
+    <View key={key} style={styles.container}>
       <Text style={styles.text}>{name}</Text>
       <FlatList showsHorizontalScrollIndicator={false} style={{ marginRight: '2%' }} horizontal renderItem={item => (<OptionRender onPress={(item) => setSelectedParameter(item)} selected={selectedParameter} {...item} />)} data={options} />
       <TextInput onFocus={() => { setSelectedParameter(null) }} style={styles.input} onChangeText={(value) => setSelectedParameter(value)} />

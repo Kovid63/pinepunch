@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import { StyleSheet } from 'react-native'
 import Header from '../../components/Header'
 import { TouchableOpacity } from 'react-native'
@@ -8,9 +8,11 @@ import { ScrollView } from 'react-native'
 import { colors } from '../../colors'
 import { Image } from 'react-native'
 import SubmitBtn from '../../components/SubmitBtn'
+import { ModeContext } from '../../contexts/ModeContext'
 
 const ProductDetail = ({navigation, route}) => {
 
+  const{mode} = useContext(ModeContext);
 
   function contactSellerHandler(){
     navigation.navigate('ContactSeller');

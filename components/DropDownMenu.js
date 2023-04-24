@@ -18,12 +18,12 @@ const DropDownMenu = ({value, setValue}) => {
     }
 
     return (
-        <View style={{ flexDirection: 'row', backgroundColor: '#FFFFFF', justifyContent: 'center' }}>
-            <View style={{ paddingHorizontal: 5, marginHorizontal: '2%' }}>
-                <Text style={{ fontFamily: 'Poppins' }}>{value}</Text>
+        <View style={{ flexDirection: 'row', backgroundColor: '#FFFFFF', justifyContent: 'center'}}>
+            <View style={{ paddingHorizontal: 5, marginHorizontal: '2%'}}>
+                <Text style={{ fontFamily: 'Poppins', width: 40 }}>{value}</Text>
                 {isDropdownOpen && (units.map((unit, index) => (
                     <TouchableOpacity key={index} onPress={() => selectValueHandler(unit)}>
-                        <Text style={{ fontFamily: 'Poppins', color: '#B3B1B0' }}>{unit}</Text>
+                        <Text style={{ fontFamily: 'Poppins', color: '#B3B1B0', width: 40 }}>{unit}</Text>
                     </TouchableOpacity>
                 )))}
             </View>

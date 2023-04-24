@@ -36,7 +36,7 @@ const VerifyEmail = ({ navigation, route }) => {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
-                    "X-USER-SESSION-ID": userData.session_id
+                    "X-USER-SESSION-ID": route.params.sessionId
                 },
                 body: JSON.stringify({
                     otp_id: route.params.otpId,
