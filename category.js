@@ -59,18 +59,6 @@ export const categories = [
         description_required: true
     },
     {
-        category_name: "Machinery",
-        type: "Machinery",
-        parameters: [
-            {
-                param_name: "Grade",
-                predefined: true,
-                options: ["A","B","C"]
-            }
-        ],
-        description_required: true
-    },
-    {
         category_name: "Plant",
         type: "Plant",
         parameters: [

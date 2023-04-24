@@ -9,7 +9,7 @@ import { MODE_BUYER, MODE_SELLER } from './constants';
 
 export default function App() {
 
-  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(true);
   const [userData, setUserData] = useState({email: '', merchant_name: '', merchant_status: '', merchant_id: null});
   const [mode, setMode] = useState(MODE_SELLER);
 
@@ -27,7 +27,9 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
   }
+
 });

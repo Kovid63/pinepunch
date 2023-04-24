@@ -25,6 +25,8 @@ const FillProduct = ({ navigation, route }) => {
     const [value, setValue] = useState(units[0]);
     const [product, setProduct] = useState([]);
 
+    console.log(product);
+
     const HeaderComponentFlatList = () => {
         return (
             <>
@@ -43,7 +45,7 @@ const FillProduct = ({ navigation, route }) => {
                                     <Text style={styles.parameterText}>{parameter.param_name}</Text>
                                     {
                                         parameter.predefined ?
-                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} />)} data={parameter.options} />
+                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} onPress={() => console.log('logged')} />)} data={parameter.options} />
                                             : <TextInput style={styles.parameterInput} placeholder={parameter.param_name} />
                                     }
                                 </View>
@@ -79,38 +81,40 @@ const FillProduct = ({ navigation, route }) => {
                                 <Text style={styles.parameterText}>{'Product Name'}</Text>
                                 <TextInput style={styles.parameterInput} placeholder='Item Name 1' />
                             </View>
-                            <ProductFillSlot/>
-                            {/* {route.params.parameters ?
+
+                            {route.params.parameters ?
                                 route.params.parameters.map((parameter, index) => {
+                                    
                                     return (
-                                        <View key={index} style={styles.parameterContainer}>
-                                            <Text style={styles.parameterText}>{parameter.param_name}</Text>
-                                            {
-                                                parameter.predefined ?
-                                                    <View style={{ flexDirection: 'row' }}>
-                                                        <View style={{ width: '60%' }}>
-                                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginRight: '2%' }} horizontal renderItem={item => (<OptionRender {...item} />)} data={parameter.options} />
-                                                        </View>
-                                                        <TextInput onFocus={() => {}} style={{
-                                                            marginLeft: 2,
-                                                            backgroundColor: '#FFFFFF',
-                                                            paddingHorizontal: 2,
-                                                            fontFamily: 'Poppins',
-                                                            fontSize: 12,
-                                                            color: '#B3B1B0',
-                                                            fontSize: 14,
-                                                            width: 50,
-                                                            textAlign: 'center'
-                                                        }} />
-                                                    </View>
-                                                    : <TextInput style={styles.parameterInput} placeholder={parameter.param_name} />
-                                            }
-                                        </View>
+                                        <ProductFillSlot name={parameter.param_name} options={parameter.options} product={product} setProduct={setProduct}/>
+                                        // <View key={index} style={styles.parameterContainer}>
+                                        //     <Text style={styles.parameterText}>{parameter.param_name}</Text>
+                                        //     {
+                                        //         parameter.predefined ?
+                                        //             <View style={{ flexDirection: 'row' }}>
+                                        //                 <View style={{ width: '60%' }}>
+                                        //                     <FlatList showsHorizontalScrollIndicator={false} style={{ marginRight: '2%' }} horizontal renderItem={item => (<OptionRender {...item} />)} data={parameter.options} />
+                                        //                 </View>
+                                        //                 <TextInput onFocus={() => {}} style={{
+                                        //                     marginLeft: 2,
+                                        //                     backgroundColor: '#FFFFFF',
+                                        //                     paddingHorizontal: 2,
+                                        //                     fontFamily: 'Poppins',
+                                        //                     fontSize: 12,
+                                        //                     color: '#B3B1B0',
+                                        //                     fontSize: 14,
+                                        //                     width: 50,
+                                        //                     textAlign: 'center'
+                                        //                 }} />
+                                        //             </View>
+                                        //             : <TextInput style={styles.parameterInput} placeholder={parameter.param_name} />
+                                        //     }
+                                        // </View>
                                     )
                                 })
                                 :
                                 <></>
-                            } */}
+                            }
                             <View style={{ height: 200, width: '90%', backgroundColor: '#F8F8F8', marginTop: 10, borderRadius: 5 }}>
                                 <Text style={[styles.parameterText, { marginHorizontal: '2%', marginTop: 5 }]}>{'Product images'}</Text>
                                 <View style={{ height: '65%', width: '90%', alignSelf: 'center' }}>
