@@ -30,7 +30,9 @@ const CompanyPage = ({ navigation, route }) => {
     }
 
     function productDetailHandler() {
-        navigation.navigate('ProductDetail');
+        navigation.navigate('ProductDetail', {
+            preview: false
+        });
     }
 
 
