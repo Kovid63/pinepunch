@@ -24,7 +24,7 @@ const ChangeEmail = ({ navigation }) => {
                     </View>
                 </View>
                 <View style={styles.submitBtnContainer}>
-                    <SubmitBtn fill={true} onPress={{}} active={true} text={'Save'} />
+                    <SubmitBtn fill={true} active={true} text={'Save'} />
                 </View>
             </ScrollView>
         </View>

@@ -28,7 +28,7 @@ const ChangePassword = ({ navigation }) => {
                     </View>
                 </View>
                 <View style={styles.submitBtnContainer}>
-                    <SubmitBtn fill={true} onPress={{}} active={true} text={'Change Password'} />
+                    <SubmitBtn fill={true} active={true} text={'Change Password'} />
                 </View>
             </ScrollView>
         </View>

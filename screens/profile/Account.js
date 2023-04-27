@@ -72,7 +72,7 @@ const Account = ({ navigation }) => {
                     </View>
                 </View>
                 <View style={styles.submitBtnContainer}>
-                    <SubmitBtn fill={true} onPress={{}} active={true} text={'Save Changes'} />
+                    <SubmitBtn fill={true} active={true} text={'Save Changes'} />
                 </View>
             </ScrollView >
         </View>
