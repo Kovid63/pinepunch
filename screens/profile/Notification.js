@@ -1,10 +1,14 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Text, ScrollView } from 'react-native'
+import React, { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
 import Header from '../../components/Header'
+import SlidingBtn from '../../components/SlidingBtn'
 
 const Notification = ({navigation}) => {
+
+    const [isNewMsgOn, setIsNewMsgOn] = useState(false);
+    const [isItemSoldMsgOn, setIsItemSoldMsgOn] = useState(false);
 
     function backPressHandler() {
         navigation.goBack();
@@ -13,6 +17,22 @@ const Notification = ({navigation}) => {
     return (
         <View style={styles.container}>
             <Header onPress={backPressHandler} pageTitle={'Notification'} />
+            <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.titleText}>{'Social'}</Text>
+                </View>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                    <Text style={styles.text}>{'New Message'}</Text>
+                    <SlidingBtn on={isNewMsgOn} setOn={setIsNewMsgOn}/>
+                </View>
+                <View style={styles.titleContainer}>
+                    <Text style={styles.titleText}>{'Store'}</Text>
+                </View>
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                    <Text style={styles.text}>{'Item Sold'}</Text>
+                    <SlidingBtn on={isItemSoldMsgOn} setOn={setIsItemSoldMsgOn}/>
+                </View>
+            </ScrollView>
         </View>
     )
 }
@@ -23,6 +43,26 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.background,
         paddingHorizontal: '5%'
+    },
+
+    titleContainer: {
+        marginTop: '10%',
+        marginHorizontal: '3%'
+    },
+
+    titleText: {
+        fontFamily: 'PoppinsBold',
+        fontSize: 16
+    },
+
+    text: {
+        fontFamily: 'Poppins',
+        marginHorizontal: '3%'
+    },
+
+    scroll: {
+        flex: 1,
+        marginBottom: 80
     },
 
 })

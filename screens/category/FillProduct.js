@@ -82,7 +82,7 @@ const FillProduct = ({ navigation, route }) => {
     }
 
     function productDetailHandler() {
-        navigation.navigate('ProductDetail');
+        navigation.navigate('ProductDetail', { preview: false })
     }
 
     async function imagePickHandler(type) {
@@ -149,7 +149,8 @@ const FillProduct = ({ navigation, route }) => {
             quantity: productQuantity + value,
             price: productPrice,
             description: productDescription,
-            unit: value
+            unit: value,
+            preview: true
         })
     }
 

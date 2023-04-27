@@ -9,12 +9,12 @@ import { itemsForSale } from '../../dummydata/dummydata';
 const Product = ({ route, navigation }) => {
 
 
-      function backPressHandler(){
+    function backPressHandler() {
         navigation.goBack();
-      }
+    }
 
 
-      
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -42,7 +42,9 @@ const Product = ({ route, navigation }) => {
                     <Text style={styles.headingText}>{'Items for sale'}</Text>
                 </View>
             </View>
-            <FlatList contentContainerStyle={{alignItems: 'center', paddingBottom: 90}} showsVerticalScrollIndicator={false} data={route.params.products} renderItem={ListRender} numColumns={2}/>
+            <FlatList contentContainerStyle={{ alignItems: 'center', paddingBottom: 90 }} showsVerticalScrollIndicator={false} data={route.params.products} renderItem={(item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
+                preview: false
+            })} {...item} />} numColumns={2} />
         </View>
     )
 }

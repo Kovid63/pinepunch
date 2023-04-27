@@ -111,7 +111,9 @@ const Home = ({ navigation }) => {
                 showsHorizontalScrollIndicator={false}
                 horizontal
                 data={itemsForSale.slice(0, 2)}
-                renderItem={ListRender} />
+                renderItem={(item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
+                  preview: false
+                })} {...item}/>} />
             </View>
             <View style={styles.middle}>
               <View>
@@ -124,7 +126,9 @@ const Home = ({ navigation }) => {
                 showsHorizontalScrollIndicator={false}
                 horizontal
                 data={scrapForSale.slice(0, 2)}
-                renderItem={ListRender} />
+                renderItem={(item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
+                  preview: false
+                })} {...item}/>} />
             </View>
           </ScrollView>
         </>

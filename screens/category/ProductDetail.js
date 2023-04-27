@@ -14,10 +14,12 @@ import { MODE_BUYER } from '../../constants'
 const ProductDetail = ({ navigation, route }) => {
 
   const { mode } = useContext(ModeContext);
-  const { name, parameters, image, quantity, price, description, unit } = route.params;
+  //const { name, parameters, image, quantity, price, description, unit } = route.params;
+
+  console.log(route.params.preview);
 
   useEffect(() => {
-    mode === MODE_BUYER ? navigation.goBack() : <></>
+    //mode === MODE_BUYER ? navigation.goBack() : <></>
   }, [mode])
 
   function contactSellerHandler() {
@@ -69,11 +71,11 @@ const ProductDetail = ({ navigation, route }) => {
       </View>
       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, marginBottom: 80, marginTop: '5%' }}>
         <View style={{ backgroundColor: '#F8F8F8', height: 300, marginTop: '10%', borderRadius: 24 }}>
-          <Image style={{ height: '100%', width: '100%', borderRadius: 24 }} source={{ uri: image[0] }} />
+          {/* <Image style={{ height: '100%', width: '100%', borderRadius: 24 }} source={{ uri: image[0] }} /> */}
         </View>
         <View style={{ flexDirection: 'row', marginTop: '8%', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{name}</Text>
-          {mode === MODE_BUYER ? <TouchableOpacity onPress={companyClickHandler} style={{ height: 50, maxWidth: '50%', backgroundColor: '#FFFFFF', elevation: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: '3%', borderRadius: 16, marginRight: '2%' }}>
+          <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{'Item Name'}</Text>
+          {!route.params.preview ? <TouchableOpacity onPress={companyClickHandler} style={{ height: 50, maxWidth: '50%', backgroundColor: '#FFFFFF', elevation: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: '3%', borderRadius: 16, marginRight: '2%' }}>
             <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 17, color: colors.primary[0] }}>{'xyz company'}</Text>
           </TouchableOpacity>
             :
@@ -99,11 +101,11 @@ const ProductDetail = ({ navigation, route }) => {
             </View>}
         </View>
         <View style={{ width: '60%', marginTop: '1%' }}>
-          <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: '#B3B1B0' }}>{description}</Text>
+          <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: '#B3B1B0' }}>{'Product Description'}</Text>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '10%', marginTop: '5%' }}>
-          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{quantity}</Text>
-          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{price + '/' + unit}</Text>
+          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'10Kg'}</Text>
+          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'2000' + '/' + 'Kg'}</Text>
         </View>
         <View style={styles.submitBtnContainer}>
           <SubmitBtn onPress={contactSellerHandler} fill={true} active={true} text={mode === MODE_BUYER ? 'Contact Seller' : 'Submit'} />
