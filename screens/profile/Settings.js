@@ -5,8 +5,8 @@ import Header from '../../components/Header'
 import { Text } from 'react-native'
 import { ScrollView } from 'react-native'
 import SubmitBtn from '../../components/SubmitBtn'
-import { settingAccount } from '../../data/settingsAccount'
-import { settingHelp } from '../../data/settingsHelp'
+import { settingsAccount } from '../../data/settingsAccount'
+import { settingsHelp } from '../../data/settingsHelp'
 import { SettingsSlot } from '../../components/SettingsSlot'
 import { UserContext } from '../../contexts/UserContext'
 import * as SecureStore from 'expo-secure-store';
@@ -23,6 +23,10 @@ const Settings = ({ navigation }) => {
         setIsUserLoggedIn(false);
     }
 
+    function slotPressHandler(slotName){
+        navigation.navigate(slotName)
+    }
+
     return (
         <View style={styles.container}>
             <Header onPress={backPressHandler} pageTitle={'Settings Page'} />
@@ -31,16 +35,16 @@ const Settings = ({ navigation }) => {
             </View>
             <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
                 {
-                    settingAccount.map((slot, index) => (
-                        <SettingsSlot key={index} slot={slot} />
+                    settingsAccount.map((slot, index) => (
+                        <SettingsSlot onPress={() => slotPressHandler(slot.name)} key={index} slot={slot} />
                     ))
                 }
                 <View style={styles.titleContainer}>
                     <Text style={styles.titleText}>{'Help'}</Text>
                 </View>
                 {
-                    settingHelp.map((slot, index) => (
-                        <SettingsSlot key={index} slot={slot} />
+                    settingsHelp.map((slot, index) => (
+                        <SettingsSlot onPress={() => slotPressHandler(slot.name)} key={index} slot={slot} />
                     ))
                 }
             </ScrollView>

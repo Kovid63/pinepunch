@@ -1,9 +1,24 @@
 import { Image, Text, View, TouchableOpacity } from "react-native";
 import { Path, Svg } from "react-native-svg";
 import React from "react";
-
+import { BASE_URL, FAVORITES } from '@env';
+import * as SecureStore from 'expo-secure-store';
+import { ToastAndroid } from "react-native";
+import { Alert } from "react-native";
 
 export const BuyerListRender = ({ item }) => {
+
+    async function addFavourite(itemId){
+        const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+        const response = await fetch(BASE_URL + FAVORITES+ `/${itemId}`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                "X-USER-SESSION-ID": sessionId
+            },
+        })
+    }
+
     return (
         <View style={{ width: 160, backgroundColor: '#F8F8F8', borderRadius: 24, paddingVertical: 20, marginHorizontal: 10, marginTop: 10 }}>
             <TouchableOpacity style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row', paddingHorizontal: 10 }}>

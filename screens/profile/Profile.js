@@ -154,6 +154,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: '8%'
   },
+  
   infoText:{
     fontFamily: 'PoppinsBold',
     fontSize: 20,

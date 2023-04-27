@@ -9,6 +9,7 @@ import { HomeStack } from './HomeStack';
 import { CategoryStack } from './CategoryStack';
 import { ProfileStack } from './ProfileStack';
 import { FavouriteStack } from './FavouriteStack';
+import { EditStack } from './EditStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,7 +19,7 @@ const TabNavigation = () => {
 
     return (
         <NavigationContainer>
-            <Tab.Navigator initialRouteName={'CategoryStack'}
+            <Tab.Navigator initialRouteName={'HomeStack'}
                 screenOptions={{
                     tabBarShowLabel: false,
                     headerShown: false,
@@ -128,7 +129,7 @@ const TabNavigation = () => {
 
                 {mode == 'Seller' ? <Tab.Screen
                     name="EditStack"
-                    component={HomeStack}
+                    component={EditStack}
                     options={{
                         tabBarIcon: ({ focused }) => (
                             <View

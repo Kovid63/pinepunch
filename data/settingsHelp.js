@@ -1,6 +1,6 @@
 import { Path, Svg } from "react-native-svg";
 
-export const settingHelp = [
+export const settingsHelp = [
     {
         name: 'Contact Us',
         icon: <Svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

@@ -3,8 +3,9 @@ import { Text } from "react-native";
 import { View } from "react-native";
 import { Path, Svg } from "react-native-svg";
 
-export const SettingsSlot = ({ slot }, key) => (
-    <TouchableOpacity key={key} style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', marginTop: '3%' }}>
+export const SettingsSlot = ({ slot, onPress }, key) => (
+
+    <TouchableOpacity onPress={onPress} key={key} style={{ justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center', marginTop: '3%' }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <View style={{ height: 45, width: 45, backgroundColor: '#F8F8F8', alignItems: 'center', justifyContent: 'center', borderRadius: 25 }}>
                 <View style={{ height: 25, width: 25 }}>

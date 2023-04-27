@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Text, RefreshControl } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { TextInput } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import { Path, Svg } from 'react-native-svg'
@@ -9,8 +9,60 @@ import { itemsForSale } from '../../dummydata/dummydata'
 import { FlatList } from 'react-native'
 import { BuyerCategoryListRender } from '../../components/BuyerCategoryListRender'
 import { FavouriteListRender } from '../../components/FavouriteListRender'
+import { BASE_URL, FAVORITES } from '@env';
+import * as SecureStore from 'expo-secure-store';
+import { ToastAndroid } from 'react-native'
+import { Alert } from 'react-native'
 
 const Favourite = () => {
+
+    const [favourites, setFavourites] = useState([])
+    const [query, setQuery] = useState('');
+
+    const [refreshing, setRefreshing] = useState(false);
+
+    async function fetchFavourites() {
+        const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+        const response = await fetch(BASE_URL + FAVORITES + `?page=${1}&count=${0}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "X-USER-SESSION-ID": sessionId
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            if (Platform.OS === 'android') {
+                return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+            }
+            else {
+                return Alert.alert(data.error.description);
+            }
+        }
+
+        setFavourites(data.items);
+    }
+
+    function onRefresh(){
+        setRefreshing(true);
+        query.length === 0 ? fetchFavourites() : <></>
+        setRefreshing(false);
+    }
+
+    useEffect(() => {
+        fetchFavourites();
+    }, [])
+
+    useEffect(() => {
+
+        const obj = favourites.filter(obj => obj.inventory_item.product_name.toLowerCase().includes(query.toLowerCase()));
+
+        query.length === 0 ? fetchFavourites() : setFavourites(obj);
+
+    }, [query])
+
     return (
         <View style={styles.container}>
             <View style={{
@@ -24,7 +76,7 @@ const Favourite = () => {
                 elevation: 14, borderRadius: 16,
                 flexDirection: 'row'
             }}>
-                <TextInput selectionColor={'#B3B1B0'} style={styles.input} />
+                <TextInput onChangeText={(search) => setQuery(search)} selectionColor={'#B3B1B0'} style={styles.input} />
                 <TouchableOpacity>
                     <Svg
                         style={{
@@ -45,10 +97,10 @@ const Favourite = () => {
                     </Svg>
                 </TouchableOpacity>
             </View>
-            <View style={{marginTop: '5%', marginHorizontal: '8%'}}>
+            <View style={{ marginTop: '5%', marginHorizontal: '8%' }}>
                 <Text style={styles.headingText}>{'Favourite items'}</Text>
             </View>
-            <FlatList style={{marginTop: '5%'}} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={itemsForSale} renderItem={item => <FavouriteListRender {...item} />} numColumns={2} />
+            <FlatList refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} style={{ marginTop: '5%' }} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={favourites} renderItem={item => <FavouriteListRender fetchFavourites={fetchFavourites} {...item} />} numColumns={2} />
         </View>
     )
 }

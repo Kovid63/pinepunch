@@ -19,7 +19,7 @@ export const categories = [
                 options: ["A","B","C"]
             }
         ],
-        description_required: false
+        description_required: true
     },
     {
         category_name: "PIPE",
