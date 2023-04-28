@@ -23,6 +23,12 @@ const FillProduct = ({ navigation, route }) => {
 
     const { mode } = useContext(ModeContext);
 
+    const { isEdit } = route.params;
+
+    const { product_name, images, product_description, parameters, quantity_um, quantity, price } = route.params.product || {}
+
+
+
     const [value, setValue] = useState(units[0]);
     const [productParameters, setProductParameters] = useState([]);
     const [productImage, setProductImage] = useState('');
@@ -30,6 +36,21 @@ const FillProduct = ({ navigation, route }) => {
     const [productQuantity, setProductQuantity] = useState(0);
     const [productPrice, setProductPrice] = useState(0);
     const [productDescription, setProductDescription] = useState('');
+
+    useEffect(() => {
+
+        if (isEdit) {
+            setProductName(product_name);
+            setProductImage(images);
+            setProductDescription(product_description);
+            setProductParameters(parameters);
+            setProductQuantity(quantity)
+            setProductPrice(price)
+            setValue(quantity_um)
+        }
+
+
+    }, [])
 
     const HeaderComponentFlatList = () => {
         return (
@@ -150,30 +171,31 @@ const FillProduct = ({ navigation, route }) => {
             price: productPrice,
             description: productDescription,
             unit: value,
-            preview: true
+            preview: true,
+            categoryType: route.params.isEdit ? route.params.product.catogery_type : route.params.type
         })
     }
 
     return (
         <View style={styles.container}>
-            <Header onPress={backPressHandler} pageTitle={mode === MODE_SELLER ? 'Details Of Item' : 'Category'} />
             {
-                mode === MODE_SELLER ?
+                route.params.isEdit ? <>
+                    <Header onPress={backPressHandler} pageTitle={mode === MODE_SELLER ? 'Details Of Item' : 'Category'} />
                     <ScrollView keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
                         <View style={styles.categoryContainer}>
-                            <Text style={styles.categoryText}>{route.params.type}</Text>
+                            <Text style={styles.categoryText}>{route.params.product.catogery_type}</Text>
                         </View>
                         <View style={{ alignItems: 'center', paddingBottom: 90 }}>
                             <View style={styles.parameterContainer}>
                                 <Text style={styles.parameterText}>{'Product Name'}</Text>
-                                <TextInput style={styles.parameterInput} placeholder='Item Name 1' onChangeText={(name) => { setProductName(name) }} />
+                                <TextInput style={styles.parameterInput} value={productName} placeholder='Item Name 1' onChangeText={(name) => { setProductName(name) }} />
                             </View>
 
                             {route.params.parameters ?
                                 route.params.parameters.map((parameter, index) => {
 
                                     return (
-                                        <ProductFillSlot key={index} name={parameter.param_name} options={parameter.options} productParameters={productParameters} setProductParameters={setProductParameters} />
+                                        <ProductFillSlot um={parameter.um} key={index} name={parameter.param_name} options={parameter.options} productParameters={productParameters} setProductParameters={setProductParameters} />
                                     )
                                 })
                                 :
@@ -206,14 +228,14 @@ const FillProduct = ({ navigation, route }) => {
                                 marginTop: '3%'
                             }}>
                                 <Text style={styles.parameterText}>{'Quantity'}</Text>
-                                <TextInput maxLength={5} style={[styles.parameterInput, { width: '22%', textAlign: 'center', height: 25 }]} onChangeText={(quantity) => { setProductQuantity(quantity) }} />
+                                <TextInput value={productQuantity.toString()} maxLength={5} style={[styles.parameterInput, { width: '22%', textAlign: 'center', height: 25 }]} onChangeText={(quantity) => { setProductQuantity(quantity) }} />
                                 <View style={{ marginLeft: '5%' }}>
                                     <DropDownMenu value={value} setValue={setValue} />
                                 </View>
                             </View>
                             <View style={styles.parameterContainer}>
                                 <Text style={styles.parameterText}>{'Price'}</Text>
-                                <TextInput style={[styles.parameterInput, { fontSize: 14 }]} onChangeText={(price) => { setProductPrice(price) }} />
+                                <TextInput value={productPrice.toString()} style={[styles.parameterInput, { fontSize: 14 }]} onChangeText={(price) => { setProductPrice(price) }} />
                             </View>
                             {
                                 route.params.description_required ?
@@ -227,7 +249,7 @@ const FillProduct = ({ navigation, route }) => {
                                         marginTop: '3%'
                                     }}>
                                         <Text style={styles.parameterText}>{'Description'}</Text>
-                                        <TextInput multiline style={[{
+                                        <TextInput multiline value={productDescription} style={[{
                                             marginLeft: '1%',
                                             backgroundColor: 'white',
                                             width: '50%',
@@ -247,8 +269,103 @@ const FillProduct = ({ navigation, route }) => {
                             </TouchableOpacity>
                         </View>
                     </ScrollView>
-                    :
-                    <FlatList ListHeaderComponentStyle={{ width: '100%' }} ListHeaderComponent={HeaderComponentFlatList} style={{ marginTop: 20 }} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={itemsForSale} renderItem={item => <BuyerCategoryListRender onPress={productDetailHandler} {...item} />} numColumns={2} />
+                </> :
+                    <>
+                        <Header onPress={backPressHandler} pageTitle={mode === MODE_SELLER ? 'Details Of Item' : 'Category'} />
+                        {
+                            mode === MODE_SELLER ?
+                                <ScrollView keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
+                                    <View style={styles.categoryContainer}>
+                                        <Text style={styles.categoryText}>{route.params.type}</Text>
+                                    </View>
+                                    <View style={{ alignItems: 'center', paddingBottom: 90 }}>
+                                        <View style={styles.parameterContainer}>
+                                            <Text style={styles.parameterText}>{'Product Name'}</Text>
+                                            <TextInput style={styles.parameterInput} placeholder='Item Name 1' onChangeText={(name) => { setProductName(name) }} />
+                                        </View>
+
+                                        {route.params.parameters ?
+                                            route.params.parameters.map((parameter, index) => {
+
+                                                return (
+                                                    <ProductFillSlot um={parameter.um} key={index} name={parameter.param_name} options={parameter.options} productParameters={productParameters} setProductParameters={setProductParameters} />
+                                                )
+                                            })
+                                            :
+                                            <></>
+                                        }
+                                        <View style={{ height: 200, width: '90%', backgroundColor: '#F8F8F8', marginTop: 10, borderRadius: 5 }}>
+                                            <Text style={[styles.parameterText, { marginHorizontal: '2%', marginTop: 5 }]}>{'Product images'}</Text>
+                                            <View style={{ height: '65%', width: '90%', alignSelf: 'center' }}>
+                                                <Image style={{ height: '100%', width: '100%' }} source={productImage.length != 0 ? { uri: productImage } : {}} />
+                                            </View>
+                                            <View style={{ flexDirection: 'row', alignSelf: 'flex-end', justifyContent: 'center', marginRight: '1%', marginTop: '1%' }}>
+                                                {
+                                                    productImagesIcon.map((icon, index) => {
+                                                        return (
+                                                            <TouchableOpacity onPress={() => imagePickHandler(icon.type)} key={index} style={{ height: 25, width: 25, marginHorizontal: '1%' }}>
+                                                                {icon.icon}
+                                                            </TouchableOpacity>
+                                                        )
+                                                    })
+                                                }
+                                            </View>
+                                        </View>
+                                        <View style={{
+                                            width: '90%',
+                                            paddingVertical: 5,
+                                            backgroundColor: '#F8F8F8',
+                                            borderRadius: 5,
+                                            flexDirection: 'row',
+                                            paddingHorizontal: '2%',
+                                            marginTop: '3%'
+                                        }}>
+                                            <Text style={styles.parameterText}>{'Quantity'}</Text>
+                                            <TextInput maxLength={5} style={[styles.parameterInput, { width: '22%', textAlign: 'center', height: 25 }]} onChangeText={(quantity) => { setProductQuantity(quantity) }} />
+                                            <View style={{ marginLeft: '5%' }}>
+                                                <DropDownMenu value={value} setValue={setValue} />
+                                            </View>
+                                        </View>
+                                        <View style={styles.parameterContainer}>
+                                            <Text style={styles.parameterText}>{'Price'}</Text>
+                                            <TextInput style={[styles.parameterInput, { fontSize: 14 }]} onChangeText={(price) => { setProductPrice(price) }} />
+                                        </View>
+                                        {
+                                            route.params.description_required ?
+                                                <View style={{
+                                                    width: '90%',
+                                                    paddingVertical: 5,
+                                                    backgroundColor: '#F8F8F8',
+                                                    borderRadius: 5,
+                                                    flexDirection: 'row',
+                                                    paddingHorizontal: '2%',
+                                                    marginTop: '3%'
+                                                }}>
+                                                    <Text style={styles.parameterText}>{'Description'}</Text>
+                                                    <TextInput multiline style={[{
+                                                        marginLeft: '1%',
+                                                        backgroundColor: 'white',
+                                                        width: '50%',
+                                                        paddingHorizontal: '3%',
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: 12,
+                                                        color: '#B3B1B0',
+                                                        fontSize: 14,
+                                                        textAlignVertical: 'top',
+                                                        paddingVertical: 2
+                                                    }, { height: 200, width: '62%' }]} onChangeText={(description) => { setProductDescription(description) }} />
+                                                </View>
+                                                : <></>
+                                        }
+                                        <TouchableOpacity onPress={submitProductHandler} activeOpacity={0.6} style={{ alignSelf: 'flex-end', height: 60, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 30, backgroundColor: colors.primary[0], marginTop: '10%', borderRadius: 16, marginRight: '5%' }}>
+                                            <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF' }}>{'Preview and Submit'}</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </ScrollView>
+                                :
+                                <FlatList ListHeaderComponentStyle={{ width: '100%' }} ListHeaderComponent={HeaderComponentFlatList} style={{ marginTop: 20 }} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={itemsForSale} renderItem={item => <BuyerCategoryListRender onPress={productDetailHandler} {...item} />} numColumns={2} />
+                        }
+                    </>
             }
         </View>
     )

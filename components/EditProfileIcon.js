@@ -2,9 +2,9 @@ import { TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Path, Svg } from 'react-native-svg'
 
-const EditProfileIcon = () => {
+const EditProfileIcon = ({onPress}) => {
     return (
-        <TouchableOpacity activeOpacity={0.4} style={{backgroundColor: '#FFFFFF', borderRadius: 20, padding: 4}}>
+        <TouchableOpacity onPress={onPress} activeOpacity={0.4} style={{backgroundColor: '#FFFFFF', borderRadius: 20, padding: 4}}>
             <Svg style={{ height: 23, width: 23 }} viewBox="-1 0 24 26" xmlns="http://www.w3.org/2000/svg" >
                 <Path
                     fill="#000"

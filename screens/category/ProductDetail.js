@@ -9,14 +9,16 @@ import { colors } from '../../colors'
 import { Image } from 'react-native'
 import SubmitBtn from '../../components/SubmitBtn'
 import { ModeContext } from '../../contexts/ModeContext'
-import { MODE_BUYER } from '../../constants'
+import { MODE_BUYER, MODE_SELLER } from '../../constants'
+import { BASE_URL, ITEMS } from '@env';
+import * as SecureStore from 'expo-secure-store';
+import { ToastAndroid } from 'react-native'
+import { Alert } from 'react-native'
 
 const ProductDetail = ({ navigation, route }) => {
 
   const { mode } = useContext(ModeContext);
-  //const { name, parameters, image, quantity, price, description, unit } = route.params;
-
-  console.log(route.params.preview);
+  const { name, parameters, image, quantity, price, description, unit, categoryType } = route.params;
 
   useEffect(() => {
     //mode === MODE_BUYER ? navigation.goBack() : <></>
@@ -34,8 +36,77 @@ const ProductDetail = ({ navigation, route }) => {
     navigation.goBack();
   }
 
-  function productDraftHandler(){
+  async function productDraftHandler() {
+    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    const response = await fetch(BASE_URL + ITEMS, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "X-USER-SESSION-ID": sessionId
+      },
+      body: JSON.stringify({
+        catogery_type: categoryType,
+        product_name: name,
+        product_description: description,
+        quantity: parseInt(quantity),
+        quantity_um: unit,
+        price: price,
+        save_as_draft: true,
+        images: [image.toString()],
+        parameters: parameters.map((parameter) => {
+           return { name: parameter.paramName, value: parameter.currentValue, um: parameter.um  }
+        })
+      })
+    })
 
+    const data = await response.json();
+
+    if (data.error) {
+      if (Platform.OS === 'android') {
+        return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+      }
+      else {
+        return Alert.alert(data.error.description);
+      }
+    }
+    navigation.popToTop();
+    navigation.navigate('EditStack');
+  }
+
+  async function submitProductHandler(){
+    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    const response = await fetch(BASE_URL + ITEMS, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "X-USER-SESSION-ID": sessionId
+      },
+      body: JSON.stringify({
+        catogery_type: categoryType,
+        product_name: name,
+        product_description: description,
+        quantity: parseInt(quantity),
+        quantity_um: unit,
+        price: price,
+        images: [image.toString()],
+        parameters: parameters.map((parameter) => {
+           return { name: parameter.paramName, value: parameter.currentValue, um: parameter.um  }
+        })
+      })
+    })
+
+    const data = await response.json();
+
+    if (data.error) {
+      if (Platform.OS === 'android') {
+        return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+      }
+      else {
+        return Alert.alert(data.error.description);
+      }
+    }
+    navigation.popToTop();
+    navigation.navigate('HomeStack');
   }
 
   return (
@@ -71,23 +142,17 @@ const ProductDetail = ({ navigation, route }) => {
       </View>
       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, marginBottom: 80, marginTop: '5%' }}>
         <View style={{ backgroundColor: '#F8F8F8', height: 300, marginTop: '10%', borderRadius: 24 }}>
-          {/* <Image style={{ height: '100%', width: '100%', borderRadius: 24 }} source={{ uri: image[0] }} /> */}
+          <Image style={{ height: '100%', width: '100%', borderRadius: 24 }} source={{ uri: image[0] }} />
         </View>
         <View style={{ flexDirection: 'row', marginTop: '8%', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{'Item Name'}</Text>
+          <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{name}</Text>
           {!route.params.preview ? <TouchableOpacity onPress={companyClickHandler} style={{ height: 50, maxWidth: '50%', backgroundColor: '#FFFFFF', elevation: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: '3%', borderRadius: 16, marginRight: '2%' }}>
             <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 17, color: colors.primary[0] }}>{'xyz company'}</Text>
           </TouchableOpacity>
             :
-            <View style={{flexDirection: 'row', width: '25%', justifyContent: 'space-evenly', alignItems:  'center'}}>
-              <TouchableOpacity>
-                <Svg style={{ height: 25, marginTop: 3, width: 25 }} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
-                  <Path
-                    d="M16.665 2.01A5.323 5.323 0 0 1 20.591 3.4a5.381 5.381 0 0 1 1.399 3.936v9.33a5.373 5.373 0 0 1-1.389 3.936 5.346 5.346 0 0 1-3.936 1.389h-9.33A5.332 5.332 0 0 1 3.399 20.6a5.332 5.332 0 0 1-1.389-3.936v-9.33A5.332 5.332 0 0 1 3.4 3.399 5.332 5.332 0 0 1 7.335 2.01Zm-.26 4.566a1.58 1.58 0 0 0-2.237 0l-.67.679c-.1.1-.1.27 0 .37l.055.054.246.244.497.496.605.604c.126.126.21.211.216.22.11.12.18.28.18.46 0 .359-.29.659-.66.659-.17 0-.33-.07-.44-.18L12.53 8.524a.217.217 0 0 0-.3 0l-4.765 4.765a1.8 1.8 0 0 0-.53 1.238l-.06 2.368c0 .13.04.25.13.34.09.09.21.14.34.14h2.347c.48 0 .94-.19 1.29-.53l6.722-6.743c.61-.62.61-1.618 0-2.228Z"
-                    fill="#130F26"
-                    fillRule="nonzero"
-                  />
-                </Svg>
+            <View style={{ flexDirection: 'row', width: '40%', justifyContent: 'space-evenly', alignItems: 'center' }}>
+              <TouchableOpacity onPress={productDraftHandler} style={{ height: 30, width: '60%', backgroundColor: colors.primary[0], borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF', fontSize: 13 }}>{'Save Draft'}</Text>
               </TouchableOpacity>
               <TouchableOpacity>
                 <Svg style={{ height: 25, marginTop: 3, width: 25 }} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
@@ -101,14 +166,14 @@ const ProductDetail = ({ navigation, route }) => {
             </View>}
         </View>
         <View style={{ width: '60%', marginTop: '1%' }}>
-          <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: '#B3B1B0' }}>{'Product Description'}</Text>
+          <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: '#B3B1B0' }}>{description}</Text>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '10%', marginTop: '5%' }}>
-          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'10Kg'}</Text>
-          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'2000' + '/' + 'Kg'}</Text>
+          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{quantity}</Text>
+          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs '+ price + '/' + unit}</Text>
         </View>
         <View style={styles.submitBtnContainer}>
-          <SubmitBtn onPress={contactSellerHandler} fill={true} active={true} text={mode === MODE_BUYER ? 'Contact Seller' : 'Submit'} />
+          <SubmitBtn onPress={mode === MODE_SELLER? submitProductHandler :contactSellerHandler} fill={true} active={true} text={mode === MODE_BUYER ? 'Contact Seller' : 'Submit'} />
         </View>
       </ScrollView>
     </View>

@@ -4,13 +4,13 @@ import { FlatList } from 'react-native'
 import { OptionRender } from './OptionRender'
 import { TextInput } from 'react-native'
 
-const ProductFillSlot = ({ name, options, productParameters, setProductParameters }, key) => {
+const ProductFillSlot = ({ name, options, productParameters, setProductParameters, um }, key) => {
 
   const [selectedParameter, setSelectedParameter] = useState(null)
 
   useEffect(() => {
 
-    let arr = { paramName: name, currentValue: selectedParameter }
+    let arr = { paramName: name, currentValue: selectedParameter, um: um }
     const index = productParameters.findIndex(obj => obj.paramName === arr.paramName);
     if (index === -1) {
       setProductParameters([...productParameters, arr])

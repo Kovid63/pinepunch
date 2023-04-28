@@ -1,14 +1,14 @@
 import { View, Text, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
 import Header from '../../components/Header'
 import SlidingBtn from '../../components/SlidingBtn'
+import { MsgContext } from '../../contexts/MsgContext'
 
-const Notification = ({navigation}) => {
+const Notification = ({ navigation }) => {
 
-    const [isNewMsgOn, setIsNewMsgOn] = useState(false);
-    const [isItemSoldMsgOn, setIsItemSoldMsgOn] = useState(false);
+    const { isNewMsgOn, setIsNewMsgOn, isItemSoldMsgOn, setIsItemSoldMsgOn } = useContext(MsgContext);
 
     function backPressHandler() {
         navigation.goBack();
@@ -21,16 +21,16 @@ const Notification = ({navigation}) => {
                 <View style={styles.titleContainer}>
                     <Text style={styles.titleText}>{'Social'}</Text>
                 </View>
-                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Text style={styles.text}>{'New Message'}</Text>
-                    <SlidingBtn on={isNewMsgOn} setOn={setIsNewMsgOn}/>
+                    <SlidingBtn on={isNewMsgOn} setOn={setIsNewMsgOn} />
                 </View>
                 <View style={styles.titleContainer}>
                     <Text style={styles.titleText}>{'Store'}</Text>
                 </View>
-                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Text style={styles.text}>{'Item Sold'}</Text>
-                    <SlidingBtn on={isItemSoldMsgOn} setOn={setIsItemSoldMsgOn}/>
+                    <SlidingBtn on={isItemSoldMsgOn} setOn={setIsItemSoldMsgOn} />
                 </View>
             </ScrollView>
         </View>

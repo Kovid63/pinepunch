@@ -6,17 +6,20 @@ export const categories = [
             {
                 param_name: "Size",
                 predefined: true,
-                options: ["2","4","5","6"]
+                options: ["2","4","5","6"],
+                um: 'na'
             },
             {
                 param_name: "Thickness",
                 predefined: true,
-                options: ["1","2","3"]
+                options: ["1","2","3"],
+                um: 'cm'
             },
             {
                 param_name: "Grade",
                 predefined: true,
-                options: ["A","B","C"]
+                options: ["A","B","C"],
+                um: 'na'
             }
         ],
         description_required: true
@@ -53,7 +56,8 @@ export const categories = [
             {
                 param_name: "Grade",
                 predefined: true,
-                options: ["A","B","C"]
+                options: ["A","B","C"],
+                um: 'na'
             }
         ],
         description_required: true
