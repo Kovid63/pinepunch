@@ -1,5 +1,5 @@
 export const homeCategory = [
-    "Sheet Metal",
+    "Sheet",
     "metals",
     "items"
 ]

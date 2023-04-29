@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 import { colors } from '../../colors';
@@ -8,12 +8,20 @@ import { itemsForSale } from '../../dummydata/dummydata';
 
 const Product = ({ route, navigation }) => {
 
+    const [query, setQuery] = useState('');
+    const [products, setProducts] = useState(route.params.products || {})
 
     function backPressHandler() {
         navigation.goBack();
     }
 
+    useEffect(() => {
 
+        const obj = products.filter(obj => obj.product_name.toLowerCase().includes(query.toLowerCase()));
+
+        query.length === 0 ? setProducts(route.params.products) : setProducts(obj);
+
+    }, [query])
 
     return (
         <View style={styles.container}>
@@ -34,7 +42,7 @@ const Product = ({ route, navigation }) => {
                     </Svg>
                 </TouchableOpacity>
                 <View style={styles.searchBarContainer}>
-                    <SearchBar />
+                    <SearchBar query={query} setQuery={setQuery} />
                 </View>
             </View>
             <View style={styles.middle}>
@@ -42,7 +50,7 @@ const Product = ({ route, navigation }) => {
                     <Text style={styles.headingText}>{'Items for sale'}</Text>
                 </View>
             </View>
-            <FlatList contentContainerStyle={{ alignItems: 'center', paddingBottom: 90 }} showsVerticalScrollIndicator={false} data={route.params.products} renderItem={(item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
+            <FlatList contentContainerStyle={{ alignItems: 'center', paddingBottom: 90 }} showsVerticalScrollIndicator={false} data={products} renderItem={(item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
                 preview: false
             })} {...item} />} numColumns={2} />
         </View>

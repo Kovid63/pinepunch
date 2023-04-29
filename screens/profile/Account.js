@@ -61,7 +61,6 @@ const Account = ({ navigation }) => {
             },
             body: mode === MODE_SELLER? JSON.stringify({
                 name: merchantData.name,
-                seller_email: merchantData.email,
                 seller_background_image_url: merchantData.seller_background_image_url,
                 seller_profile_image_url: merchantData.seller_profile_image_url
             }): JSON.stringify({
@@ -191,14 +190,6 @@ const Account = ({ navigation }) => {
                     <Text style={styles.infoTitle}>{'Name'}</Text>
                     <View style={styles.infoContainer}>
                         <TextInput value={merchantData.name} style={styles.infoText} onChangeText={(name) => setMerchantData({ ...merchantData, name: name })} />
-                    </View>
-                    <Text style={styles.infoTitle}>{'Username'}</Text>
-                    <View style={styles.infoContainer}>
-                        <TextInput value={merchantData.name} style={styles.infoText} onChangeText={(name) => setMerchantData({ ...merchantData, name: name })} />
-                    </View>
-                    <Text style={styles.infoTitle}>{'Email'}</Text>
-                    <View style={styles.infoContainer}>
-                        <TextInput value={merchantData.email} style={styles.infoText} onChangeText={(email) => setMerchantData({ ...merchantData, email: email })} />
                     </View>
                 </View>
                 <View style={styles.submitBtnContainer}>

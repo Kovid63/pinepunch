@@ -10,7 +10,7 @@ import { Image } from 'react-native'
 import SubmitBtn from '../../components/SubmitBtn'
 import { ModeContext } from '../../contexts/ModeContext'
 import { MODE_BUYER, MODE_SELLER } from '../../constants'
-import { BASE_URL, ITEMS } from '@env';
+import { BASE_URL, SELLER_ITEMS } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native'
 import { Alert } from 'react-native'
@@ -38,7 +38,7 @@ const ProductDetail = ({ navigation, route }) => {
 
   async function productDraftHandler() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    const response = await fetch(BASE_URL + ITEMS, {
+    const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",
@@ -75,7 +75,7 @@ const ProductDetail = ({ navigation, route }) => {
 
   async function submitProductHandler(){
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    const response = await fetch(BASE_URL + ITEMS, {
+    const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
         "Content-Type": "application/json",

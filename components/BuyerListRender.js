@@ -31,9 +31,9 @@ export const BuyerListRender = ({ item }) => {
                 </Svg>
             </TouchableOpacity>
             <Image source={{ uri: item.image }} style={{ height: 110, width: '70%', borderRadius: 19, alignSelf: 'center'}} />
-            <Text style={{ marginHorizontal: '10%', marginTop: 25, fontFamily: 'Poppins', fontSize: 12 }}>{item.itemName}</Text>
+            <Text style={{ marginHorizontal: '10%', marginTop: 25, fontFamily: 'Poppins', fontSize: 12 }}>{item.product_name}</Text>
             <View style={{ flexDirection: 'row', marginHorizontal: '5%', justifyContent: 'space-between' }}>
-                <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 16, marginLeft: '5%' }}>{'Rs ' + (item.price / item.quantity) + '/Kg'}</Text>
+                <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 16, marginLeft: '5%' }}>{'Rs ' + (item.price / item.quantity).toFixed(2) + '/Kg'}</Text>
             </View>
         </View>
     )

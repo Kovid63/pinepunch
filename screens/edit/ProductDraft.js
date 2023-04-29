@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors } from '../../colors'
-import { BASE_URL, ITEMS } from '@env';
+import { BASE_URL, SELLER_ITEMS } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native'
 import { Alert } from 'react-native'
@@ -17,7 +17,7 @@ const ProductDraft = ({navigation}) => {
 
   async function fetchDrafts() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    const response = await fetch(BASE_URL + ITEMS + `?status=draft`, {
+    const response = await fetch(BASE_URL + SELLER_ITEMS + `?status=draft`, {
       method: 'GET',
       headers: {
         "Content-Type": "application/json",
@@ -48,7 +48,7 @@ const ProductDraft = ({navigation}) => {
     setRefreshing(true);
     fetchDrafts();
     setRefreshing(false);
-}
+  }
 
 useEffect(() => {
   const focusListener = navigation.addListener('focus', () => {

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, FlatList, Image, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Image, Dimensions, RefreshControl } from 'react-native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { ModeContext } from '../../contexts/ModeContext';
@@ -15,6 +15,9 @@ import { homeBuyerAd } from '../../data/homeBuyerAd';
 import { AdRender } from '../../components/AdRender';
 import { homeCategory } from '../../data/homeCategory';
 import { BuyerListRender } from '../../components/BuyerListRender';
+import { BASE_URL, BUYER_ITEMS } from '@env';
+import * as SecureStore from 'expo-secure-store';
+import { ToastAndroid } from 'react-native'
 
 const Home = ({ navigation }) => {
 
@@ -23,18 +26,44 @@ const Home = ({ navigation }) => {
 
   const [adIndex, setAdIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(homeCategory[0]);
+  const [products, setProducts] = useState([])
+  const [refreshing, setRefreshing] = useState(false);
 
   const adRef = useRef();
 
 
   function showAllProductHandler() {
     navigation.navigate('Product', {
-      products: itemsForSale
+      products: products
     });
   }
 
   function addProductHandler() {
     navigation.navigate('CategoryStack');
+  }
+
+  async function fetchProducts(category, count) {
+    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    const response = await fetch(BASE_URL + BUYER_ITEMS + `?catogery_type=${category}&count=${count}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "X-USER-SESSION-ID": sessionId
+      },
+    })
+
+    const data = await response.json();
+
+    if (data.error) {
+      if (Platform.OS === 'android') {
+        return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+      }
+      else {
+        return Alert.alert(data.error.description);
+      }
+    }
+
+    setProducts(data.items);
   }
 
   const onMomentumScrollEndHandler = (event) => {
@@ -56,8 +85,18 @@ const Home = ({ navigation }) => {
     setSelectedCategory(item);
   }
 
-  function searchBarHandler(){
+  function searchBarHandler() {
     navigation.navigate('Search');
+  }
+
+  function categoryPageLaunchHandler() {
+    navigation.navigate('CategoryStack');
+  }
+
+  function onRefresh() {
+    setRefreshing(true);
+    mode === MODE_BUYER ? fetchProducts(selectedCategory, 0) : <></>
+    setRefreshing(false);
   }
 
   useEffect(() => {
@@ -70,6 +109,10 @@ const Home = ({ navigation }) => {
       return () => clearInterval(adInterval);
     }
   }, [mode])
+
+  useEffect(() => {
+    mode === MODE_BUYER ? fetchProducts(selectedCategory, 0) : <></>
+  }, [mode, selectedCategory])
 
 
   return (
@@ -89,7 +132,7 @@ const Home = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.searchBarContainer}>
-        <SearchBar editable={false} onPress={searchBarHandler}/>
+        <SearchBar editable={false} onPress={searchBarHandler} />
       </View>
       {mode === MODE_SELLER ?
         <>
@@ -113,7 +156,7 @@ const Home = ({ navigation }) => {
                 data={itemsForSale.slice(0, 2)}
                 renderItem={(item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
                   preview: false
-                })} {...item}/>} />
+                })} {...item} />} />
             </View>
             <View style={styles.middle}>
               <View>
@@ -128,7 +171,7 @@ const Home = ({ navigation }) => {
                 data={scrapForSale.slice(0, 2)}
                 renderItem={(item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
                   preview: false
-                })} {...item}/>} />
+                })} {...item} />} />
             </View>
           </ScrollView>
         </>
@@ -152,12 +195,12 @@ const Home = ({ navigation }) => {
               ))
             }
           </View>
-          <ScrollView>
+          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <View style={styles.middle}>
               <View>
                 <Text style={styles.headingText}>{'Category'}</Text>
               </View>
-              <Text style={styles.viewAllText}>{'View All'}</Text>
+              <Text onPress={categoryPageLaunchHandler} style={styles.viewAllText}>{'View All'}</Text>
             </View>
             <View style={{ marginTop: '5%' }}>
               <FlatList horizontal showsHorizontalScrollIndicator={false} data={homeCategory} renderItem={({ item }) => {
@@ -172,14 +215,14 @@ const Home = ({ navigation }) => {
               <View>
                 <Text style={styles.headingText}>{'New Arrivals'}</Text>
               </View>
-              <Text style={styles.viewAllText}>{'View All'}</Text>
+              <Text onPress={showAllProductHandler} style={styles.viewAllText}>{'View All'}</Text>
             </View>
             <View style={styles.listContainer}>
               <FlatList
                 contentContainerStyle={{ paddingBottom: 90 }}
                 showsHorizontalScrollIndicator={false}
                 horizontal
-                data={scrapForSale.slice(0, 2)}
+                data={products.slice(0, 2)}
                 renderItem={BuyerListRender} />
             </View>
           </ScrollView>

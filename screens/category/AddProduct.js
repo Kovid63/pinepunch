@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { categories } from '../../category'
 import { colors } from '../../colors'
@@ -9,10 +9,19 @@ import { Path, Svg } from 'react-native-svg'
 const AddProduct = ({ navigation }) => {
 
   const { mode } = useContext(ModeContext);
+  const [query, setQuery] = useState('');
+  const [category, setCategory] = useState(categories || []);
 
   function categoryClickHandler(category) {
     navigation.navigate('FillProduct', category)
   }
+
+  useEffect(() => {
+
+    const obj = category.filter(obj => obj.category_name.toLowerCase().includes(query.toLowerCase()));
+    query.length === 0 ? setCategory(categories) : setCategory(obj);
+
+}, [query])
 
   return (
     <View style={styles.container}>
@@ -23,7 +32,7 @@ const AddProduct = ({ navigation }) => {
       </View>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.categoryListContainer}>
           {
-            categories.map((category, index) => (
+            category.map((category, index) => (
               <TouchableOpacity onPress={() => categoryClickHandler(category)} activeOpacity={0.4} key={index} style={styles.categoryContainer}>
                 <Text style={styles.categoryText}>{category.category_name}</Text>
               </TouchableOpacity>
@@ -42,7 +51,7 @@ const AddProduct = ({ navigation }) => {
             elevation: 14, borderRadius: 16,
             flexDirection: 'row'
           }}>
-            <TextInput selectionColor={'#B3B1B0'} style={styles.input} />
+            <TextInput value={query} onChangeText={(category) => setQuery(category)}  selectionColor={'#B3B1B0'} style={styles.input} />
             <TouchableOpacity>
               <Svg
                 style={{
@@ -68,7 +77,7 @@ const AddProduct = ({ navigation }) => {
           </View>
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.categoryListContainer}>
             {
-              categories.map((category, index) => (
+              category.map((category, index) => (
                 <TouchableOpacity onPress={() => categoryClickHandler(category)} activeOpacity={0.4} key={index} style={styles.categoryContainer}>
                   <Text style={styles.categoryText}>{category.category_name}</Text>
                 </TouchableOpacity>
