@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 import { colors } from '../../colors';
 import { ListRender } from '../../components/ListRender';
 import SearchBar from '../../components/SearchBar';
 import { itemsForSale } from '../../dummydata/dummydata';
+import { ModeContext } from '../../contexts/ModeContext';
+import { MODE_SELLER } from '../../constants';
+import { BuyerListRender } from '../../components/BuyerListRender';
 
 const Product = ({ route, navigation }) => {
 
     const [query, setQuery] = useState('');
-    const [products, setProducts] = useState(route.params.products || {})
+    const [products, setProducts] = useState(route.params.products || {});
+    const { mode } = useContext(ModeContext);
 
     function backPressHandler() {
         navigation.goBack();
@@ -50,7 +54,9 @@ const Product = ({ route, navigation }) => {
                     <Text style={styles.headingText}>{'Items for sale'}</Text>
                 </View>
             </View>
-            <FlatList contentContainerStyle={{ alignItems: 'center', paddingBottom: 90 }} showsVerticalScrollIndicator={false} data={products} renderItem={(item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
+            <FlatList contentContainerStyle={{ alignItems: 'center', paddingBottom: 90 }} showsVerticalScrollIndicator={false} data={products} renderItem={mode === MODE_SELLER? (item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
+                preview: false
+            })} {...item} />: (item) => <BuyerListRender onPress={() => navigation.navigate('ProductDetail', {
                 preview: false
             })} {...item} />} numColumns={2} />
         </View>

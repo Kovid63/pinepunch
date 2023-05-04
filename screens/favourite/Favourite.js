@@ -14,7 +14,7 @@ import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native'
 import { Alert } from 'react-native'
 
-const Favourite = () => {
+const Favourite = ({navigation}) => {
 
     const [favourites, setFavourites] = useState([])
     const [query, setQuery] = useState('');
@@ -52,8 +52,11 @@ const Favourite = () => {
     }
 
     useEffect(() => {
+        const focusListener = navigation.addListener('focus', () => {
         fetchFavourites();
-    }, [])
+        })
+        return () => focusListener;
+      }, [navigation])
 
     useEffect(() => {
 
