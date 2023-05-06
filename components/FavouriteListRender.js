@@ -8,7 +8,7 @@ import { Alert } from "react-native";
 
 export const FavouriteListRender = ({ item, fetchFavourites }) => {
 
-    const {product_name, quantity, quantity_um } = item.inventory_item;
+    const {product_name, quantity, quantity_um, price } = item.inventory_item;
 
     async function removeFavourite(itemId){
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
@@ -56,7 +56,7 @@ export const FavouriteListRender = ({ item, fetchFavourites }) => {
             <Image source={{ uri: 'https://cdn.pixabay.com/photo/2016/06/12/20/27/macro-1452987__340.jpg' }} style={{ height: 110, width: '70%', borderRadius: 19, alignSelf: 'center' }} />
             <Text style={{ marginHorizontal: '10%', marginTop: 25, fontFamily: 'Poppins', fontSize: 12 }}>{product_name}</Text>
             <View style={{ flexDirection: 'row', marginHorizontal: '5%', justifyContent: 'space-between' }}>
-                <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 16, marginLeft: '5%' }}>{'Rs ' + quantity + '/' + quantity_um}</Text>
+                <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 16, marginLeft: '5%' }}>{'Rs ' + (price/quantity).toFixed(2) + '/' + quantity_um}</Text>
             </View>
         </View>
     )

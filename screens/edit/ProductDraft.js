@@ -35,7 +35,7 @@ const ProductDraft = ({navigation}) => {
         return Alert.alert(data.error.description);
       }
     }
-
+    console.log(data.items[0].images);
     setDraftProducts(data.items);
 
   }

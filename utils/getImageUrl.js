@@ -1,23 +1,29 @@
 import { BASE_URL, IMAGES } from '@env';
-import * as SecureStore from 'expo-secure-store';
+import axios from 'axios';
 import { Alert } from 'react-native';
 import { ToastAndroid } from 'react-native';
+import mime from "mime";
 
-export async function getImageUrl(image, purpose) {
-    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    const response = await fetch(BASE_URL + IMAGES, {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-            "X-USER-SESSION-ID": sessionId
-        },
-        body: JSON.stringify({
-            image_file: image,
-            purpose: purpose
+export async function getImageUrl(image, purpose, sessionId) {
+    
+        const formData = new FormData();
+        formData.append('image_file', {
+            uri : image,
+            type: mime.getType(image),
+            name: image.split("/").pop()
+           });
+        formData.append('purpose', purpose);
+
+        const response = await fetch(BASE_URL + IMAGES, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "multipart/form-data",
+                "X-USER-SESSION-ID": sessionId
+            },
+            body: formData,
         })
-    })
 
-    const data = await response.json();
+        const data = await response.json();
 
         if (data.error) {
             if (Platform.OS === 'android') {
@@ -28,5 +34,6 @@ export async function getImageUrl(image, purpose) {
             }
         }
 
-       return data.image_url;
+        console.log(data.image_url);
+        return data.image_url;
 }

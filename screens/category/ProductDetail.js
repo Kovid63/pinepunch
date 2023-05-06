@@ -1,7 +1,6 @@
 import { View, Text } from 'react-native'
 import React, { useContext, useEffect } from 'react'
 import { StyleSheet } from 'react-native'
-import Header from '../../components/Header'
 import { TouchableOpacity } from 'react-native'
 import { Path, Svg } from 'react-native-svg'
 import { ScrollView } from 'react-native'
@@ -14,6 +13,7 @@ import { BASE_URL, SELLER_ITEMS } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native'
 import { Alert } from 'react-native'
+import { getImageUrl } from '../../utils/getImageUrl'
 
 const ProductDetail = ({ navigation, route }) => {
 
@@ -36,8 +36,10 @@ const ProductDetail = ({ navigation, route }) => {
     navigation.goBack();
   }
 
+
   async function productDraftHandler() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    const image_url = getImageUrl(image, 'item', sessionId);
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
@@ -52,9 +54,9 @@ const ProductDetail = ({ navigation, route }) => {
         quantity_um: unit,
         price: price,
         save_as_draft: true,
-        images: [image.toString()],
+        images: [image_url.toString()],
         parameters: parameters.map((parameter) => {
-           return { name: parameter.paramName, value: parameter.currentValue, um: parameter.um  }
+           return { name: parameter.name, value: parameter.value, um: parameter.um  }
         })
       })
     })
@@ -73,8 +75,9 @@ const ProductDetail = ({ navigation, route }) => {
     navigation.navigate('EditStack');
   }
 
-  async function submitProductHandler(){
+  async function submitProductHandler() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    const image_url = getImageUrl(image, 'item', sessionId);
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
@@ -88,9 +91,9 @@ const ProductDetail = ({ navigation, route }) => {
         quantity: parseInt(quantity),
         quantity_um: unit,
         price: price,
-        images: [image.toString()],
+        images: [image_url.toString()],
         parameters: parameters.map((parameter) => {
-           return { name: parameter.paramName, value: parameter.currentValue, um: parameter.um  }
+          return { name: parameter.name, value: parameter.value, um: parameter.um }
         })
       })
     })
@@ -142,7 +145,7 @@ const ProductDetail = ({ navigation, route }) => {
       </View>
       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, marginBottom: 80, marginTop: '5%' }}>
         <View style={{ backgroundColor: '#F8F8F8', height: 300, marginTop: '10%', borderRadius: 24 }}>
-          <Image style={{ height: '100%', width: '100%', borderRadius: 24 }} source={{ uri: image[0] }} />
+          <Image style={{ height: '100%', width: '100%', borderRadius: 24 }} source={{ uri: image }} />
         </View>
         <View style={{ flexDirection: 'row', marginTop: '8%', justifyContent: 'space-between', alignItems: 'center' }}>
           <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{name}</Text>
@@ -170,10 +173,10 @@ const ProductDetail = ({ navigation, route }) => {
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '10%', marginTop: '5%' }}>
           <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{quantity}</Text>
-          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs '+ price + '/' + unit}</Text>
+          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs ' + price + '/' + unit}</Text>
         </View>
         <View style={styles.submitBtnContainer}>
-          <SubmitBtn onPress={mode === MODE_SELLER? submitProductHandler :contactSellerHandler} fill={true} active={true} text={mode === MODE_BUYER ? 'Contact Seller' : 'Submit'} />
+          <SubmitBtn onPress={mode === MODE_SELLER ? submitProductHandler : contactSellerHandler} fill={true} active={true} text={mode === MODE_BUYER ? 'Contact Seller' : 'Submit'} />
         </View>
       </ScrollView>
     </View>

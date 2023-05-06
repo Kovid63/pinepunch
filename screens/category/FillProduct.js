@@ -48,8 +48,7 @@ const FillProduct = ({ navigation, route }) => {
             setProductPrice(price)
             setValue(quantity_um)
         }
-
-
+        console.log(productImage);
     }, [])
 
     const HeaderComponentFlatList = () => {
@@ -135,10 +134,11 @@ const FillProduct = ({ navigation, route }) => {
 
         if (type === 'Media') {
             const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
                 allowsEditing: true,
                 aspect: [16, 9],
                 quality: 1,
+                base64: true,
             });
 
             if (!result.canceled) {
@@ -153,6 +153,7 @@ const FillProduct = ({ navigation, route }) => {
                 allowsEditing: true,
                 aspect: [16, 9],
                 quality: 1,
+                base64: true
             });
 
             if (!result.canceled) {
@@ -166,7 +167,7 @@ const FillProduct = ({ navigation, route }) => {
         navigation.navigate('ProductDetail', {
             name: productName,
             parameters: productParameters,
-            image: [productImage],
+            image: productImage,
             quantity: productQuantity + value,
             price: productPrice,
             description: productDescription,
@@ -191,15 +192,13 @@ const FillProduct = ({ navigation, route }) => {
                                 <TextInput style={styles.parameterInput} value={productName} placeholder='Item Name 1' onChangeText={(name) => { setProductName(name) }} />
                             </View>
 
-                            {route.params.parameters ?
-                                route.params.parameters.map((parameter, index) => {
-
+                            {
+                                productParameters.map((parameter, index) => {
                                     return (
-                                        <ProductFillSlot um={parameter.um} key={index} name={parameter.param_name} options={parameter.options} productParameters={productParameters} setProductParameters={setProductParameters} />
+                                        <ProductFillSlot um={parameter.um} key={index} name={parameter.name} value={parameter.value} productParameters={productParameters} setProductParameters={setProductParameters} />
                                     )
                                 })
-                                :
-                                <></>
+
                             }
                             <View style={{ height: 200, width: '90%', backgroundColor: '#F8F8F8', marginTop: 10, borderRadius: 5 }}>
                                 <Text style={[styles.parameterText, { marginHorizontal: '2%', marginTop: 5 }]}>{'Product images'}</Text>

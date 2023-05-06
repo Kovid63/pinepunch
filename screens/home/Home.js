@@ -15,7 +15,7 @@ import { homeBuyerAd } from '../../data/homeBuyerAd';
 import { AdRender } from '../../components/AdRender';
 import { homeCategory } from '../../data/homeCategory';
 import { BuyerListRender } from '../../components/BuyerListRender';
-import { BASE_URL, BUYER_ITEMS } from '@env';
+import { BASE_URL, BUYER_ITEMS, FAVORITES } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native'
 
@@ -28,6 +28,7 @@ const Home = ({ navigation }) => {
   const [selectedCategory, setSelectedCategory] = useState(homeCategory[0]);
   const [products, setProducts] = useState([])
   const [refreshing, setRefreshing] = useState(false);
+  const [favourites, setFavourites] = useState([]);
 
   const adRef = useRef();
 
@@ -40,6 +41,31 @@ const Home = ({ navigation }) => {
 
   function addProductHandler() {
     navigation.navigate('CategoryStack');
+  }
+
+  async function fetchFavourites() {
+    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    const response = await fetch(BASE_URL + FAVORITES + `?page=${1}&count=${0}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "X-USER-SESSION-ID": sessionId
+      }
+    });
+
+    const data = await response.json();
+
+    if (data.error) {
+      if (Platform.OS === 'android') {
+        return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+      }
+      else {
+        return Alert.alert(data.error.description);
+      }
+    }
+
+    setFavourites(data.items)
+
   }
 
   async function fetchProducts(category, count) {
@@ -95,7 +121,7 @@ const Home = ({ navigation }) => {
 
   function onRefresh() {
     setRefreshing(true);
-    mode === MODE_BUYER ? fetchProducts(selectedCategory, 0) : <></>
+    mode === MODE_BUYER ? [fetchProducts(selectedCategory, 0), fetchFavourites()] : <></>
     setRefreshing(false);
   }
 
@@ -111,7 +137,7 @@ const Home = ({ navigation }) => {
   }, [mode])
 
   useEffect(() => {
-    mode === MODE_BUYER ? fetchProducts(selectedCategory, 0) : <></>
+    mode === MODE_BUYER ? [fetchProducts(selectedCategory, 0), fetchFavourites()] : <></>
   }, [mode, selectedCategory])
 
 
@@ -223,7 +249,12 @@ const Home = ({ navigation }) => {
                 showsHorizontalScrollIndicator={false}
                 horizontal
                 data={products.slice(0, 2)}
-                renderItem={BuyerListRender} />
+                renderItem={(item) => {
+                  const isFav = favourites.some(o => o.inventory_item.id == item.item.id);
+                  return (
+                    <BuyerListRender {...item} favourite={isFav}/>
+                  )
+                }} />
             </View>
           </ScrollView>
         </>
