@@ -41,14 +41,14 @@ const FillProduct = ({ navigation, route }) => {
 
         if (isEdit) {
             setProductName(product_name);
-            setProductImage(images);
+            setProductImage(images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, ''));
             setProductDescription(product_description);
             setProductParameters(parameters);
             setProductQuantity(quantity)
             setProductPrice(price)
             setValue(quantity_um)
         }
-        console.log(productImage);
+
     }, [])
 
     const HeaderComponentFlatList = () => {
@@ -167,7 +167,7 @@ const FillProduct = ({ navigation, route }) => {
         navigation.navigate('ProductDetail', {
             name: productName,
             parameters: productParameters,
-            image: productImage,
+            image: productImage || '',
             quantity: productQuantity + value,
             price: productPrice,
             description: productDescription,

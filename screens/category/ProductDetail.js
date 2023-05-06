@@ -14,15 +14,12 @@ import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native'
 import { Alert } from 'react-native'
 import { getImageUrl } from '../../utils/getImageUrl'
+import { deleteProduct } from '../../utils/deleteProduct'
 
 const ProductDetail = ({ navigation, route }) => {
 
   const { mode } = useContext(ModeContext);
   const { name, parameters, image, quantity, price, description, unit, categoryType } = route.params;
-
-  useEffect(() => {
-    //mode === MODE_BUYER ? navigation.goBack() : <></>
-  }, [mode])
 
   function contactSellerHandler() {
     navigation.navigate('ContactSeller');
@@ -36,10 +33,9 @@ const ProductDetail = ({ navigation, route }) => {
     navigation.goBack();
   }
 
-
   async function productDraftHandler() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    const image_url = getImageUrl(image, 'item', sessionId);
+    const image_url = await getImageUrl(image, 'item', sessionId);
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
@@ -75,9 +71,15 @@ const ProductDetail = ({ navigation, route }) => {
     navigation.navigate('EditStack');
   }
 
+  async function deleteProductHandler(){
+    navigation.popToTop();
+    navigation.navigate('CategoryStack');
+  }
+
   async function submitProductHandler() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    const image_url = getImageUrl(image, 'item', sessionId);
+    const image_url = await getImageUrl(image, 'item', sessionId);
+    console.log(image_url);
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
@@ -157,7 +159,7 @@ const ProductDetail = ({ navigation, route }) => {
               <TouchableOpacity onPress={productDraftHandler} style={{ height: 30, width: '60%', backgroundColor: colors.primary[0], borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
                 <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF', fontSize: 13 }}>{'Save Draft'}</Text>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={deleteProductHandler}>
                 <Svg style={{ height: 25, marginTop: 3, width: 25 }} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
                   <Path
                     fill="#000"

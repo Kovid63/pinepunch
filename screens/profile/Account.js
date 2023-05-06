@@ -15,6 +15,7 @@ import { Alert } from 'react-native'
 import { TextInput } from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
 import { RefreshControl } from 'react-native'
+import { getImageUrl } from '../../utils/getImageUrl'
 
 const Account = ({ navigation }) => {
 
@@ -53,6 +54,8 @@ const Account = ({ navigation }) => {
 
     async function updateDetails() {
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+        const bgUrl = mode === MODE_SELLER? await getImageUrl(merchantData.seller_background_image_url, 'merchant_seller_background', sessionId) : await getImageUrl(merchantData.buyer_background_image_url, 'merchant_buyer_background', sessionId);
+        const profUrl = mode === MODE_SELLER? await getImageUrl(merchantData.seller_profile_image_url, 'merchant_seller_logo', sessionId) : await getImageUrl(merchantData.buyer_profile_image_url, 'merchant_buyer_logo', sessionId);
         const response = await fetch(BASE_URL + MERCHANT, {
             method: 'PUT',
             headers: {
@@ -61,12 +64,12 @@ const Account = ({ navigation }) => {
             },
             body: mode === MODE_SELLER? JSON.stringify({
                 name: merchantData.name,
-                seller_background_image_url: merchantData.seller_background_image_url,
-                seller_profile_image_url: merchantData.seller_profile_image_url
+                seller_background_image_url: bgUrl,
+                seller_profile_image_url: profUrl
             }): JSON.stringify({
                 name: merchantData.name,
-                buyer_background_image_url: merchantData.buyer_background_image_url,
-                buyer_profile_image_url: merchantData.buyer_profile_image_url
+                buyer_background_image_url: bgUrl,
+                buyer_profile_image_url: profUrl
             })
         });
 

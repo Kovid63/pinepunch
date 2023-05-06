@@ -34,6 +34,5 @@ export async function getImageUrl(image, purpose, sessionId) {
             }
         }
 
-        console.log(data.image_url);
         return data.image_url;
 }

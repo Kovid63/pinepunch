@@ -9,6 +9,7 @@ import { ScrollView } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 import { RefreshControl } from 'react-native';
+import { deleteProduct } from '../../utils/deleteProduct';
 
 const ProductDraft = ({navigation}) => {
 
@@ -35,13 +36,19 @@ const ProductDraft = ({navigation}) => {
         return Alert.alert(data.error.description);
       }
     }
-    console.log(data.items[0].images);
+    
     setDraftProducts(data.items);
 
   }
 
+  async function deleteProductHandler(itemId){
+    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    deleteProduct(itemId, sessionId);
+    onRefresh();
+  }
+
   function editDraftHandler(product){
-    navigation.navigate('FillProduct', {product, isEdit: true, description_required: true})
+    navigation.navigate('FillProduct', {product, isEdit: true, description_required: true })
   }
 
   function onRefresh(){
@@ -77,7 +84,7 @@ useEffect(() => {
                     />
                   </Svg>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => deleteProductHandler(draft.id)}>
                   <Svg style={{ height: 25, marginTop: 3, width: 25 }} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
                     <Path
                       fill="#000"
