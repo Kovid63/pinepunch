@@ -19,7 +19,8 @@ import { deleteProduct } from '../../utils/deleteProduct'
 const ProductDetail = ({ navigation, route }) => {
 
   const { mode } = useContext(ModeContext);
-  const { name, parameters, image, quantity, price, description, unit, categoryType } = route.params;
+  const { name, parameters, image, quantity, price, description, unit, categoryType, id } = route.params;
+
 
   function contactSellerHandler() {
     navigation.navigate('ContactSeller');
@@ -52,7 +53,7 @@ const ProductDetail = ({ navigation, route }) => {
         save_as_draft: true,
         images: [image_url.toString()],
         parameters: parameters.map((parameter) => {
-           return { name: parameter.name, value: parameter.value, um: parameter.um  }
+          return { name: parameter.name, value: parameter.value, um: parameter.um }
         })
       })
     })
@@ -71,7 +72,10 @@ const ProductDetail = ({ navigation, route }) => {
     navigation.navigate('EditStack');
   }
 
-  async function deleteProductHandler(){
+  async function deleteProductHandler() {
+    console.log(id);
+    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    deleteProduct(id, sessionId);
     navigation.popToTop();
     navigation.navigate('CategoryStack');
   }
@@ -174,8 +178,8 @@ const ProductDetail = ({ navigation, route }) => {
           <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: '#B3B1B0' }}>{description}</Text>
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '10%', marginTop: '5%' }}>
-          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{quantity}</Text>
-          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs ' + price + '/' + unit}</Text>
+          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{quantity + unit}</Text>
+          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs ' + (price / quantity).toFixed(2) + '/' + unit}</Text>
         </View>
         <View style={styles.submitBtnContainer}>
           <SubmitBtn onPress={mode === MODE_SELLER ? submitProductHandler : contactSellerHandler} fill={true} active={true} text={mode === MODE_BUYER ? 'Contact Seller' : 'Submit'} />

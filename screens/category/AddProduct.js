@@ -18,10 +18,16 @@ const AddProduct = ({ navigation }) => {
 
   useEffect(() => {
 
-    const obj = category.filter(obj => obj.category_name.toLowerCase().includes(query.toLowerCase()));
+    const obj = categories.filter(obj => obj.category_name.toLowerCase().includes(query.toLowerCase()));
     query.length === 0 ? setCategory(categories) : setCategory(obj);
 
 }, [query])
+
+useEffect(() => {
+
+  mode === MODE_SELLER? setCategory(categories):<></>
+
+}, [mode])
 
   return (
     <View style={styles.container}>

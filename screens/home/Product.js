@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 import { colors } from '../../colors';
 import { ListRender } from '../../components/ListRender';
@@ -8,24 +8,72 @@ import { itemsForSale } from '../../dummydata/dummydata';
 import { ModeContext } from '../../contexts/ModeContext';
 import { MODE_SELLER } from '../../constants';
 import { BuyerListRender } from '../../components/BuyerListRender';
+import { BASE_URL, FAVORITES } from '@env';
+import * as SecureStore from 'expo-secure-store';
+import { ToastAndroid } from 'react-native';
 
 const Product = ({ route, navigation }) => {
 
     const [query, setQuery] = useState('');
     const [products, setProducts] = useState(route.params.products || {});
     const { mode } = useContext(ModeContext);
+    const [favourites, setFavourites] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
 
     function backPressHandler() {
         navigation.goBack();
     }
 
+    function onRefresh() {
+        setRefreshing(true);
+        fetchFavourites();
+        setRefreshing(false);
+    }
+
+    async function fetchFavourites() {
+        const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+        const response = await fetch(BASE_URL + FAVORITES + `?page=${1}&count=${0}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "X-USER-SESSION-ID": sessionId
+            }
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+            if (Platform.OS === 'android') {
+                return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+            }
+            else {
+                return Alert.alert(data.error.description);
+            }
+        }
+
+        setFavourites(data.items)
+
+    }
+
+    function editDraftHandler(product){
+        navigation.navigate('FillProduct', {product, isEdit: true, description_required: true })
+      }
+
     useEffect(() => {
 
-        const obj = products.filter(obj => obj.product_name.toLowerCase().includes(query.toLowerCase()));
+        const obj = route.params.products.filter(obj => obj.product_name.toLowerCase().includes(query.toLowerCase()));
 
         query.length === 0 ? setProducts(route.params.products) : setProducts(obj);
 
-    }, [query])
+    }, [query]);
+
+
+    useEffect(() => {
+        fetchFavourites();
+    }, [])
+
+
+
 
     return (
         <View style={styles.container}>
@@ -54,11 +102,26 @@ const Product = ({ route, navigation }) => {
                     <Text style={styles.headingText}>{'Items for sale'}</Text>
                 </View>
             </View>
-            <FlatList contentContainerStyle={{ alignItems: 'center', paddingBottom: 90 }} showsVerticalScrollIndicator={false} data={products} renderItem={mode === MODE_SELLER? (item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
-                preview: false
-            })} {...item} />: (item) => <BuyerListRender onPress={() => navigation.navigate('ProductDetail', {
-                preview: false
-            })} {...item} />} numColumns={2} />
+            <FlatList refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} contentContainerStyle={{ alignItems: 'center', paddingBottom: 90 }} showsVerticalScrollIndicator={false} data={products} renderItem={mode === MODE_SELLER ? (item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
+                preview: false,
+                name: item.item.product_name,
+                description: item.item.product_description,
+                price: item.item.price,
+                quantity: item.item.quantity,
+                unit: item.item.quantity_um,
+                image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, ''),
+                id: item.item.id
+            })} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '')} /> : (item) => {
+                const isFav = favourites.some(o => o.inventory_item.id == item.item.id);
+                return (<BuyerListRender favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
+                    preview: false,
+                    name: item.item.product_name,
+                    description: item.item.product_description,
+                    price: item.item.price,
+                    quantity: item.item.quantity,
+                    unit: item.item.quantity_um
+                })} {...item} />)
+            }} numColumns={2} />
         </View>
     )
 }

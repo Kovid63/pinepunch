@@ -15,7 +15,7 @@ import { homeBuyerAd } from '../../data/homeBuyerAd';
 import { AdRender } from '../../components/AdRender';
 import { homeCategory } from '../../data/homeCategory';
 import { BuyerListRender } from '../../components/BuyerListRender';
-import { BASE_URL, BUYER_ITEMS, FAVORITES } from '@env';
+import { BASE_URL, BUYER_ITEMS, FAVORITES, SELLER_ITEMS } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native'
 
@@ -26,16 +26,17 @@ const Home = ({ navigation }) => {
 
   const [adIndex, setAdIndex] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(homeCategory[0]);
-  const [products, setProducts] = useState([])
+  const [products, setProducts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [favourites, setFavourites] = useState([]);
+  const [sellerProducts, setSellerProducts] = useState([]);
 
   const adRef = useRef();
 
 
   function showAllProductHandler() {
     navigation.navigate('Product', {
-      products: products
+      products: mode ===MODE_SELLER? sellerProducts: products
     });
   }
 
@@ -125,6 +126,34 @@ const Home = ({ navigation }) => {
     setRefreshing(false);
   }
 
+  async function fetchSellerProducts() {
+    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    const response = await fetch(BASE_URL + SELLER_ITEMS, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "X-USER-SESSION-ID": sessionId
+      },
+    })
+
+    const data = await response.json();
+
+    if (data.error) {
+      if (Platform.OS === 'android') {
+        return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+      }
+      else {
+        return Alert.alert(data.error.description);
+      }
+    }
+
+    setSellerProducts(data.items);
+  }
+
+  function editDraftHandler(product){
+    navigation.navigate('FillProduct', {product, isEdit: true, description_required: true })
+  }
+
   useEffect(() => {
     if (mode === MODE_BUYER) {
       var currentIndex = adIndex;
@@ -137,9 +166,15 @@ const Home = ({ navigation }) => {
   }, [mode])
 
   useEffect(() => {
-    mode === MODE_BUYER ? [fetchProducts(selectedCategory, 0), fetchFavourites()] : <></>
-  }, [mode, selectedCategory])
+    mode === MODE_BUYER ? [fetchProducts(selectedCategory, 0), fetchFavourites()] : fetchSellerProducts();
+  }, [mode, selectedCategory]);
 
+  useEffect(() => {
+    const focusListener = navigation.addListener('focus', () => {
+      mode === MODE_BUYER ? [fetchProducts(selectedCategory, 0), fetchFavourites()] : fetchSellerProducts();
+    })
+    return () => focusListener;
+  }, [navigation])
 
   return (
     <View style={styles.container}>
@@ -179,10 +214,17 @@ const Home = ({ navigation }) => {
               <FlatList
                 showsHorizontalScrollIndicator={false}
                 horizontal
-                data={itemsForSale.slice(0, 2)}
+                data={sellerProducts.slice(0, 2)}
                 renderItem={(item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
-                  preview: false
-                })} {...item} />} />
+                  preview: false,
+                  name: item.item.product_name,
+                  description: item.item.product_description,
+                  price: item.item.price,
+                  quantity: item.item.quantity,
+                  unit: item.item.quantity_um,
+                  image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, ''),
+                  id: item.item.id
+                })} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '')} />} />
             </View>
             <View style={styles.middle}>
               <View>
@@ -252,7 +294,14 @@ const Home = ({ navigation }) => {
                 renderItem={(item) => {
                   const isFav = favourites.some(o => o.inventory_item.id == item.item.id);
                   return (
-                    <BuyerListRender {...item} favourite={isFav}/>
+                    <BuyerListRender {...item} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
+                      preview: false,
+                      name: item.item.product_name,
+                      description: item.item.product_description,
+                      price: item.item.price,
+                      quantity: item.item.quantity,
+                      unit: item.item.quantity_um
+                    })} />
                   )
                 }} />
             </View>

@@ -25,7 +25,7 @@ const FillProduct = ({ navigation, route }) => {
 
     const { isEdit } = route.params;
 
-    const { product_name, images, product_description, parameters, quantity_um, quantity, price } = route.params.product || {}
+    const { product_name, images, product_description, parameters, quantity_um, quantity, price, id} = route.params.product || {}
 
 
 
@@ -168,12 +168,13 @@ const FillProduct = ({ navigation, route }) => {
             name: productName,
             parameters: productParameters,
             image: productImage || '',
-            quantity: productQuantity + value,
+            quantity: productQuantity,
             price: productPrice,
             description: productDescription,
             unit: value,
             preview: true,
-            categoryType: route.params.isEdit ? route.params.product.catogery_type : route.params.type
+            categoryType: route.params.isEdit ? route.params.product.catogery_type : route.params.type,
+            id: id
         })
     }
 
