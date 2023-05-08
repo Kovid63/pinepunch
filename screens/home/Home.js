@@ -128,7 +128,7 @@ const Home = ({ navigation }) => {
 
   async function fetchSellerProducts() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    const response = await fetch(BASE_URL + SELLER_ITEMS, {
+    const response = await fetch(BASE_URL + SELLER_ITEMS + `/status=active`, {
       method: 'GET',
       headers: {
         "Content-Type": "application/json",
