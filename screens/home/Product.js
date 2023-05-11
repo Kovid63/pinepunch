@@ -119,14 +119,15 @@ const Product = ({ route, navigation }) => {
                 image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, ''),
                 id: item.item.id
             })} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '')} /> : (item) => {
-                const isFav = favourites.some(o => o.inventory_item.id == item.item.id);
+                const isFav = favourites.some(o => o.inventory_item_id == item.item.id);
                 return (<BuyerListRender favouriteUpdate={onRefresh} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
                     preview: false,
                     name: item.item.product_name,
                     description: item.item.product_description,
                     price: item.item.price,
                     quantity: item.item.quantity,
-                    unit: item.item.quantity_um
+                    unit: item.item.quantity_um,
+                    isFav: isFav
                 })} {...item} />)
             }} numColumns={2} />
         </View>

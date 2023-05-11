@@ -1,5 +1,5 @@
 import { View, Text, BackHandler } from 'react-native';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { colors } from '../../colors';
 import FormInput from '../../components/FormInput';
@@ -9,6 +9,7 @@ import { Pressable } from 'react-native';
 import { Keyboard } from 'react-native';
 import { ScrollView } from 'react-native';
 import { BASE_URL, SEND_FORGOT_PASSWORD_OTP, VERIFY_FORGOT_PASSWORD_OTP } from '@env';
+import { LoadingContext } from '../../contexts/LoadingContext';
 
 const ForgotPasswordEmail = ({ navigation }) => {
 
@@ -17,6 +18,8 @@ const ForgotPasswordEmail = ({ navigation }) => {
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [otpValue, setOtpValue] = useState('');
   const [otpId, setOtpId] = useState('');
+
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
 
   const inputRef = useRef();
 
@@ -36,6 +39,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
 
 
   async function nextHandler() {
+    setIsLoading(true);
     try {
       const response = await fetch(BASE_URL + SEND_FORGOT_PASSWORD_OTP, {
         method: 'POST',
@@ -48,6 +52,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
       });
       
       if (!response.ok) {
+        setIsLoading(false);
         return console.log(response.status);
       }
 
@@ -58,9 +63,11 @@ const ForgotPasswordEmail = ({ navigation }) => {
     } catch (error) {
       console.log(error);
     }
+    setIsLoading(false);
   }
 
   async function verifyHandler() {
+    setIsLoading(true);
     try {
       const response = await fetch(BASE_URL + VERIFY_FORGOT_PASSWORD_OTP, {
         method: 'POST',
@@ -75,6 +82,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
       });
       
       if (!response.ok) {
+        setIsLoading(false);
         return console.log(response.status);
       }
 
@@ -86,6 +94,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
     } catch (error) {
       console.log(error);
     }
+    setIsLoading(false);
   }
 
   function inputPressHandler() {
@@ -123,7 +132,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
           <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
         </View>
         <View style={styles.submitBtnContainer}>
-          <SubmitBtn onPress={isEmailSent ? verifyHandler : nextHandler} fill={isButtonActive} active={isButtonActive} text={isEmailSent ? 'Verify' : 'Next'} />
+          <SubmitBtn isLoading={isLoading} onPress={isEmailSent ? verifyHandler : nextHandler} fill={isButtonActive} active={isButtonActive} text={isEmailSent ? 'Verify' : 'Next'} />
         </View>
       </ScrollView>
     </Pressable>

@@ -8,6 +8,9 @@ import * as SecureStore from 'expo-secure-store';
 import { Platform, ToastAndroid, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoadingContext } from './contexts/LoadingContext';
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
 
 const Auth = () => {
 
@@ -15,7 +18,7 @@ const Auth = () => {
     const [isFontLoaded, setIsFontLoaded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isFirstLoading, setIsFirstLoading] = useState(true);
-
+   
     useEffect(() => {
         Font.loadAsync({
             Poppins: require('./assets/fonts/Poppins-Regular.ttf'),
@@ -41,8 +44,8 @@ const Auth = () => {
                     });
 
                     const data = await response.json();
+                    await SplashScreen.hideAsync();
                     setIsFirstLoading(false);
-
                     if (data.error) {
                         if (Platform.OS === 'android') {
                             return ToastAndroid.show(data.error.description, ToastAndroid.LONG);

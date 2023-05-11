@@ -1,11 +1,12 @@
 import { View, Text } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
 import FormInput from '../../components/FormInput'
 import SubmitBtn from '../../components/SubmitBtn'
 import { ScrollView } from 'react-native'
 import { BASE_URL, UPDATE_PASSWORD } from '@env';
+import { LoadingContext } from '../../contexts/LoadingContext'
 
 const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
 
@@ -13,7 +14,7 @@ const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
   const [newPasswordError, setNewPasswordError] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
-
+  const { isLoading, setIsLoading } = useContext(LoadingContext);
   const isButtonActive = !(newPasswordError || confirmPasswordError) && !(newPassword.length == 0 || confirmPassword.length == 0) && (newPassword.match(confirmPassword));
 
   function getNewPassword(password) {
@@ -37,6 +38,7 @@ const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
   }
 
   async function resetPasswordHandler() {
+    setIsLoading(true);
     try {
       const response = await fetch(BASE_URL + UPDATE_PASSWORD, {
         method: 'POST',
@@ -50,6 +52,7 @@ const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
       });
       
       if (!response.ok) {
+        setIsLoading(false);
         return console.log(response.status);
       }
 
@@ -60,8 +63,7 @@ const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
     } catch (error) {
       console.log(error);
     }
-
-    
+    setIsLoading(false);
   }
 
 
@@ -78,7 +80,7 @@ const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
         <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
       </View>
       <View style={styles.submitBtnContainer}>
-        <SubmitBtn onPress={resetPasswordHandler} fill={isButtonActive} active={isButtonActive} text={'Reset Password'} />
+        <SubmitBtn isLoading={isLoading} onPress={resetPasswordHandler} fill={isButtonActive} active={isButtonActive} text={'Reset Password'} />
       </View>
     </ScrollView>
   )

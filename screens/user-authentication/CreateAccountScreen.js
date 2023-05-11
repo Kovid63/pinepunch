@@ -11,6 +11,7 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ToastAndroid } from 'react-native'
 import { Alert } from 'react-native'
+import { LoadingContext } from '../../contexts/LoadingContext'
 
 const CreateAccountScreen = ({ navigation }) => {
 
@@ -23,7 +24,7 @@ const CreateAccountScreen = ({ navigation }) => {
     const [isCheckboxTicked, setIsCheckBoxTicked] = useState(false);
 
     const { setUserData } = useContext(UserContext)
-
+    const { isLoading, setIsLoading } = useContext(LoadingContext);
     const isButtonActive = !(emailError || passwordError || companyError) && !(email.length == 0 || password.length == 0 || company.length == 0) && isCheckboxTicked;
 
     function getCompany(company) {
@@ -81,6 +82,7 @@ const CreateAccountScreen = ({ navigation }) => {
     }
 
     async function createAccountHandler() {
+        setIsLoading(true)
         try {
             const response = await fetch(BASE_URL + REGISTER, {
                 method: 'POST',
@@ -97,6 +99,7 @@ const CreateAccountScreen = ({ navigation }) => {
             const data = await response.json();
             
             if (data.error) {
+                setIsLoading(false)
                 if (Platform.OS === 'android') {
                     return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
                 }
@@ -104,8 +107,7 @@ const CreateAccountScreen = ({ navigation }) => {
                     return Alert.alert(data.error.description);
                 }
             }
-
-            await SecureStore.setItemAsync('SESSION_ID', data.session_id);
+            
             // await AsyncStorage.setItem('USER_INFO', JSON.stringify(data));
             // const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
             // setUserData(local);
@@ -114,6 +116,8 @@ const CreateAccountScreen = ({ navigation }) => {
         } catch (error) {
             console.log(error);
         }
+
+        setIsLoading(false);
     }
 
     
@@ -136,7 +140,7 @@ const CreateAccountScreen = ({ navigation }) => {
                 <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
             </View>
             <View style={styles.submitBtnContainer}>
-                <SubmitBtn fill={isButtonActive} onPress={createAccountHandler} active={isButtonActive} text={'Get Started'} />
+                <SubmitBtn isLoading={isLoading} fill={isButtonActive} onPress={createAccountHandler} active={isButtonActive} text={'Get Started'} />
             </View>
         </ScrollView>
     )

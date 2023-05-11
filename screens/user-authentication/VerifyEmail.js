@@ -15,12 +15,15 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { ToastAndroid } from 'react-native'
 import { Alert } from 'react-native'
+import { LoadingContext } from '../../contexts/LoadingContext'
 
 const VerifyEmail = ({ navigation, route }) => {
 
     //const [isEmailverified, setIsEmailverified] = useState(false);
     const [otpValue, setOtpValue] = useState('');
     const { setIsUserLoggedIn, userData, setUserData } = useContext(UserContext);
+
+    const { isLoading, setIsLoading } = useContext(LoadingContext);
 
     const isButtonActive = otpValue.length === 4;
 
@@ -31,6 +34,7 @@ const VerifyEmail = ({ navigation, route }) => {
     }
 
     async function verifyEmailHandler() {
+        setIsLoading(true);
         try {
             const response = await fetch(BASE_URL + VERIFY_REGISTER_OTP, {
                 method: 'POST',
@@ -47,6 +51,7 @@ const VerifyEmail = ({ navigation, route }) => {
             const data = await response.json();
 
             if (data.error) {
+                setIsLoading(false);
                 if (Platform.OS === 'android') {
                     return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
                 }
@@ -55,10 +60,16 @@ const VerifyEmail = ({ navigation, route }) => {
                 }
             }
 
+            if(data.merchant_status === 'in_review'){
+                setIsUserLoggedIn(true);
+                await SecureStore.setItemAsync('SESSION_ID', route.params.sessionId);
+                setIsLoading(false);
+            }
+            
+            setIsLoading(false);
             // await AsyncStorage.setItem('USER_INFO', JSON.stringify({...userData, merchant_status: data.merchant_status}));
             // const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
             // setUserData(local);
-            setIsUserLoggedIn(true);
 
         } catch (error) {
             console.log(error);
@@ -117,7 +128,7 @@ const VerifyEmail = ({ navigation, route }) => {
                 </View>
                 <TextInput maxLength={4} keyboardType={'number-pad'} value={otpValue.toString()} onChangeText={(value) => setOtpValue(value)} ref={inputRef} style={{ opacity: 0 }} />
                 <View style={styles.submitBtnContainer}>
-                    <SubmitBtn onPress={verifyEmailHandler} active={isButtonActive} fill={isButtonActive} text={'Continue'} />
+                    <SubmitBtn isLoading={isLoading} onPress={verifyEmailHandler} active={isButtonActive} fill={isButtonActive} text={'Continue'} />
                 </View>
             </ScrollView>
         </Pressable>

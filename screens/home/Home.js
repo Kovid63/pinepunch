@@ -36,7 +36,7 @@ const Home = ({ navigation }) => {
 
   function showAllProductHandler() {
     navigation.navigate('Product', {
-      products: mode ===MODE_SELLER? sellerProducts: products
+      products: mode === MODE_SELLER? sellerProducts: products
     });
   }
 
@@ -292,7 +292,7 @@ const Home = ({ navigation }) => {
                 horizontal
                 data={products.slice(0, 2)}
                 renderItem={(item) => {
-                  const isFav = favourites.some(o => o.inventory_item.id == item.item.id);
+                  const isFav = favourites.some(o => o.inventory_item_id == item.item.id);
                   return (
                     <BuyerListRender {...item} favouriteUpdate={onRefresh} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
                       preview: false,

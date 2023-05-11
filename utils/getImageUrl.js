@@ -5,13 +5,14 @@ import { ToastAndroid } from 'react-native';
 import mime from "mime";
 
 export async function getImageUrl(image, purpose, sessionId) {
-    
-        const formData = new FormData();
+
+    const formData = new FormData();
+    if (!image === null) {
         formData.append('image_file', {
-            uri : image,
+            uri: image,
             type: mime.getType(image),
             name: image.split("/").pop()
-           });
+        });
         formData.append('purpose', purpose);
 
         const response = await fetch(BASE_URL + IMAGES, {
@@ -33,6 +34,8 @@ export async function getImageUrl(image, purpose, sessionId) {
                 return Alert.alert(data.error.description);
             }
         }
-
         return data.image_url;
+    }
+
+    return "default_image";
 }
