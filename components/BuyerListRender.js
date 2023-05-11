@@ -1,12 +1,14 @@
 import { Image, Text, View, TouchableOpacity } from "react-native";
 import { Path, Svg } from "react-native-svg";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BASE_URL, FAVORITES } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from "react-native";
 import { Alert } from "react-native";
 
-export const BuyerListRender = ({ item, favourite, onPress }) => {
+export const BuyerListRender = ({ item, favourite, onPress, favouriteUpdate }) => {
+
+    const [isFavUpdateTriggered, setIsUpdateTriggered] = useState(0);
 
     async function removeFavourite(itemId){
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
@@ -28,6 +30,8 @@ export const BuyerListRender = ({ item, favourite, onPress }) => {
                 return Alert.alert(data.error.description);
             }
         }
+
+        setIsUpdateTriggered(Math.random(0,9));
 
         if (Platform.OS === 'android') {
 
@@ -60,6 +64,8 @@ export const BuyerListRender = ({ item, favourite, onPress }) => {
             }
         }
 
+        setIsUpdateTriggered(Math.random(0,9));
+
         if (Platform.OS === 'android') {
             return ToastAndroid.show('Item added', ToastAndroid.LONG);
         }
@@ -68,6 +74,10 @@ export const BuyerListRender = ({ item, favourite, onPress }) => {
         }
 
     }
+
+    useEffect(()=>{
+        return () => favouriteUpdate();
+    }, [isFavUpdateTriggered])
 
     return (
         <TouchableOpacity onPress={onPress} activeOpacity={0.5} style={{ width: 160, backgroundColor: '#F8F8F8', borderRadius: 24, paddingVertical: 20, marginHorizontal: 10, marginTop: 10 }}>

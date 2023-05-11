@@ -11,6 +11,7 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ToastAndroid } from 'react-native';
 import { Alert } from 'react-native';
+import { LoadingContext } from '../../contexts/LoadingContext';
 
 const LoginScreen = ({ navigation }) => {
 
@@ -20,6 +21,7 @@ const LoginScreen = ({ navigation }) => {
     const [passwordError, setPasswordError] = useState(false);
 
     const { setIsUserLoggedIn, setUserData } = useContext(UserContext);
+    const { isLoading, setIsLoading } = useContext(LoadingContext);
 
     const isButtonActive = !(emailError || passwordError) && !(email.length == 0 || password.length == 0);
 
@@ -49,6 +51,7 @@ const LoginScreen = ({ navigation }) => {
 
     async function loginHandler() {
         try {
+            setIsLoading(true)
             const response = await fetch(BASE_URL + LOGIN, {
                 method: 'POST',
                 headers: {
@@ -61,8 +64,10 @@ const LoginScreen = ({ navigation }) => {
             });
 
             const data = await response.json();
+            
 
             if (data.error) {
+                setIsLoading(false);
                 if (Platform.OS === 'android') {
                     return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
                 }
@@ -75,6 +80,7 @@ const LoginScreen = ({ navigation }) => {
             // await AsyncStorage.setItem('USER_INFO', JSON.stringify(data));
             // const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
             // setUserData(local);
+            setIsLoading(false);
             setIsUserLoggedIn(true);
         } catch (error) {
             console.log(error);
@@ -111,7 +117,7 @@ const LoginScreen = ({ navigation }) => {
                 <Text style={styles.accRequestText}>{"Don't have an account?"}{' '}<Text onPress={createAccount} style={styles.createAccText}>{'Create Account'}</Text></Text>
             </View>
             <View style={styles.submitBtnContainer}>
-                <SubmitBtn onPress={loginHandler} fill={isButtonActive} active={isButtonActive} text={'Get Started'} />
+                <SubmitBtn onPress={loginHandler} isLoading={isLoading} fill={isButtonActive} active={isButtonActive && !isLoading} text={'Get Started'} />
             </View>
         </ScrollView>
     );

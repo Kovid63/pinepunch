@@ -128,7 +128,7 @@ const Home = ({ navigation }) => {
 
   async function fetchSellerProducts() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    const response = await fetch(BASE_URL + SELLER_ITEMS + `/status=active`, {
+    const response = await fetch(BASE_URL + SELLER_ITEMS + `?status=active`, {
       method: 'GET',
       headers: {
         "Content-Type": "application/json",
@@ -294,7 +294,7 @@ const Home = ({ navigation }) => {
                 renderItem={(item) => {
                   const isFav = favourites.some(o => o.inventory_item.id == item.item.id);
                   return (
-                    <BuyerListRender {...item} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
+                    <BuyerListRender {...item} favouriteUpdate={onRefresh} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
                       preview: false,
                       name: item.item.product_name,
                       description: item.item.product_description,

@@ -16,6 +16,7 @@ import { TextInput } from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
 import { RefreshControl } from 'react-native'
 import { getImageUrl } from '../../utils/getImageUrl'
+import { LoadingContext } from '../../contexts/LoadingContext'
 
 const Account = ({ navigation }) => {
 
@@ -23,6 +24,7 @@ const Account = ({ navigation }) => {
 
     const [merchantData, setMerchantData] = useState({});
     const [refreshing, setRefreshing] = useState(false);
+    const { isLoading, setIsLoading } = useContext(LoadingContext);
 
     function backPressHandler() {
         navigation.goBack();
@@ -53,6 +55,7 @@ const Account = ({ navigation }) => {
     }
 
     async function updateDetails() {
+        setIsLoading(true);
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
         const bgUrl = mode === MODE_SELLER? await getImageUrl(merchantData.seller_background_image_url, 'merchant_seller_background', sessionId) : await getImageUrl(merchantData.buyer_background_image_url, 'merchant_buyer_background', sessionId);
         const profUrl = mode === MODE_SELLER? await getImageUrl(merchantData.seller_profile_image_url, 'merchant_seller_logo', sessionId) : await getImageUrl(merchantData.buyer_profile_image_url, 'merchant_buyer_logo', sessionId);
@@ -76,6 +79,7 @@ const Account = ({ navigation }) => {
         const data = await response.json();
 
         if (data.error) {
+            setIsLoading(false);
             if (Platform.OS === 'android') {
                 return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
             }
@@ -83,6 +87,7 @@ const Account = ({ navigation }) => {
                 return Alert.alert(data.error.description);
             }
         }
+        setIsLoading(false);
 
        navigation.navigate('Profile');
     }
@@ -196,7 +201,7 @@ const Account = ({ navigation }) => {
                     </View>
                 </View>
                 <View style={styles.submitBtnContainer}>
-                    <SubmitBtn fill={true} onPress={updateDetails} active={true} text={'Save Changes'} />
+                    <SubmitBtn fill={true} isLoading={isLoading} onPress={updateDetails} active={true} text={'Save Changes'} />
                 </View>
             </ScrollView >
         </View>

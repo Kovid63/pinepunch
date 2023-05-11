@@ -13,7 +13,8 @@ const Auth = () => {
 
     const { isUserLoggedIn, setIsUserLoggedIn, userData, setUserData } = useContext(UserContext);
     const [isFontLoaded, setIsFontLoaded] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isFirstLoading, setIsFirstLoading] = useState(true);
 
     useEffect(() => {
         Font.loadAsync({
@@ -40,7 +41,7 @@ const Auth = () => {
                     });
 
                     const data = await response.json();
-                    setIsLoading(false);
+                    setIsFirstLoading(false);
 
                     if (data.error) {
                         if (Platform.OS === 'android') {
@@ -59,7 +60,7 @@ const Auth = () => {
                     console.log(error);
                 }
             } else {
-                setIsLoading(false);
+                setIsFirstLoading(false);
             }
         })();
 
@@ -69,7 +70,7 @@ const Auth = () => {
         return null;
     }
 
-    if (!isLoading) return (
+    if (!isFirstLoading) return (
         <>
             <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
                 {

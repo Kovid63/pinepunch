@@ -72,6 +72,13 @@ const Product = ({ route, navigation }) => {
         fetchFavourites();
     }, [])
 
+    useEffect(() => {
+        const focusListener = navigation.addListener('focus', () => {
+         fetchFavourites();
+        })
+        return () => focusListener;
+      }, [navigation])
+
 
 
 
@@ -113,7 +120,7 @@ const Product = ({ route, navigation }) => {
                 id: item.item.id
             })} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '')} /> : (item) => {
                 const isFav = favourites.some(o => o.inventory_item.id == item.item.id);
-                return (<BuyerListRender favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
+                return (<BuyerListRender favouriteUpdate={onRefresh} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
                     preview: false,
                     name: item.item.product_name,
                     description: item.item.product_description,

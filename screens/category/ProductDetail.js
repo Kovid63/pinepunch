@@ -15,12 +15,14 @@ import { ToastAndroid } from 'react-native'
 import { Alert } from 'react-native'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { deleteProduct } from '../../utils/deleteProduct'
+import { LoadingContext } from '../../contexts/LoadingContext';
 
 const ProductDetail = ({ navigation, route }) => {
 
   const { mode } = useContext(ModeContext);
   const { name, parameters, image, quantity, price, description, unit, categoryType, id } = route.params;
 
+  const { isLoading, setIsLoading} = useContext(LoadingContext);
 
   function contactSellerHandler() {
     navigation.navigate('ContactSeller');
@@ -35,6 +37,7 @@ const ProductDetail = ({ navigation, route }) => {
   }
 
   async function productDraftHandler() {
+    setIsLoading(true)
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     const image_url = await getImageUrl(image, 'item', sessionId);
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
@@ -61,6 +64,7 @@ const ProductDetail = ({ navigation, route }) => {
     const data = await response.json();
 
     if (data.error) {
+      setIsLoading(false);
       if (Platform.OS === 'android') {
         return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
       }
@@ -68,19 +72,23 @@ const ProductDetail = ({ navigation, route }) => {
         return Alert.alert(data.error.description);
       }
     }
+
+    setIsLoading(false);
     navigation.popToTop();
     navigation.navigate('EditStack');
   }
 
   async function deleteProductHandler() {
-    console.log(id);
+    setIsLoading(true);
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     deleteProduct(id, sessionId);
+    setIsLoading(false);
     navigation.popToTop();
     navigation.navigate('CategoryStack');
   }
 
   async function submitProductHandler() {
+    setIsLoading(true);
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     const image_url = await getImageUrl(image, 'item', sessionId);
     console.log(image_url);
@@ -107,6 +115,7 @@ const ProductDetail = ({ navigation, route }) => {
     const data = await response.json();
 
     if (data.error) {
+      setIsLoading(false);
       if (Platform.OS === 'android') {
         return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
       }
@@ -114,6 +123,7 @@ const ProductDetail = ({ navigation, route }) => {
         return Alert.alert(data.error.description);
       }
     }
+    setIsLoading(false);
     navigation.popToTop();
     navigation.navigate('HomeStack');
   }
@@ -182,7 +192,7 @@ const ProductDetail = ({ navigation, route }) => {
           <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs ' + (price / quantity).toFixed(2) + '/' + unit}</Text>
         </View>
         <View style={styles.submitBtnContainer}>
-          <SubmitBtn onPress={mode === MODE_SELLER ? submitProductHandler : contactSellerHandler} fill={true} active={true} text={mode === MODE_BUYER ? 'Contact Seller' : 'Submit'} />
+          <SubmitBtn isLoading={isLoading} onPress={mode === MODE_SELLER ?  route.params.preview? submitProductHandler : contactSellerHandler : contactSellerHandler} fill={true} active={true} text={mode === MODE_BUYER ? 'Contact Seller' : route.params.preview? 'Submit': 'Contact Seller'} />
         </View>
       </ScrollView>
     </View>
