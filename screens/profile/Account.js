@@ -56,9 +56,11 @@ const Account = ({ navigation }) => {
 
     async function updateDetails() {
         setIsLoading(true);
+
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
         const bgUrl = mode === MODE_SELLER? await getImageUrl(merchantData.seller_background_image_url, 'merchant_seller_background', sessionId) : await getImageUrl(merchantData.buyer_background_image_url, 'merchant_buyer_background', sessionId);
         const profUrl = mode === MODE_SELLER? await getImageUrl(merchantData.seller_profile_image_url, 'merchant_seller_logo', sessionId) : await getImageUrl(merchantData.buyer_profile_image_url, 'merchant_buyer_logo', sessionId);
+        
         const response = await fetch(BASE_URL + MERCHANT, {
             method: 'PUT',
             headers: {
@@ -68,11 +70,13 @@ const Account = ({ navigation }) => {
             body: mode === MODE_SELLER? JSON.stringify({
                 name: merchantData.name,
                 seller_background_image_url: bgUrl,
-                seller_profile_image_url: profUrl
+                seller_profile_image_url: profUrl,
+                address: merchantData.address
             }): JSON.stringify({
                 name: merchantData.name,
                 buyer_background_image_url: bgUrl,
-                buyer_profile_image_url: profUrl
+                buyer_profile_image_url: profUrl,
+                address: merchantData.address
             })
         });
 
@@ -198,6 +202,10 @@ const Account = ({ navigation }) => {
                     <Text style={styles.infoTitle}>{'Name'}</Text>
                     <View style={styles.infoContainer}>
                         <TextInput value={merchantData.name} style={styles.infoText} onChangeText={(name) => setMerchantData({ ...merchantData, name: name })} />
+                    </View>
+                    <Text style={styles.infoTitle}>{'Location'}</Text>
+                    <View style={styles.infoContainer}>
+                        <TextInput value={merchantData.address} style={styles.infoText} onChangeText={(address) => setMerchantData({ ...merchantData, address: address })} />
                     </View>
                 </View>
                 <View style={styles.submitBtnContainer}>

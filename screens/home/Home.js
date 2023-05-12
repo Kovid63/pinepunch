@@ -36,7 +36,7 @@ const Home = ({ navigation }) => {
 
   function showAllProductHandler() {
     navigation.navigate('Product', {
-      products: mode === MODE_SELLER? sellerProducts: products
+      products: mode === MODE_SELLER ? sellerProducts : products
     });
   }
 
@@ -70,6 +70,7 @@ const Home = ({ navigation }) => {
   }
 
   async function fetchProducts(category, count) {
+    
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     const response = await fetch(BASE_URL + BUYER_ITEMS + `?catogery_type=${category}&count=${count}`, {
       method: 'GET',
@@ -120,9 +121,10 @@ const Home = ({ navigation }) => {
     navigation.navigate('CategoryStack');
   }
 
-  function onRefresh() {
+  async function onRefresh() {
     setRefreshing(true);
-    mode === MODE_BUYER ? [fetchProducts(selectedCategory, 0), fetchFavourites()] : <></>
+    await fetchProducts(selectedCategory, 0);
+    await fetchFavourites();
     setRefreshing(false);
   }
 
@@ -150,8 +152,8 @@ const Home = ({ navigation }) => {
     setSellerProducts(data.items);
   }
 
-  function editDraftHandler(product){
-    navigation.navigate('FillProduct', {product, isEdit: true, description_required: true })
+  function editDraftHandler(product) {
+    navigation.navigate('FillProduct', { product, isEdit: true, description_required: true })
   }
 
   useEffect(() => {
@@ -167,11 +169,15 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     mode === MODE_BUYER ? [fetchProducts(selectedCategory, 0), fetchFavourites()] : fetchSellerProducts();
-  }, [mode, selectedCategory]);
+  }, [mode]);
+
+  useEffect(() => {
+    fetchProducts(selectedCategory, 0)
+  }, [selectedCategory]);
 
   useEffect(() => {
     const focusListener = navigation.addListener('focus', () => {
-      mode === MODE_BUYER ? [fetchProducts(selectedCategory, 0), fetchFavourites()] : fetchSellerProducts();
+      onRefresh();
     })
     return () => focusListener;
   }, [navigation])
@@ -300,7 +306,8 @@ const Home = ({ navigation }) => {
                       description: item.item.product_description,
                       price: item.item.price,
                       quantity: item.item.quantity,
-                      unit: item.item.quantity_um
+                      unit: item.item.quantity_um,
+                      id: item.item.id
                     })} />
                   )
                 }} />

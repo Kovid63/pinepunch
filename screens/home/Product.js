@@ -127,7 +127,8 @@ const Product = ({ route, navigation }) => {
                     price: item.item.price,
                     quantity: item.item.quantity,
                     unit: item.item.quantity_um,
-                    isFav: isFav
+                    isFav: isFav,
+                    id: item.item.id
                 })} {...item} />)
             }} numColumns={2} />
         </View>

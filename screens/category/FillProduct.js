@@ -31,7 +31,7 @@ const FillProduct = ({ navigation, route }) => {
 
     const [value, setValue] = useState(units[0]);
     const [productParameters, setProductParameters] = useState([]);
-    const [productImage, setProductImage] = useState('');
+    const [productImage, setProductImage] = useState([]);
     const [productName, setProductName] = useState('');
     const [productQuantity, setProductQuantity] = useState(0);
     const [productPrice, setProductPrice] = useState(0);

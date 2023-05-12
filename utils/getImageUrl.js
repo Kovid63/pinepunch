@@ -1,13 +1,12 @@
 import { BASE_URL, IMAGES } from '@env';
-import axios from 'axios';
 import { Alert } from 'react-native';
 import { ToastAndroid } from 'react-native';
 import mime from "mime";
 
 export async function getImageUrl(image, purpose, sessionId) {
 
-    const formData = new FormData();
-    if (!image === null) {
+    try {
+        const formData = new FormData();
         formData.append('image_file', {
             uri: image,
             type: mime.getType(image),
@@ -34,8 +33,11 @@ export async function getImageUrl(image, purpose, sessionId) {
                 return Alert.alert(data.error.description);
             }
         }
+
         return data.image_url;
+
+    } catch (error) {
+        return error.message;
     }
 
-    return "default_image";
 }

@@ -9,6 +9,7 @@ import { Alert } from "react-native";
 export const BuyerListRender = ({ item, favourite, onPress, favouriteUpdate }) => {
 
     const [isFavUpdateTriggered, setIsUpdateTriggered] = useState(0);
+    const [mounted, setMounted] = useState(false);
 
     async function removeFavourite(itemId){
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
@@ -76,7 +77,8 @@ export const BuyerListRender = ({ item, favourite, onPress, favouriteUpdate }) =
     }
 
     useEffect(()=>{
-        return () => favouriteUpdate();
+        if(!mounted) setMounted(true);
+        if(mounted) favouriteUpdate();
     }, [isFavUpdateTriggered])
 
     return (

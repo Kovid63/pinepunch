@@ -111,7 +111,7 @@ const LoginScreen = ({ navigation }) => {
                 <View style={styles.line} />
             </View>
             <View style={styles.btnGoogleContainer}>
-                <GoogleBtn />
+                {/* <GoogleBtn /> */}
             </View>
             <View style={styles.createAccContainer}>
                 <Text style={styles.accRequestText}>{"Don't have an account?"}{' '}<Text onPress={createAccount} style={styles.createAccText}>{'Create Account'}</Text></Text>
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     },
 
     btnGoogleContainer: {
-        marginTop: '8%'
+        marginTop: '30%'
     },
 
     createAccContainer: {
