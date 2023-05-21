@@ -65,3 +65,14 @@ export const scrapForSale = [
         quantity: 10,
     },
 ]
+
+export const notifications = [
+    {
+        title: 'ABC Company is interested in your Item name',
+        unseen: true,
+    },
+    {
+        title: 'ABC Company is interested in your Item name',
+        unseen: false,
+    }
+]

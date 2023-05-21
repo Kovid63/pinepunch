@@ -65,7 +65,6 @@ const LoginScreen = ({ navigation }) => {
 
             const data = await response.json();
             
-
             if (data.error) {
                 setIsLoading(false);
                 if (Platform.OS === 'android') {

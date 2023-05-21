@@ -18,7 +18,7 @@ const DropDownMenu = ({value, setValue}) => {
     }
 
     return (
-        <View style={{ flexDirection: 'row', backgroundColor: '#FFFFFF', justifyContent: 'center'}}>
+        <View style={{ flexDirection: 'row', backgroundColor: '#FFFFFF', justifyContent: 'center', paddingVertical: 1}}>
             <View style={{ paddingHorizontal: 5, marginHorizontal: '2%'}}>
                 <Text style={{ fontFamily: 'Poppins', width: 40 }}>{value}</Text>
                 {isDropdownOpen && (units.map((unit, index) => (

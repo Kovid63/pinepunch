@@ -16,6 +16,7 @@ import { Alert } from 'react-native'
 import { getImageUrl } from '../../utils/getImageUrl'
 import { deleteProduct } from '../../utils/deleteProduct'
 import { LoadingContext } from '../../contexts/LoadingContext';
+import ProductImage from '../../components/ProductImage'
 
 const ProductDetail = ({ navigation, route }) => {
 
@@ -24,6 +25,8 @@ const ProductDetail = ({ navigation, route }) => {
   const [favourites, setFavourites] = useState([]);
   const [isFav, setIsFav] = useState(false);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
+
+  console.log(image);
 
   function contactSellerHandler() {
     navigation.navigate('ContactSeller');
@@ -37,68 +40,68 @@ const ProductDetail = ({ navigation, route }) => {
     navigation.goBack();
   }
 
-  async function removeFavourite(itemId){
-    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    const response = await fetch(BASE_URL + FAVORITES+`/${itemId}`, {
-        method: 'DELETE',
-        headers: {
-            "Content-Type": "application/json",
-            "X-USER-SESSION-ID": sessionId
-        },
-    })
-
-    const data = await response.json();
-
-    if (data.error) {
-        if (Platform.OS === 'android') {
-            return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
-        }
-        else {
-            return Alert.alert(data.error.description);
-        }
-    }
-
-
-    if (Platform.OS === 'android') {
-
-        ToastAndroid.show('Item removed', ToastAndroid.LONG);
-    }
-    else {
-        Alert.alert('Item removed');
-    }
-
-}
-
-async function addFavourite(itemId) {
+  async function removeFavourite(itemId) {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     const response = await fetch(BASE_URL + FAVORITES + `/${itemId}`, {
-        method: 'POST',
-        headers: {
-            "Content-Type": "application/json",
-            "X-USER-SESSION-ID": sessionId
-        },
+      method: 'DELETE',
+      headers: {
+        "Content-Type": "application/json",
+        "X-USER-SESSION-ID": sessionId
+      },
     })
 
     const data = await response.json();
 
     if (data.error) {
-        if (Platform.OS === 'android') {
-            return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
-        }
-        else {
-            return Alert.alert(data.error.description);
-        }
+      if (Platform.OS === 'android') {
+        return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+      }
+      else {
+        return Alert.alert(data.error.description);
+      }
     }
 
 
     if (Platform.OS === 'android') {
-        return ToastAndroid.show('Item added', ToastAndroid.LONG);
+
+      ToastAndroid.show('Item removed', ToastAndroid.LONG);
     }
     else {
-        return Alert.alert('Item added');
+      Alert.alert('Item removed');
     }
 
-}
+  }
+
+  async function addFavourite(itemId) {
+    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    const response = await fetch(BASE_URL + FAVORITES + `/${itemId}`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "X-USER-SESSION-ID": sessionId
+      },
+    })
+
+    const data = await response.json();
+
+    if (data.error) {
+      if (Platform.OS === 'android') {
+        return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+      }
+      else {
+        return Alert.alert(data.error.description);
+      }
+    }
+
+
+    if (Platform.OS === 'android') {
+      return ToastAndroid.show('Item added', ToastAndroid.LONG);
+    }
+    else {
+      return Alert.alert('Item added');
+    }
+
+  }
 
   async function productDraftHandler() {
     setIsLoading(true)
@@ -218,7 +221,7 @@ async function addFavourite(itemId) {
   }
 
   useEffect(() => {
-    mode === MODE_BUYER? fetchFavourites() : <></>;
+    mode === MODE_BUYER ? fetchFavourites() : <></>;
   }, []);
 
   useEffect(() => {
@@ -247,7 +250,7 @@ async function addFavourite(itemId) {
         <View>
           <Text style={styles.titleText}>{'Product Detail'}</Text>
         </View>
-        {mode === MODE_BUYER ? <TouchableOpacity onPress={() => [isFav? removeFavourite(id): addFavourite(id), fetchFavourites()]} style={styles.iconContainer}>
+        {mode === MODE_BUYER ? <TouchableOpacity onPress={() => [isFav ? removeFavourite(id) : addFavourite(id), fetchFavourites()]} style={styles.iconContainer}>
           {isFav ? <Svg style={styles.icon} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
             <Path
               d="M8.28 2.5c.63.02 1.24.13 1.83.33h.06c.04.02.07.04.09.06.22.07.43.15.63.26l.38.17c.15.08.33.23.43.29.1.06.21.12.3.19a6.264 6.264 0 0 1 3.85-1.3c.63 0 1.26.09 1.86.29 3.69 1.2 5.02 5.25 3.91 8.79a12.728 12.728 0 0 1-3.01 4.81 38.456 38.456 0 0 1-6.33 4.96l-.25.15-.26-.16a38.094 38.094 0 0 1-6.37-4.96 12.933 12.933 0 0 1-3.01-4.8c-1.13-3.54.2-7.59 3.93-8.81.29-.1.59-.17.89-.21h.12c.28-.04.56-.06.84-.06Zm8.91 3.16a.8.8 0 0 0-1.01.5c-.14.42.08.88.5 1.03.64.24 1.07.87 1.07 1.57v.03a.86.86 0 0 0 .19.62c.14.17.35.27.57.29.41-.01.76-.34.79-.76v-.12a3.3 3.3 0 0 0-2.11-3.16Z"
@@ -263,42 +266,41 @@ async function addFavourite(itemId) {
           </Svg>}
         </TouchableOpacity> : <View style={{ width: '10%' }} />}
       </View>
-      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, marginBottom: 80, marginTop: '5%' }}>
-        <View style={{ backgroundColor: '#F8F8F8', height: 300, marginTop: '10%', borderRadius: 24 }}>
-          <Image style={{ height: '100%', width: '100%', borderRadius: 24 }} source={{ uri: image }} />
-        </View>
-        <View style={{ flexDirection: 'row', marginTop: '8%', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{name}</Text>
-          {!route.params.preview ? <TouchableOpacity onPress={companyClickHandler} style={{ height: 50, maxWidth: '50%', backgroundColor: '#FFFFFF', elevation: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: '3%', borderRadius: 16, marginRight: '2%' }}>
-            <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 17, color: colors.primary[0] }}>{'xyz company'}</Text>
-          </TouchableOpacity>
-            :
-            <View style={{ flexDirection: 'row', width: '40%', justifyContent: 'space-evenly', alignItems: 'center' }}>
-              <TouchableOpacity onPress={productDraftHandler} style={{ height: 30, width: '60%', backgroundColor: colors.primary[0], borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF', fontSize: 13 }}>{'Save Draft'}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={deleteProductHandler}>
-                <Svg style={{ height: 25, marginTop: 3, width: 25 }} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
-                  <Path
-                    fill="#000"
-                    fillRule="nonzero"
-                    d="M18.94 8.697c.198 0 .38.087.522.234.134.157.2.352.181.558 0 .068-.533 6.808-.837 9.645-.19 1.741-1.313 2.798-2.997 2.827-1.294.029-2.56.039-3.805.039-1.323 0-2.616-.01-3.872-.039-1.627-.039-2.75-1.115-2.931-2.827-.313-2.847-.837-9.577-.846-9.645a.79.79 0 0 1 .19-.558.706.706 0 0 1 .524-.234h13.87ZM14.064 2c.884 0 1.673.617 1.902 1.497l.163.73a1.28 1.28 0 0 0 1.241 1.016h2.916c.39 0 .713.323.713.734v.38a.73.73 0 0 1-.713.734H3.714A.73.73 0 0 1 3 6.357v-.38c0-.411.324-.734.714-.734H6.63c.592 0 1.107-.421 1.24-1.015l.153-.682C8.261 2.617 9.041 2 9.935 2Z"
-                  />
-                </Svg>
-              </TouchableOpacity>
-            </View>}
-        </View>
-        <View style={{ width: '60%', marginTop: '1%' }}>
-          <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: '#B3B1B0' }}>{description}</Text>
-        </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '10%', marginTop: '5%' }}>
-          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{quantity + unit}</Text>
-          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs ' + (price / quantity).toFixed(2) + '/' + unit}</Text>
-        </View>
-        <View style={styles.submitBtnContainer}>
-          <SubmitBtn isLoading={isLoading} onPress={mode === MODE_SELLER ? route.params.preview ? submitProductHandler : contactSellerHandler : contactSellerHandler} fill={true} active={true} text={mode === MODE_BUYER ? 'Contact Seller' : route.params.preview ? 'Submit' : 'Contact Seller'} />
-        </View>
-      </ScrollView>
+        {/* <Image style={{ height: '100%', width: '100%', borderRadius: 24 }} source={{ uri: image }} /> */}
+        {
+          <ProductImage imageArray={image} footer={() => (<><View style={{ flexDirection: 'row', marginTop: '8%', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{name}</Text>
+            {!route.params.preview ? <TouchableOpacity onPress={companyClickHandler} style={{ height: 50, maxWidth: '50%', backgroundColor: '#FFFFFF', elevation: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: '3%', borderRadius: 16, marginRight: '2%' }}>
+              <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 17, color: colors.primary[0] }}>{'xyz company'}</Text>
+            </TouchableOpacity>
+              :
+              <View style={{ flexDirection: 'row', width: '40%', justifyContent: 'space-evenly', alignItems: 'center' }}>
+                <TouchableOpacity onPress={productDraftHandler} style={{ height: 30, width: '60%', backgroundColor: colors.primary[0], borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF', fontSize: 13 }}>{'Save Draft'}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={deleteProductHandler}>
+                  <Svg style={{ height: 25, marginTop: 3, width: 25 }} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
+                    <Path
+                      fill="#000"
+                      fillRule="nonzero"
+                      d="M18.94 8.697c.198 0 .38.087.522.234.134.157.2.352.181.558 0 .068-.533 6.808-.837 9.645-.19 1.741-1.313 2.798-2.997 2.827-1.294.029-2.56.039-3.805.039-1.323 0-2.616-.01-3.872-.039-1.627-.039-2.75-1.115-2.931-2.827-.313-2.847-.837-9.577-.846-9.645a.79.79 0 0 1 .19-.558.706.706 0 0 1 .524-.234h13.87ZM14.064 2c.884 0 1.673.617 1.902 1.497l.163.73a1.28 1.28 0 0 0 1.241 1.016h2.916c.39 0 .713.323.713.734v.38a.73.73 0 0 1-.713.734H3.714A.73.73 0 0 1 3 6.357v-.38c0-.411.324-.734.714-.734H6.63c.592 0 1.107-.421 1.24-1.015l.153-.682C8.261 2.617 9.041 2 9.935 2Z"
+                    />
+                  </Svg>
+                </TouchableOpacity>
+              </View>}
+          </View>
+            <View style={{ width: '60%', marginTop: '1%' }}>
+              <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: '#B3B1B0' }}>{description}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '10%', marginTop: '5%' }}>
+              <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{quantity + unit}</Text>
+              <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs ' + (price / quantity).toFixed(2) + '/' + unit}</Text>
+            </View>
+            <View style={styles.submitBtnContainer}>
+              <SubmitBtn isLoading={isLoading} onPress={mode === MODE_SELLER ? route.params.preview ? submitProductHandler : contactSellerHandler : contactSellerHandler} fill={true} active={true} text={mode === MODE_BUYER ? 'Contact Seller' : route.params.preview ? 'Submit' : 'Contact Seller'} />
+            </View></>)} />
+        }
+      
     </View>
   )
 }

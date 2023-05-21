@@ -49,7 +49,7 @@ const VerifyEmail = ({ navigation, route }) => {
             });
 
             const data = await response.json();
-
+  
             if (data.error) {
                 setIsLoading(false);
                 if (Platform.OS === 'android') {

@@ -71,12 +71,12 @@ const Account = ({ navigation }) => {
                 name: merchantData.name,
                 seller_background_image_url: bgUrl,
                 seller_profile_image_url: profUrl,
-                address: merchantData.address
+                address: merchantData.address.length === 0? "N/A" : merchantData.address
             }): JSON.stringify({
                 name: merchantData.name,
                 buyer_background_image_url: bgUrl,
                 buyer_profile_image_url: profUrl,
-                address: merchantData.address
+                address: merchantData.address.length === 0? "N/A" : merchantData.address
             })
         });
 

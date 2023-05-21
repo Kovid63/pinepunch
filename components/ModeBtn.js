@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
     },
 
     modeText: {
-      fontFamily: 'PoppinsSemiBold'
+      fontFamily: 'PoppinsSemiBold',
+      fontSize: 14
     }
 })
 

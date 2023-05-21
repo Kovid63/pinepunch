@@ -27,7 +27,7 @@ const Search = ({ navigation }) => {
         <View style={styles.container}>
             <Header onPress={backPressHandler} pageTitle={'Search'} />
             <View style={styles.searchBarContainer}>
-                <SearchBar editable={true} />
+                <SearchBar onPress={(query) => console.log(query)} setQuery={() => {}} editable={true} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: '10%' }}>
                 <TouchableOpacity style={styles.iconContainer}>
