@@ -116,9 +116,9 @@ const Product = ({ route, navigation }) => {
                 price: item.item.price,
                 quantity: item.item.quantity,
                 unit: item.item.quantity_um,
-                image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, ''),
+                image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
                 id: item.item.id
-            })} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '')} /> : (item) => {
+            })} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} /> : (item) => {
                 const isFav = favourites.some(o => o.inventory_item_id == item.item.id);
                 return (<BuyerListRender favouriteUpdate={onRefresh} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
                     preview: false,

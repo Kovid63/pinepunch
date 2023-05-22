@@ -28,7 +28,6 @@ const FillProduct = ({ navigation, route }) => {
     const { product_name, images, product_description, parameters, quantity_um, quantity, price, id } = route.params.product || {}
 
 
-
     const [value, setValue] = useState(units[0]);
     const [productParameters, setProductParameters] = useState([]);
     const [productImage, setProductImage] = useState([{ name: 'image1', uri: '' }, { name: 'image2', uri: '' }, { name: 'image3', uri: '' }, { name: 'image4', uri: '' }]);
@@ -41,7 +40,13 @@ const FillProduct = ({ navigation, route }) => {
 
         if (isEdit) {
             setProductName(product_name);
-            setProductImage(images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, ''));
+            images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',').forEach((img, index) => {
+                setProductImage(prevArray => {
+                    const newArray = [...prevArray];
+                    newArray[index] = { name: index, uri: img };
+                    return newArray;
+                });
+            });
             setProductDescription(product_description);
             setProductParameters(parameters);
             setProductQuantity(quantity)
@@ -234,14 +239,30 @@ const FillProduct = ({ navigation, route }) => {
                             }
                             <View style={{ height: 200, width: '90%', backgroundColor: '#F8F8F8', marginTop: 10, borderRadius: 5 }}>
                                 <Text style={[styles.parameterText, { marginHorizontal: '2%', marginTop: 5 }]}>{'Product images'}</Text>
-                                <View style={{ height: '65%', width: '90%', alignSelf: 'center' }}>
-
+                                <View style={{ height: '65%', width: '100%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                                    {productImage.map((image, index) => (
+                                        <View key={index} style={{ height: 75, width: 75, marginTop: '10%' }}>
+                                            <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={{ uri: image.uri }} />
+                                            <TouchableOpacity activeOpacity={0.5} onPress={() => {
+                                                setProductImage(prevArray => {
+                                                    const newArray = [...prevArray];
+                                                    newArray[index] = { ...newArray[index], uri: '' };
+                                                    return newArray;
+                                                });
+                                            }} style={{ height: 15, width: 15, backgroundColor: '#FFFFFF', borderRadius: 8, position: 'absolute', right: 0, alignItems: 'center', justifyContent: 'center' }}>
+                                                <Svg style={{ height: 8, width: 8 }} viewBox="0 0 612.043 612.043">
+                                                    <Path fill={'#000000'} d="M397.503 306.011 593.08 110.434c25.27-25.269 25.27-66.213 0-91.482-25.269-25.269-66.213-25.269-91.481 0L306.022 214.551 110.445 18.974c-25.269-25.269-66.213-25.269-91.482 0s-25.269 66.213 0 91.482L214.54 306.033 18.963 501.61c-25.269 25.269-25.269 66.213 0 91.481 25.269 25.27 66.213 25.27 91.482 0l195.577-195.576 195.577 195.576c25.269 25.27 66.213 25.27 91.481 0 25.27-25.269 25.27-66.213 0-91.481L397.503 306.011z" />
+                                                </Svg>
+                                            </TouchableOpacity>
+                                        </View>
+                                    ))}
                                 </View>
                                 <View style={{ flexDirection: 'row', alignSelf: 'flex-end', justifyContent: 'center', marginRight: '1%', marginTop: '1%' }}>
                                     {
                                         productImagesIcon.map((icon, index) => {
+                                            const imageNextEmptySlot = productImage.findIndex((emptySlot) => emptySlot.uri === '');
                                             return (
-                                                <TouchableOpacity onPress={() => imagePickHandler(icon.type)} key={index} style={{ height: 25, width: 25, marginHorizontal: '1%' }}>
+                                                <TouchableOpacity onPress={() => imagePickHandler(icon.type, imageNextEmptySlot)} key={index} style={{ height: 25, width: 25, marginHorizontal: '1%' }}>
                                                     {icon.icon}
                                                 </TouchableOpacity>
                                             )

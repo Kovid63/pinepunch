@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, FlatList } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native'
@@ -26,7 +26,7 @@ const ProductDetail = ({ navigation, route }) => {
   const [isFav, setIsFav] = useState(false);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
 
-  console.log(image);
+
 
   function contactSellerHandler() {
     navigation.navigate('ContactSeller');
@@ -106,7 +106,11 @@ const ProductDetail = ({ navigation, route }) => {
   async function productDraftHandler() {
     setIsLoading(true)
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    const image_url = await getImageUrl(image, 'item', sessionId);
+    let imageArray = [];
+    for (const img of image) {
+      const imgUrl = await getImageUrl(img.uri, 'item', sessionId);
+      imageArray.push(imgUrl);
+    }
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
@@ -121,7 +125,7 @@ const ProductDetail = ({ navigation, route }) => {
         quantity_um: unit,
         price: price,
         save_as_draft: true,
-        images: [image_url.toString()],
+        images: imageArray,
         parameters: parameters.map((parameter) => {
           return { name: parameter.name, value: parameter.value, um: parameter.um }
         })
@@ -157,8 +161,13 @@ const ProductDetail = ({ navigation, route }) => {
   async function submitProductHandler() {
     setIsLoading(true);
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    const image_url = await getImageUrl(image, 'item', sessionId);
-    console.log(image_url);
+
+    let imageArray = [];
+    for (const img of image) {
+      const imgUrl = await getImageUrl(img.uri, 'item', sessionId);
+      imageArray.push(imgUrl);
+    }
+    
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
@@ -172,7 +181,7 @@ const ProductDetail = ({ navigation, route }) => {
         quantity: parseInt(quantity),
         quantity_um: unit,
         price: price,
-        images: [image_url.toString()],
+        images: imageArray,
         parameters: parameters.map((parameter) => {
           return { name: parameter.name, value: parameter.value, um: parameter.um }
         })
@@ -266,41 +275,43 @@ const ProductDetail = ({ navigation, route }) => {
           </Svg>}
         </TouchableOpacity> : <View style={{ width: '10%' }} />}
       </View>
-        {/* <Image style={{ height: '100%', width: '100%', borderRadius: 24 }} source={{ uri: image }} /> */}
-        {
-          <ProductImage imageArray={image} footer={() => (<><View style={{ flexDirection: 'row', marginTop: '8%', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{name}</Text>
-            {!route.params.preview ? <TouchableOpacity onPress={companyClickHandler} style={{ height: 50, maxWidth: '50%', backgroundColor: '#FFFFFF', elevation: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: '3%', borderRadius: 16, marginRight: '2%' }}>
-              <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 17, color: colors.primary[0] }}>{'xyz company'}</Text>
-            </TouchableOpacity>
-              :
-              <View style={{ flexDirection: 'row', width: '40%', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                <TouchableOpacity onPress={productDraftHandler} style={{ height: 30, width: '60%', backgroundColor: colors.primary[0], borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
-                  <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF', fontSize: 13 }}>{'Save Draft'}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={deleteProductHandler}>
-                  <Svg style={{ height: 25, marginTop: 3, width: 25 }} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
-                    <Path
-                      fill="#000"
-                      fillRule="nonzero"
-                      d="M18.94 8.697c.198 0 .38.087.522.234.134.157.2.352.181.558 0 .068-.533 6.808-.837 9.645-.19 1.741-1.313 2.798-2.997 2.827-1.294.029-2.56.039-3.805.039-1.323 0-2.616-.01-3.872-.039-1.627-.039-2.75-1.115-2.931-2.827-.313-2.847-.837-9.577-.846-9.645a.79.79 0 0 1 .19-.558.706.706 0 0 1 .524-.234h13.87ZM14.064 2c.884 0 1.673.617 1.902 1.497l.163.73a1.28 1.28 0 0 0 1.241 1.016h2.916c.39 0 .713.323.713.734v.38a.73.73 0 0 1-.713.734H3.714A.73.73 0 0 1 3 6.357v-.38c0-.411.324-.734.714-.734H6.63c.592 0 1.107-.421 1.24-1.015l.153-.682C8.261 2.617 9.041 2 9.935 2Z"
-                    />
-                  </Svg>
-                </TouchableOpacity>
-              </View>}
-          </View>
-            <View style={{ width: '60%', marginTop: '1%' }}>
-              <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: '#B3B1B0' }}>{description}</Text>
-            </View>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '10%', marginTop: '5%' }}>
-              <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{quantity + unit}</Text>
-              <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs ' + (price / quantity).toFixed(2) + '/' + unit}</Text>
-            </View>
-            <View style={styles.submitBtnContainer}>
-              <SubmitBtn isLoading={isLoading} onPress={mode === MODE_SELLER ? route.params.preview ? submitProductHandler : contactSellerHandler : contactSellerHandler} fill={true} active={true} text={mode === MODE_BUYER ? 'Contact Seller' : route.params.preview ? 'Submit' : 'Contact Seller'} />
-            </View></>)} />
-        }
-      
+      {/* <Image style={{ height: '100%', width: '100%', borderRadius: 24 }} source={{ uri: image }} /> */}
+      <ScrollView>
+        <View>
+          <FlatList horizontal showsHorizontalScrollIndicator={false} pagingEnabled scrollEventThrottle={16} data={image} renderItem={ProductImage} />
+        </View>
+        <View style={{ flexDirection: 'row', marginTop: '8%', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{name}</Text>
+          {!route.params.preview ? <TouchableOpacity onPress={companyClickHandler} style={{ height: 50, maxWidth: '50%', backgroundColor: '#FFFFFF', elevation: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: '3%', borderRadius: 16, marginRight: '2%' }}>
+            <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 17, color: colors.primary[0] }}>{'xyz company'}</Text>
+          </TouchableOpacity>
+            :
+            <View style={{ flexDirection: 'row', width: '40%', justifyContent: 'space-evenly', alignItems: 'center' }}>
+              <TouchableOpacity onPress={productDraftHandler} style={{ height: 30, width: '60%', backgroundColor: colors.primary[0], borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF', fontSize: 13 }}>{'Save Draft'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={deleteProductHandler}>
+                <Svg style={{ height: 25, marginTop: 3, width: 25 }} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
+                  <Path
+                    fill="#000"
+                    fillRule="nonzero"
+                    d="M18.94 8.697c.198 0 .38.087.522.234.134.157.2.352.181.558 0 .068-.533 6.808-.837 9.645-.19 1.741-1.313 2.798-2.997 2.827-1.294.029-2.56.039-3.805.039-1.323 0-2.616-.01-3.872-.039-1.627-.039-2.75-1.115-2.931-2.827-.313-2.847-.837-9.577-.846-9.645a.79.79 0 0 1 .19-.558.706.706 0 0 1 .524-.234h13.87ZM14.064 2c.884 0 1.673.617 1.902 1.497l.163.73a1.28 1.28 0 0 0 1.241 1.016h2.916c.39 0 .713.323.713.734v.38a.73.73 0 0 1-.713.734H3.714A.73.73 0 0 1 3 6.357v-.38c0-.411.324-.734.714-.734H6.63c.592 0 1.107-.421 1.24-1.015l.153-.682C8.261 2.617 9.041 2 9.935 2Z"
+                  />
+                </Svg>
+              </TouchableOpacity>
+            </View>}
+        </View>
+        <View style={{ width: '60%', marginTop: '1%' }}>
+          <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: '#B3B1B0' }}>{description}</Text>
+        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '10%', marginTop: '5%' }}>
+          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{quantity + unit}</Text>
+          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs ' + (price / quantity).toFixed(2) + '/' + unit}</Text>
+        </View>
+        <View style={styles.submitBtnContainer}>
+          <SubmitBtn isLoading={isLoading} onPress={mode === MODE_SELLER ? route.params.preview ? submitProductHandler : contactSellerHandler : contactSellerHandler} fill={true} active={true} text={mode === MODE_BUYER ? 'Contact Seller' : route.params.preview ? 'Submit' : 'Contact Seller'} />
+        </View>
+      </ScrollView>
     </View>
   )
 }
