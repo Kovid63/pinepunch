@@ -57,7 +57,7 @@ const Product = ({ route, navigation }) => {
 
     function editDraftHandler(product){
         navigation.navigate('FillProduct', {product, isEdit: true, description_required: true })
-      }
+    }
 
     useEffect(() => {
 

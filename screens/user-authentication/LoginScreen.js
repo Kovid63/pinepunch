@@ -98,17 +98,17 @@ const LoginScreen = ({ navigation }) => {
                     </View>
                 )}
             <View style={styles.form}>
-                <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
+                <FormInput type={'email'} autoCapitalize='none' placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
                 <FormInput secure={true} placeholder={'Password'} getValue={getPassword} getError={getPasswordError} />
             </View>
             <View style={styles.forgotPasswordTextContainer}>
                 <Text onPress={forgotPasswordHandler} style={styles.forgotPasswordText}>{'Forgot Password'}</Text>
             </View>
-            <View style={styles.borderContainer}>
+            {/* <View style={styles.borderContainer}>
                 <View style={styles.line} />
                 <Text style={styles.lineText}>{'or'}</Text>
                 <View style={styles.line} />
-            </View>
+            </View> */}
             <View style={styles.btnGoogleContainer}>
                 {/* <GoogleBtn /> */}
             </View>

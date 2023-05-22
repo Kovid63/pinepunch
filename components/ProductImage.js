@@ -10,7 +10,7 @@ const ProductImage = ({ item }) => {
   return (
     <View style={{ alignItems: 'center', marginTop: '5%', width: width*(90/100) }}>
       <View style={{ backgroundColor: '#F8F8F8', borderRadius: 24, height: 300, width: '90%'  }}>
-        <Image source={{uri: item.uri? item.uri: item}} style={{height: '100%', width: '100%', borderRadius: 24}}/>
+        <Image source={{uri: item}} style={{height: '100%', width: '100%', borderRadius: 24}}/>
       </View>
     </View>
   )

@@ -13,13 +13,13 @@ import { EditStack } from './EditStack';
 
 const Tab = createBottomTabNavigator();
 
-const TabNavigation = () => {
+const TabNavigation = ({initialScreen}) => {
 
     const { mode } = useContext(ModeContext)
 
     return (
         <NavigationContainer>
-            <Tab.Navigator initialRouteName={'HomeStack'}
+            <Tab.Navigator initialRouteName={initialScreen}
                 screenOptions={{
                     tabBarShowLabel: false,
                     headerShown: false,
@@ -49,6 +49,13 @@ const TabNavigation = () => {
 
                 <Tab.Screen
                     name="HomeStack"
+                    listeners={{
+                        tabPress: e => {
+                          if(initialScreen === 'ProfileStack'){
+                            e.preventDefault();
+                          }
+                        },
+                      }}
                     component={HomeStack}
                     options={{
                         tabBarIcon: ({ focused }) => (
@@ -86,6 +93,13 @@ const TabNavigation = () => {
 
                 <Tab.Screen
                     name="CategoryStack"
+                    listeners={{
+                        tabPress: e => {
+                          if(initialScreen === 'ProfileStack'){
+                            e.preventDefault();
+                          }
+                        },
+                      }}
                     component={CategoryStack}
                     options={{
                         tabBarIcon: ({ focused }) => (
@@ -129,6 +143,13 @@ const TabNavigation = () => {
 
                 {mode == 'Seller' ? <Tab.Screen
                     name="EditStack"
+                    listeners={{
+                        tabPress: e => {
+                          if(initialScreen === 'ProfileStack'){
+                            e.preventDefault();
+                          }
+                        },
+                      }}
                     component={EditStack}
                     options={{
                         tabBarIcon: ({ focused }) => (
@@ -162,6 +183,13 @@ const TabNavigation = () => {
                     }}
                 /> : <Tab.Screen
                     name="FavouriteStack"
+                    listeners={{
+                        tabPress: e => {
+                          if(initialScreen === 'ProfileStack'){
+                            e.preventDefault();
+                          }
+                        },
+                      }}
                     component={FavouriteStack}
                     options={{
                         tabBarIcon: ({ focused }) => (

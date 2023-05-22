@@ -18,6 +18,10 @@ import DropDownMenu from '../../components/DropDownMenu'
 import { units } from '../../data/units'
 import ProductFillSlot from '../../components/ProductFillSlot'
 import * as ImagePicker from 'expo-image-picker';
+import { ToastAndroid } from 'react-native';
+import { getImageUrl } from '../../utils/getImageUrl'
+import * as SecureStore from 'expo-secure-store';
+import { RefreshControl } from 'react-native'
 
 const FillProduct = ({ navigation, route }) => {
 
@@ -30,11 +34,12 @@ const FillProduct = ({ navigation, route }) => {
 
     const [value, setValue] = useState(units[0]);
     const [productParameters, setProductParameters] = useState([]);
-    const [productImage, setProductImage] = useState([{ name: 'image1', uri: '' }, { name: 'image2', uri: '' }, { name: 'image3', uri: '' }, { name: 'image4', uri: '' }]);
+    const [productImage, setProductImage] = useState([]);
     const [productName, setProductName] = useState('');
     const [productQuantity, setProductQuantity] = useState(0);
     const [productPrice, setProductPrice] = useState(0);
     const [productDescription, setProductDescription] = useState('');
+    const [refreshing, setRefreshing] = useState(false);
 
     useEffect(() => {
 
@@ -43,7 +48,7 @@ const FillProduct = ({ navigation, route }) => {
             images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',').forEach((img, index) => {
                 setProductImage(prevArray => {
                     const newArray = [...prevArray];
-                    newArray[index] = { name: index, uri: img };
+                    newArray[index] = img;
                     return newArray;
                 });
             });
@@ -110,7 +115,17 @@ const FillProduct = ({ navigation, route }) => {
         navigation.navigate('ProductDetail', { preview: false })
     }
 
-    async function imagePickHandler(type, index) {
+    async function imagePickHandler(type) {
+        const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+
+        if (productImage.length === 4) {
+            if (Platform.OS === 'android') {
+                return ToastAndroid.show('Images limit reached', ToastAndroid.SHORT);
+            }
+            else {
+                return Alert.alert('Images limit reached');
+            }
+        }
 
         const cameraPermission = await ImagePicker.getCameraPermissionsAsync();
         const mediaPermission = await ImagePicker.getMediaLibraryPermissionsAsync();
@@ -148,28 +163,37 @@ const FillProduct = ({ navigation, route }) => {
 
             if (!result.canceled) {
                 if (result.assets.length == 1) {
-                    setProductImage(prevArray => {
-                        const newArray = [...prevArray];
-                        newArray[index] = { ...newArray[index], uri: result.assets[0].uri };
-                        return newArray;
-                    });
+                    setRefreshing(true);
+                    const url = await getImageUrl(result.assets[0].uri, 'item', sessionId)
+                    setProductImage([...productImage, url]);
+                    setRefreshing(false);
+                    // const newArray = [...prevArray];
+                    // newArray[index] = { ...newArray[index], uri: result.assets[0].uri };
+                    // return newArray;);
                 } else {
-                    if (result.assets.length > 5) {
-                        result.assets.slice(0, 4).map((uri, index) => {
+                    if (result.assets.length >= 5) {
+            
+                        setRefreshing(true);
+                        for (const img of result.assets.slice(0, productImage.length === 0? 4 : Math.abs(4 - (productImage.length-1)))) {
+                            const url = await getImageUrl(img.uri, 'item', sessionId)
                             setProductImage(prevArray => {
                                 const newArray = [...prevArray];
-                                newArray[index] = { ...newArray[index], uri: uri.uri };
+                                newArray.push(url);
                                 return newArray;
                             });
-                        })
+                        }
+                        setRefreshing(false);
                     } else {
-                        result.assets.map((uri, index) => {
+                        setRefreshing(true);
+                        for (const img of result.assets.slice(0, productImage.length === 0? 4 : Math.abs(4 - (productImage.length)))) {
+                            const url = await getImageUrl(img.uri, 'item', sessionId)
                             setProductImage(prevArray => {
                                 const newArray = [...prevArray];
-                                newArray[index] = { ...newArray[index], uri: uri.uri };
+                                newArray.push(url);
                                 return newArray;
                             });
-                        })
+                        }
+                        setRefreshing(false);
                     }
                 }
                 //setProductImage([{name: 'image1', uri: result.assets[0].uri}, {name: 'image2', uri: result.assets[1].uri}, {name: 'image3', uri: result.assets[2].uri}, {name: 'image4', uri: result.assets[3].uri}]);
@@ -188,11 +212,10 @@ const FillProduct = ({ navigation, route }) => {
 
             if (!result.canceled) {
                 if (result.assets.length == 1) {
-                    setProductImage(prevArray => {
-                        const newArray = [...prevArray];
-                        newArray[index] = { ...newArray[index], uri: result.assets[0].uri };
-                        return newArray;
-                    });
+                    setRefreshing(true);
+                    const url = await getImageUrl(result.assets[0].uri, 'item', sessionId)
+                    setProductImage([...productImage, url]);
+                    setRefreshing(false);
                 }
             }
             return;
@@ -219,7 +242,7 @@ const FillProduct = ({ navigation, route }) => {
             {
                 route.params.isEdit ? <>
                     <Header onPress={backPressHandler} pageTitle={mode === MODE_SELLER ? 'Details Of Item' : 'Category'} />
-                    <ScrollView keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
+                    <ScrollView refreshControl={<RefreshControl refreshing={refreshing} />} keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
                         <View style={styles.categoryContainer}>
                             <Text style={styles.categoryText}>{route.params.product.catogery_type}</Text>
                         </View>
@@ -242,13 +265,11 @@ const FillProduct = ({ navigation, route }) => {
                                 <View style={{ height: '65%', width: '100%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                                     {productImage.map((image, index) => (
                                         <View key={index} style={{ height: 75, width: 75, marginTop: '10%' }}>
-                                            <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={{ uri: image.uri }} />
+                                            <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={{ uri: image }} />
                                             <TouchableOpacity activeOpacity={0.5} onPress={() => {
-                                                setProductImage(prevArray => {
-                                                    const newArray = [...prevArray];
-                                                    newArray[index] = { ...newArray[index], uri: '' };
-                                                    return newArray;
-                                                });
+                                                const newArray = [...productImage];
+                                                newArray.splice(index, 1);
+                                                setProductImage(newArray);
                                             }} style={{ height: 15, width: 15, backgroundColor: '#FFFFFF', borderRadius: 8, position: 'absolute', right: 0, alignItems: 'center', justifyContent: 'center' }}>
                                                 <Svg style={{ height: 8, width: 8 }} viewBox="0 0 612.043 612.043">
                                                     <Path fill={'#000000'} d="M397.503 306.011 593.08 110.434c25.27-25.269 25.27-66.213 0-91.482-25.269-25.269-66.213-25.269-91.481 0L306.022 214.551 110.445 18.974c-25.269-25.269-66.213-25.269-91.482 0s-25.269 66.213 0 91.482L214.54 306.033 18.963 501.61c-25.269 25.269-25.269 66.213 0 91.481 25.269 25.27 66.213 25.27 91.482 0l195.577-195.576 195.577 195.576c25.269 25.27 66.213 25.27 91.481 0 25.27-25.269 25.27-66.213 0-91.481L397.503 306.011z" />
@@ -260,9 +281,9 @@ const FillProduct = ({ navigation, route }) => {
                                 <View style={{ flexDirection: 'row', alignSelf: 'flex-end', justifyContent: 'center', marginRight: '1%', marginTop: '1%' }}>
                                     {
                                         productImagesIcon.map((icon, index) => {
-                                            const imageNextEmptySlot = productImage.findIndex((emptySlot) => emptySlot.uri === '');
+                                            //const imageNextEmptySlot = productImage.findIndex((emptySlot) => emptySlot.uri === '');
                                             return (
-                                                <TouchableOpacity onPress={() => imagePickHandler(icon.type, imageNextEmptySlot)} key={index} style={{ height: 25, width: 25, marginHorizontal: '1%' }}>
+                                                <TouchableOpacity onPress={() => imagePickHandler(icon.type)} key={index} style={{ height: 25, width: 25, marginHorizontal: '1%' }}>
                                                     {icon.icon}
                                                 </TouchableOpacity>
                                             )
@@ -326,7 +347,7 @@ const FillProduct = ({ navigation, route }) => {
                         <Header onPress={backPressHandler} pageTitle={mode === MODE_SELLER ? 'Details Of Item' : 'Category'} />
                         {
                             mode === MODE_SELLER ?
-                                <ScrollView keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
+                                <ScrollView refreshControl={<RefreshControl refreshing={refreshing} />} keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
                                     <View style={styles.categoryContainer}>
                                         <Text style={styles.categoryText}>{route.params.type}</Text>
                                     </View>
@@ -351,13 +372,11 @@ const FillProduct = ({ navigation, route }) => {
                                             <View style={{ height: '65%', width: '100%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                                                 {productImage.map((image, index) => (
                                                     <View key={index} style={{ height: 75, width: 75, marginTop: '10%' }}>
-                                                        <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={image.uri.length === 0 ? {} : { uri: image.uri }} />
+                                                        <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={image.length === 0 ? {} : { uri: image }} />
                                                         <TouchableOpacity activeOpacity={0.5} onPress={() => {
-                                                            setProductImage(prevArray => {
-                                                                const newArray = [...prevArray];
-                                                                newArray[index] = { ...newArray[index], uri: '' };
-                                                                return newArray;
-                                                            });
+                                                            const newArray = [...productImage];
+                                                            newArray.splice(index, 1);
+                                                            setProductImage(newArray);
                                                         }} style={{ height: 15, width: 15, backgroundColor: '#FFFFFF', borderRadius: 8, position: 'absolute', right: 0, alignItems: 'center', justifyContent: 'center' }}>
                                                             <Svg style={{ height: 8, width: 8 }} viewBox="0 0 612.043 612.043">
                                                                 <Path fill={'#000000'} d="M397.503 306.011 593.08 110.434c25.27-25.269 25.27-66.213 0-91.482-25.269-25.269-66.213-25.269-91.481 0L306.022 214.551 110.445 18.974c-25.269-25.269-66.213-25.269-91.482 0s-25.269 66.213 0 91.482L214.54 306.033 18.963 501.61c-25.269 25.269-25.269 66.213 0 91.481 25.269 25.27 66.213 25.27 91.482 0l195.577-195.576 195.577 195.576c25.269 25.27 66.213 25.27 91.481 0 25.27-25.269 25.27-66.213 0-91.481L397.503 306.011z" />
@@ -370,9 +389,10 @@ const FillProduct = ({ navigation, route }) => {
                                                 {
                                                     productImagesIcon.map((icon, index) => {
 
-                                                        const imageNextEmptySlot = productImage.findIndex((emptySlot) => emptySlot.uri === '');
+                                                        // const imageNextEmptySlot = productImage.findIndex((emptySlot) => emptySlot.uri === '');
+
                                                         return (
-                                                            <TouchableOpacity onPress={() => imagePickHandler(icon.type, imageNextEmptySlot)} key={index} style={{ height: 25, width: 25, marginHorizontal: '1%' }}>
+                                                            <TouchableOpacity onPress={() => imagePickHandler(icon.type)} key={index} style={{ height: 25, width: 25, marginHorizontal: '1%' }}>
                                                                 {icon.icon}
                                                             </TouchableOpacity>
                                                         )

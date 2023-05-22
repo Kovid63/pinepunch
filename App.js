@@ -22,6 +22,7 @@ export default function App() {
   const [mode, setMode] = useState(MODE_SELLER);
   const [appIsReady, setAppIsReady] = useState(false);
   const [isFontLoaded, setIsFontLoaded] = useState(false);
+  const [initialScreen, setInitialScreen] = useState('');
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
@@ -65,6 +66,20 @@ export default function App() {
           }
         }
 
+        if(data.merchant_status === 'afa_pending'){
+          setInitialScreen('VerifyEmail')
+          setAppIsReady(true);
+          return;
+        }
+
+        if(data.merchant_status === 'in_review'){
+          setInitialScreen('ProfileStack');
+          setIsUserLoggedIn(true);
+          setAppIsReady(true);
+          return;
+        }
+        
+        setInitialScreen('HomeStack');
         setIsUserLoggedIn(true);
         setAppIsReady(true);
         
@@ -98,7 +113,7 @@ export default function App() {
         <MsgContext.Provider value={{ isNewMsgOn, setIsNewMsgOn, isItemSoldMsgOn, setIsItemSoldMsgOn }}>
           <View onLayout={onLayoutRootView} style={styles.container}>
             <StatusBar style="auto" />
-            <Auth appIsReady={appIsReady} setAppIsReady={setAppIsReady} />
+            <Auth initialScreen={initialScreen} appIsReady={appIsReady} setAppIsReady={setAppIsReady} />
           </View>
         </MsgContext.Provider>
       </ModeContext.Provider>

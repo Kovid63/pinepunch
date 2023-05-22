@@ -129,7 +129,7 @@ const CreateAccountScreen = ({ navigation }) => {
             </View>
             <View style={styles.form}>
                 <FormInput placeholder={'Company Name'} getValue={getCompany} getError={getCompanyError} />
-                <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
+                <FormInput type={'email'} autoCapitalize='none' placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
                 <FormInput secure={true} placeholder={'Password'} getValue={getPassword} getError={getPasswordError} />
             </View>
             <View style={styles.boxBtnContainer}>

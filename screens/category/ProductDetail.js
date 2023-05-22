@@ -164,8 +164,7 @@ const ProductDetail = ({ navigation, route }) => {
 
     let imageArray = [];
     for (const img of image) {
-      const imgUrl = await getImageUrl(img.uri, 'item', sessionId);
-      imageArray.push(imgUrl);
+      imageArray.push(img);
     }
     
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
@@ -306,7 +305,7 @@ const ProductDetail = ({ navigation, route }) => {
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '10%', marginTop: '5%' }}>
           <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{quantity + unit}</Text>
-          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs ' + (price / quantity).toFixed(2) + '/' + unit}</Text>
+          <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs ' + price}</Text>
         </View>
         <View style={styles.submitBtnContainer}>
           <SubmitBtn isLoading={isLoading} onPress={mode === MODE_SELLER ? route.params.preview ? submitProductHandler : contactSellerHandler : contactSellerHandler} fill={true} active={true} text={mode === MODE_BUYER ? 'Contact Seller' : route.params.preview ? 'Submit' : 'Contact Seller'} />

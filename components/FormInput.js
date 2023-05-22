@@ -2,7 +2,7 @@ import { View, StyleSheet, Image, Text, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors } from '../colors'
 
-const FormInput = ({ placeholder, getValue, secure, getError }) => {
+const FormInput = ({ placeholder, getValue, secure, getError, type, autoCapitalize}) => {
 
   const [focus, setFocus] = useState(false)
   const [error, setError] = useState(false)
@@ -39,7 +39,7 @@ const FormInput = ({ placeholder, getValue, secure, getError }) => {
   return (
     <View style={styles.container}>
       <View style={[styles.inputConstainer, focus ? { borderColor: colors.primary[0] } : { borderColor: colors.black[5] }, error ? { borderColor: colors.alerts.error } : {}]}>
-        <TextInput secureTextEntry={secure} style={styles.input} spellCheck={false} placeholderTextColor={error ? colors.alerts.error : null} value={value} onBlur={handleBlur} onFocus={handleFocus} onChangeText={handleChange} selectionColor={error ? colors.alerts.error : colors.primary[0]} placeholder={placeholder} />
+        <TextInput inputMode={type} autoCapitalize={autoCapitalize} secureTextEntry={secure} style={styles.input} spellCheck={false} placeholderTextColor={error ? colors.alerts.error : null} value={value} onBlur={handleBlur} onFocus={handleFocus} onChangeText={handleChange} selectionColor={error ? colors.alerts.error : colors.primary[0]} placeholder={placeholder} />
       </View>
       {
         error && (

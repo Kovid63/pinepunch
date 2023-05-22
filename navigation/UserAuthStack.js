@@ -8,7 +8,7 @@ import ForgotPasswordWithNewPassword from "../screens/user-authentication/Forgot
 import PasswordUpdated from "../screens/user-authentication/PasswordUpdated";
 import VerifyEmail from "../screens/user-authentication/VerifyEmail";
 
-export const UserAuthStack = () => {
+export const UserAuthStack = ({initialScreen}) => {
 
     const Stack = createStackNavigator();
 
@@ -19,7 +19,7 @@ export const UserAuthStack = () => {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator screenOptions={options} initialRouteName="LoginScreen">
+            <Stack.Navigator screenOptions={options} initialRouteName={initialScreen}>
                 <Stack.Screen name="LoginScreen" component={LoginScreen} />
                 <Stack.Screen name="CreateAccountScreen" component={CreateAccountScreen} />
                 <Stack.Screen name="ForgotPasswordEmail" component={ForgotPasswordEmail} />

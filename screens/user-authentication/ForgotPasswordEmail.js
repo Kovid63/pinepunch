@@ -108,7 +108,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
           <Text style={styles.welcomeText}>{'Forgot\nPassword'}</Text>
         </View>
         {!isEmailSent && (<><View style={styles.form}>
-          <FormInput placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
+          <FormInput type={'email'} autoCapitalize='none' placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
         </View>
         </>)}
         {

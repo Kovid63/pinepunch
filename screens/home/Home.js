@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, FlatList, Image, Dimensions, RefreshControl } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Image, Dimensions, RefreshControl, Platform } from 'react-native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { ModeContext } from '../../contexts/ModeContext';
