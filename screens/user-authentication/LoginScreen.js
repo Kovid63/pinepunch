@@ -6,7 +6,7 @@ import FormInput from '../../components/FormInput';
 import GoogleBtn from '../../components/GoogleBtn';
 import SubmitBtn from '../../components/SubmitBtn';
 import { UserContext } from '../../contexts/UserContext';
-import { BASE_URL, LOGIN } from '@env';
+import { BASE_URL, LOGIN, SEND_REGISTER_OTP } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ToastAndroid } from 'react-native';
@@ -49,6 +49,27 @@ const LoginScreen = ({ navigation }) => {
         navigation.navigate('ForgotPasswordEmail');
     }
 
+    async function otpTriggerHandler(sessionId) {
+
+        try {
+            const response = await fetch(BASE_URL + SEND_REGISTER_OTP, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-USER-SESSION-ID": sessionId
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                navigation.navigate('VerifyEmail', { otpId: data.otp_id, sessionId: sessionId });
+            }
+        
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     async function loginHandler() {
         try {
             setIsLoading(true)
@@ -65,6 +86,8 @@ const LoginScreen = ({ navigation }) => {
 
             const data = await response.json();
 
+            console.log(data);
+
             if (data.error) {
                 setIsLoading(false);
                 if (Platform.OS === 'android') {
@@ -77,11 +100,12 @@ const LoginScreen = ({ navigation }) => {
 
             await SecureStore.setItemAsync('SESSION_ID', data.session_id);
             if (data.merchant_status === 'afa_pending') {
-                navigation.navigate('VerifyEmail');
+                await otpTriggerHandler(data.session_id);
             }
             if (data.merchant_status === 'in_review') {
                 setUserData(Math.random(0, 9));
             }
+            setUserData(Math.random(0, 9));
             setIsLoading(false);
         } catch (error) {
             console.log(error);

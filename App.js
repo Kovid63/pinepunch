@@ -42,9 +42,11 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    (async function () {
-      init();
-    })();
+    if (isFontLoaded) {
+      (async function () {
+        init();
+      })();
+    }
   }, [userData])
 
 

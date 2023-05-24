@@ -372,7 +372,7 @@ const FillProduct = ({ navigation, route }) => {
                                             <View style={{ height: '65%', width: '100%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                                                 {productImage.map((image, index) => (
                                                     <View key={index} style={{ height: 75, width: 75, marginTop: '10%' }}>
-                                                        <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={image.length === 0 ? <></> : { uri: image }} />
+                                                        <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={{ uri: image }} />
                                                         <TouchableOpacity activeOpacity={0.5} onPress={() => {
                                                             const newArray = [...productImage];
                                                             newArray.splice(index, 1);
