@@ -64,7 +64,7 @@ const LoginScreen = ({ navigation }) => {
             });
 
             const data = await response.json();
-            
+
             if (data.error) {
                 setIsLoading(false);
                 if (Platform.OS === 'android') {
@@ -76,11 +76,13 @@ const LoginScreen = ({ navigation }) => {
             }
 
             await SecureStore.setItemAsync('SESSION_ID', data.session_id);
-            // await AsyncStorage.setItem('USER_INFO', JSON.stringify(data));
-            // const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
-            // setUserData(local);
+            if (data.merchant_status === 'afa_pending') {
+                navigation.navigate('VerifyEmail');
+            }
+            if (data.merchant_status === 'in_review') {
+                setUserData(Math.random(0, 9));
+            }
             setIsLoading(false);
-            setIsUserLoggedIn(true);
         } catch (error) {
             console.log(error);
         }

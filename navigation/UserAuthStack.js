@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { CardStyleInterpolators, createStackNavigator } from "@react-navigation/stack";
 import LoginScreen from "../screens/user-authentication/LoginScreen";
@@ -7,8 +7,11 @@ import ForgotPasswordEmail from "../screens/user-authentication/ForgotPasswordEm
 import ForgotPasswordWithNewPassword from "../screens/user-authentication/ForgotPasswordWithNewPassword";
 import PasswordUpdated from "../screens/user-authentication/PasswordUpdated";
 import VerifyEmail from "../screens/user-authentication/VerifyEmail";
+import { UserContext } from "../contexts/UserContext";
 
-export const UserAuthStack = ({initialScreen}) => {
+export const UserAuthStack = () => {
+
+    const {initialScreen} = useContext(UserContext);
 
     const Stack = createStackNavigator();
 

@@ -16,7 +16,7 @@ SplashScreen.preventAutoHideAsync();
 export default function App() {
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
-  const [userData, setUserData] = useState({ email: '', merchant_name: '', merchant_status: '', merchant_id: null });
+  const [userData, setUserData] = useState(0);
   const [isNewMsgOn, setIsNewMsgOn] = useState(false);
   const [isItemSoldMsgOn, setIsItemSoldMsgOn] = useState(false);
   const [mode, setMode] = useState(MODE_SELLER);
@@ -41,9 +41,16 @@ export default function App() {
       });
   }, []);
 
+  useEffect(() => {
+    (async function () {
+      init();
+    })();
+  }, [userData])
+
+
   async function init() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-
+    
     if (sessionId) {
       try {
         const response = await fetch(BASE_URL + GET_DETAILS, {
@@ -66,23 +73,26 @@ export default function App() {
           }
         }
 
-        if(data.merchant_status === 'afa_pending'){
-          setInitialScreen('VerifyEmail')
-          setAppIsReady(true);
-          return;
+        console.log(data);
+
+        if (data.merchant_status === 'afa_pending') {
+            setUserData('otpReq');
+            setInitialScreen('VerifyEmail');
+            setAppIsReady(true);
+            return;
         }
 
-        if(data.merchant_status === 'in_review'){
+        if (data.merchant_status === 'in_review') {
           setInitialScreen('ProfileStack');
           setIsUserLoggedIn(true);
           setAppIsReady(true);
           return;
         }
-        
+
         setInitialScreen('HomeStack');
         setIsUserLoggedIn(true);
         setAppIsReady(true);
-        
+
         //const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
 
       } catch (error) {
@@ -108,12 +118,12 @@ export default function App() {
   }
 
   return (
-    <UserContext.Provider value={{ isUserLoggedIn, setIsUserLoggedIn, userData, setUserData }}>
+    <UserContext.Provider value={{ isUserLoggedIn, setIsUserLoggedIn, userData, setUserData, initialScreen, setInitialScreen }}>
       <ModeContext.Provider value={{ mode, setMode }}>
         <MsgContext.Provider value={{ isNewMsgOn, setIsNewMsgOn, isItemSoldMsgOn, setIsItemSoldMsgOn }}>
           <View onLayout={onLayoutRootView} style={styles.container}>
             <StatusBar style="auto" />
-            <Auth initialScreen={initialScreen} appIsReady={appIsReady} setAppIsReady={setAppIsReady} />
+            <Auth appIsReady={appIsReady} setAppIsReady={setAppIsReady} />
           </View>
         </MsgContext.Provider>
       </ModeContext.Provider>

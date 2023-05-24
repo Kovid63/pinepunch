@@ -29,6 +29,31 @@ const VerifyEmail = ({ navigation, route }) => {
 
     const inputRef = useRef();
 
+    async function reqOtp() {
+        const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+        try {
+            const response = await fetch(BASE_URL + SEND_REGISTER_OTP, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-USER-SESSION-ID": sessionId
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                navigation.navigate('VerifyEmail', { otpId: data.otp_id, sessionId: sessionId });
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+        userData === 'otpReq' ? reqOtp : <></>
+    }, [userData])
+
     function inputPressHandler() {
         inputRef.current.isFocused() ? inputRef.current.blur() : inputRef.current.focus();
     }
@@ -49,7 +74,7 @@ const VerifyEmail = ({ navigation, route }) => {
             });
 
             const data = await response.json();
-  
+
             if (data.error) {
                 setIsLoading(false);
                 if (Platform.OS === 'android') {
@@ -60,12 +85,12 @@ const VerifyEmail = ({ navigation, route }) => {
                 }
             }
 
-            if(data.merchant_status === 'in_review'){
-                setIsUserLoggedIn(true);
+            if (data.merchant_status === 'in_review') {
                 await SecureStore.setItemAsync('SESSION_ID', route.params.sessionId);
+                setUserData(Math.random(0, 9));
                 setIsLoading(false);
             }
-            
+
             setIsLoading(false);
             // await AsyncStorage.setItem('USER_INFO', JSON.stringify({...userData, merchant_status: data.merchant_status}));
             // const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
@@ -77,6 +102,7 @@ const VerifyEmail = ({ navigation, route }) => {
     }
 
     function backPressHandler() {
+        if (userData === 'otpReq') return;
         navigation.goBack();
     }
 

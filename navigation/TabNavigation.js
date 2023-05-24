@@ -10,12 +10,14 @@ import { CategoryStack } from './CategoryStack';
 import { ProfileStack } from './ProfileStack';
 import { FavouriteStack } from './FavouriteStack';
 import { EditStack } from './EditStack';
+import { UserContext } from '../contexts/UserContext';
 
 const Tab = createBottomTabNavigator();
 
-const TabNavigation = ({initialScreen}) => {
+const TabNavigation = () => {
 
-    const { mode } = useContext(ModeContext)
+    const { mode } = useContext(ModeContext);
+    const {initialScreen} = useContext(UserContext);
 
     return (
         <NavigationContainer>

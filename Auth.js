@@ -9,7 +9,7 @@ import { Platform, ToastAndroid, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoadingContext } from './contexts/LoadingContext';
 
-const Auth = ({appIsReady, setAppIsReady, initialScreen}) => {
+const Auth = ({appIsReady, setAppIsReady}) => {
 
     const { isUserLoggedIn } = useContext(UserContext);
     
@@ -20,7 +20,7 @@ const Auth = ({appIsReady, setAppIsReady, initialScreen}) => {
         <>
             <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
                 {
-                    isUserLoggedIn ? <TabNavigation initialScreen={initialScreen}/> : <UserAuthStack initialScreen={initialScreen}/>
+                    isUserLoggedIn ? <TabNavigation /> : <UserAuthStack/>
                 }
             </LoadingContext.Provider>
         </>
