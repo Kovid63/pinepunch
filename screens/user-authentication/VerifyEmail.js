@@ -9,7 +9,7 @@ import { UserContext } from '../../contexts/UserContext'
 import { ScrollView } from 'react-native'
 import { TextInput } from 'react-native'
 import { Pressable } from 'react-native'
-import { BASE_URL, VERIFY_REGISTER_OTP } from '@env';
+import { BASE_URL, VERIFY_REGISTER_OTP, SEND_REGISTER_OTP } from '@env';
 import { Keyboard } from 'react-native'
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -21,7 +21,6 @@ const VerifyEmail = ({ navigation, route }) => {
 
     //const [isEmailverified, setIsEmailverified] = useState(false);
     const [otpValue, setOtpValue] = useState('');
-    const [otpId, setOtpId] = useState('')
     const { setIsUserLoggedIn, userData, setUserData } = useContext(UserContext);
 
     const { isLoading, setIsLoading } = useContext(LoadingContext);
@@ -31,6 +30,7 @@ const VerifyEmail = ({ navigation, route }) => {
     const inputRef = useRef();
 
     async function reqOtp() {
+        setIsLoading(true)
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
         try {
             const response = await fetch(BASE_URL + SEND_REGISTER_OTP, {
@@ -43,17 +43,14 @@ const VerifyEmail = ({ navigation, route }) => {
 
             if (response.ok) {
                 const data = await response.json();
-                setOtpId(data.otp_id);
+                setIsLoading(false);
+                return data.otp_id;
             }
 
         } catch (error) {
             console.log(error);
         }
     }
-
-    useEffect(() => {
-        userData === 'otpReq' ? reqOtp : <></>
-    }, [userData])
 
     function inputPressHandler() {
         inputRef.current.isFocused() ? inputRef.current.blur() : inputRef.current.focus();
@@ -103,9 +100,9 @@ const VerifyEmail = ({ navigation, route }) => {
     }
 
     async function verifyEmailHandlerReq() {
+        const otpId = await reqOtp();
         setIsLoading(true);
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-
         try {
             const response = await fetch(BASE_URL + VERIFY_REGISTER_OTP, {
                 method: 'POST',

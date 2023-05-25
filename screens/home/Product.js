@@ -55,8 +55,8 @@ const Product = ({ route, navigation }) => {
 
     }
 
-    function editDraftHandler(product){
-        navigation.navigate('FillProduct', {product, isEdit: true, description_required: true })
+    function editDraftHandler(product) {
+        navigation.navigate('FillProduct', { product, isEdit: true, description_required: true })
     }
 
     useEffect(() => {
@@ -74,10 +74,10 @@ const Product = ({ route, navigation }) => {
 
     useEffect(() => {
         const focusListener = navigation.addListener('focus', () => {
-         fetchFavourites();
+            fetchFavourites();
         })
         return () => focusListener;
-      }, [navigation])
+    }, [navigation])
 
 
 
@@ -116,18 +116,20 @@ const Product = ({ route, navigation }) => {
                 price: item.item.price,
                 quantity: item.item.quantity,
                 unit: item.item.quantity_um,
+                merchantId: item.item.merchant_id,
                 image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
                 id: item.item.id
             })} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} /> : (item) => {
                 const isFav = favourites.some(o => o.inventory_item_id == item.item.id);
-                return (<BuyerListRender favouriteUpdate={onRefresh} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
+                return (<BuyerListRender imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} favouriteUpdate={onRefresh} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
                     preview: false,
                     name: item.item.product_name,
                     description: item.item.product_description,
                     price: item.item.price,
                     quantity: item.item.quantity,
                     unit: item.item.quantity_um,
-                    isFav: isFav,
+                    merchantId: item.item.merchant_id,
+                    image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
                     id: item.item.id
                 })} {...item} />)
             }} numColumns={2} />

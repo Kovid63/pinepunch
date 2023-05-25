@@ -21,12 +21,13 @@ import ProductImage from '../../components/ProductImage'
 const ProductDetail = ({ navigation, route }) => {
 
   const { mode } = useContext(ModeContext);
-  const { name, parameters, image, quantity, price, description, unit, categoryType, id } = route.params;
+  const { name, parameters, image, quantity, price, description, unit, categoryType, id, merchantId } = route.params;
   const [favourites, setFavourites] = useState([]);
   const [isFav, setIsFav] = useState(false);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
 
 
+  console.log(merchantId);
 
   function contactSellerHandler() {
     navigation.navigate('ContactSeller');

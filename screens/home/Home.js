@@ -18,12 +18,12 @@ import { BuyerListRender } from '../../components/BuyerListRender';
 import { BASE_URL, BUYER_ITEMS, FAVORITES, SELLER_ITEMS, GET_DETAILS } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native';
-import {UserContext} from '../../contexts/UserContext';
+import { UserContext } from '../../contexts/UserContext';
 
 const Home = ({ navigation }) => {
 
   const { mode } = useContext(ModeContext);
-  const {setUserData, setIsUserLoggedIn} = useContext(UserContext)
+  const { setUserData, setIsUserLoggedIn } = useContext(UserContext)
   const { width } = Dimensions.get('window');
 
   const [adIndex, setAdIndex] = useState(0);
@@ -32,36 +32,36 @@ const Home = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [favourites, setFavourites] = useState([]);
   const [sellerProducts, setSellerProducts] = useState([]);
-
+  const [notificationCount, setNotificationCount] = useState('0');
   const adRef = useRef();
 
-  async function init() {
+  async function getNotificationCount() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-      try {
-        const response = await fetch(BASE_URL + GET_DETAILS, {
-          method: 'GET',
-          headers: {
-            "Content-Type": "application/json",
-            "X-USER-SESSION-ID": sessionId
-          }
-        });
-
-        const data = await response.json();
-
-        if (data.error) {
-          if (Platform.OS === 'android') {
-            //return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
-          }
-          else {
-            //return Alert.alert(data.error.description);
-          }
+    try {
+      const response = await fetch(BASE_URL + GET_DETAILS, {
+        method: 'GET',
+        headers: {
+          "Content-Type": "application/json",
+          "X-USER-SESSION-ID": sessionId
         }
+      });
 
-        console.log(data);
+      const data = await response.json();
 
-      } catch (error) {
-        console.log(error);
+      if (data.error) {
+        if (Platform.OS === 'android') {
+          //return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+        }
+        else {
+          //return Alert.alert(data.error.description);
+        }
       }
+
+      setNotificationCount(data.unseen_notifications_count);
+
+    } catch (error) {
+      console.log(error);
+    }
   }
 
 
@@ -102,7 +102,7 @@ const Home = ({ navigation }) => {
   }
 
   async function fetchProducts(category, count) {
-    
+
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     const response = await fetch(BASE_URL + BUYER_ITEMS + `?catogery_type=${category}&count=${count}`, {
       method: 'GET',
@@ -119,7 +119,7 @@ const Home = ({ navigation }) => {
         //return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
       }
       else {
-       // return Alert.alert(data.error.description);
+        // return Alert.alert(data.error.description);
       }
     }
 
@@ -173,14 +173,14 @@ const Home = ({ navigation }) => {
     const data = await response.json();
 
     if (data.error) {
-      if(data.error.code === 'BAD_REQUEST_UNAUTHORIZED'){
+      if (data.error.code === 'BAD_REQUEST_UNAUTHORIZED') {
         setIsUserLoggedIn(false);
       }
       if (Platform.OS === 'android') {
-        
+
       }
       else {
-        
+
       }
     }
 
@@ -213,19 +213,21 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     const focusListener = navigation.addListener('focus', () => {
       onRefresh();
+      fetchSellerProducts();
+      getNotificationCount();
     })
     return () => focusListener;
   }, [navigation])
 
   return (
-    <View style={styles.container}>
+    <View key={refreshing} style={styles.container}>
       <View style={styles.header}>
         <View style={styles.modeBtnContainer}>
           <ModeBtn />
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('AccountNotification')} style={styles.bellIconContainer}>
-          <View style={{width: 10, height: 10, backgroundColor: colors.primary[0], alignSelf: 'flex-end', borderRadius: 5, alignItems: 'center', justifyContent: 'center'}}>
-            <Text style={{fontSize: 7, color: 'white', fontFamily: 'Poppins'}}>10</Text>
+          <View style={{ width: 10, height: 10, backgroundColor: colors.primary[0], alignSelf: 'flex-end', borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontSize: 7, color: 'white', fontFamily: 'Poppins' }}>{notificationCount}</Text>
           </View>
           <Svg style={styles.bellIcon} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
             <Path
@@ -247,7 +249,7 @@ const Home = ({ navigation }) => {
           <View style={styles.addBtnContainer}>
             <Button onPress={addProductHandler} text={'Add'} />
           </View>
-          <ScrollView showsVerticalScrollIndicator={false} style={{ marginTop: '5%' }}>
+          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} />} showsVerticalScrollIndicator={false} style={{ marginTop: '5%' }}>
             <View style={styles.middle}>
               <View>
                 <Text style={styles.headingText}>{'Items for sale'}</Text>
@@ -266,6 +268,7 @@ const Home = ({ navigation }) => {
                   price: item.item.price,
                   quantity: item.item.quantity,
                   unit: item.item.quantity_um,
+                  merchantId: item.item.merchant_id,
                   image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
                   id: item.item.id
                 })} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} />} />
@@ -338,13 +341,15 @@ const Home = ({ navigation }) => {
                 renderItem={(item) => {
                   const isFav = favourites.some(o => o.inventory_item_id == item.item.id);
                   return (
-                    <BuyerListRender {...item} favouriteUpdate={onRefresh} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
+                    <BuyerListRender imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} {...item} favouriteUpdate={onRefresh} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
                       preview: false,
                       name: item.item.product_name,
                       description: item.item.product_description,
                       price: item.item.price,
                       quantity: item.item.quantity,
                       unit: item.item.quantity_um,
+                      merchantId: item.item.merchant_id,
+                      image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
                       id: item.item.id
                     })} />
                   )

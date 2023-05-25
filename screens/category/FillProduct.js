@@ -22,6 +22,7 @@ import { ToastAndroid } from 'react-native';
 import { getImageUrl } from '../../utils/getImageUrl'
 import * as SecureStore from 'expo-secure-store';
 import { RefreshControl } from 'react-native'
+import { BASE_URL, BUYER_ITEMS } from '@env';
 
 const FillProduct = ({ navigation, route }) => {
 
@@ -40,6 +41,7 @@ const FillProduct = ({ navigation, route }) => {
     const [productPrice, setProductPrice] = useState(0);
     const [productDescription, setProductDescription] = useState('');
     const [refreshing, setRefreshing] = useState(false);
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
 
@@ -58,6 +60,8 @@ const FillProduct = ({ navigation, route }) => {
             setProductPrice(price)
             setValue(quantity_um)
         }
+
+        mode === MODE_BUYER? getBuyerProducts(route.params.type, 0): <></>
 
     }, [])
 
@@ -109,10 +113,6 @@ const FillProduct = ({ navigation, route }) => {
 
     function backPressHandler() {
         navigation.goBack();
-    }
-
-    function productDetailHandler() {
-        navigation.navigate('ProductDetail', { preview: false })
     }
 
     async function imagePickHandler(type) {
@@ -172,9 +172,9 @@ const FillProduct = ({ navigation, route }) => {
                     // return newArray;);
                 } else {
                     if (result.assets.length >= 5) {
-            
+
                         setRefreshing(true);
-                        for (const img of result.assets.slice(0, productImage.length === 0? 4 : Math.abs(4 - (productImage.length-1)))) {
+                        for (const img of result.assets.slice(0, productImage.length === 0 ? 4 : Math.abs(4 - (productImage.length - 1)))) {
                             const url = await getImageUrl(img.uri, 'item', sessionId)
                             setProductImage(prevArray => {
                                 const newArray = [...prevArray];
@@ -185,7 +185,7 @@ const FillProduct = ({ navigation, route }) => {
                         setRefreshing(false);
                     } else {
                         setRefreshing(true);
-                        for (const img of result.assets.slice(0, productImage.length === 0? 4 : Math.abs(4 - (productImage.length)))) {
+                        for (const img of result.assets.slice(0, productImage.length === 0 ? 4 : Math.abs(4 - (productImage.length)))) {
                             const url = await getImageUrl(img.uri, 'item', sessionId)
                             setProductImage(prevArray => {
                                 const newArray = [...prevArray];
@@ -223,6 +223,19 @@ const FillProduct = ({ navigation, route }) => {
     }
 
     function submitProductHandler() {
+
+        if (productName.length === 0 || productQuantity.length === 0 || productParameters.length === 0 || productImage.length === 0 || productPrice.length === 0 || productDescription.length === 0) {
+
+            if (Platform.OS === 'android') {
+                return ToastAndroid.show('Fill all required Fields', ToastAndroid.SHORT);
+            }
+            else {
+                return Alert.alert('Fill all required Fields');
+            }
+        }
+
+        if (refreshing) return;
+
         navigation.navigate('ProductDetail', {
             name: productName,
             parameters: productParameters,
@@ -235,6 +248,31 @@ const FillProduct = ({ navigation, route }) => {
             categoryType: route.params.isEdit ? route.params.product.catogery_type : route.params.type,
             id: id
         })
+    }
+
+
+    async function getBuyerProducts(category, count) {
+        const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+        const response = await fetch(BASE_URL + BUYER_ITEMS + `?catogery_type=${category}&count=${count}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "X-USER-SESSION-ID": sessionId
+            },
+        })
+
+        const data = await response.json();
+
+        if (data.error) {
+            if (Platform.OS === 'android') {
+                //return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+            }
+            else {
+                // return Alert.alert(data.error.description);
+            }
+        }
+
+        setProducts(data.items);
     }
 
     return (
@@ -452,7 +490,16 @@ const FillProduct = ({ navigation, route }) => {
                                     </View>
                                 </ScrollView>
                                 :
-                                <FlatList ListHeaderComponentStyle={{ width: '100%' }} ListHeaderComponent={HeaderComponentFlatList} style={{ marginTop: 20 }} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={itemsForSale} renderItem={item => <BuyerCategoryListRender onPress={productDetailHandler} {...item} />} numColumns={2} />
+                                <FlatList ListHeaderComponentStyle={{ width: '100%' }} ListHeaderComponent={HeaderComponentFlatList} style={{ marginTop: 20 }} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={products} renderItem={item => <BuyerCategoryListRender imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} onPress={() => navigation.navigate('ProductDetail', {
+                                    preview: false,
+                                    name: item.item.product_name,
+                                    description: item.item.product_description,
+                                    price: item.item.price,
+                                    quantity: item.item.quantity,
+                                    unit: item.item.quantity_um,
+                                    image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
+                                    id: item.item.id
+                                  })} {...item} />} numColumns={2} />
                         }
                     </>
             }

@@ -52,7 +52,7 @@ export default function App() {
 
   async function init() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    
+    console.log(sessionId);
     if (sessionId) {
       try {
         const response = await fetch(BASE_URL + GET_DETAILS, {
@@ -79,7 +79,7 @@ export default function App() {
 
         if (data.merchant_status === 'afa_pending') {
             setUserData('otpReq');
-            setInitialScreen('VerifyEmail');
+            setIsUserLoggedIn(false);
             setAppIsReady(true);
             return;
         }

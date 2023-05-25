@@ -6,7 +6,7 @@ import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from "react-native";
 import { Alert } from "react-native";
 
-export const BuyerListRender = ({ item, favourite, onPress, favouriteUpdate }) => {
+export const BuyerListRender = ({ item, favourite, onPress, favouriteUpdate, imageUri }) => {
 
     const [isFavUpdateTriggered, setIsUpdateTriggered] = useState(0);
     const [mounted, setMounted] = useState(false);
@@ -98,7 +98,7 @@ export const BuyerListRender = ({ item, favourite, onPress, favouriteUpdate }) =
                     />
                 </Svg>
             </TouchableOpacity>}
-            <Image source={{ uri: item.image }} style={{ height: 110, width: '70%', borderRadius: 19, alignSelf: 'center' }} />
+            <Image source={{ uri: imageUri }} style={{ height: 110, width: '70%', borderRadius: 19, alignSelf: 'center' }} />
             <Text style={{ marginHorizontal: '10%', marginTop: 25, fontFamily: 'Poppins', fontSize: 12 }}>{item.product_name}</Text>
             <View style={{ flexDirection: 'row', marginHorizontal: '5%', justifyContent: 'space-between' }}>
                 <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 16, marginLeft: '5%' }}>{'Rs ' + item.price}</Text>

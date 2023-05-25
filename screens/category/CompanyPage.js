@@ -39,7 +39,7 @@ const CompanyPage = ({ navigation, route }) => {
     return (
         <View style={styles.container}>
             <Header onPress={backPressHandler} pageTitle={'xyz Company'} />
-            <FlatList style={{ marginTop: 20 }} ListHeaderComponentStyle={{ width: '100%' }} ListHeaderComponent={HeaderComponentFlatlist} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={itemsForSale} renderItem={item => <BuyerCategoryListRender onPress={productDetailHandler} {...item} />} numColumns={2} />
+            <FlatList style={{ marginTop: 20 }} ListHeaderComponentStyle={{ width: '100%' }} ListHeaderComponent={HeaderComponentFlatlist} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={{}} renderItem={item => <BuyerCategoryListRender onPress={productDetailHandler} {...item} />} numColumns={2} />
         </View>
     )
 }

@@ -5,8 +5,6 @@ import { Image, View } from 'react-native';
 const ProductImage = ({ item }) => {
   const { width, height } = Dimensions.get('window');
 
-  console.log(item);
-
   return (
     <View style={{ alignItems: 'center', marginTop: '5%', width: width*(90/100) }}>
       <View style={{ backgroundColor: '#F8F8F8', borderRadius: 24, height: 300, width: '90%'  }}>
