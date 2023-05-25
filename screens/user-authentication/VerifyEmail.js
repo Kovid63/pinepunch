@@ -21,6 +21,7 @@ const VerifyEmail = ({ navigation, route }) => {
 
     //const [isEmailverified, setIsEmailverified] = useState(false);
     const [otpValue, setOtpValue] = useState('');
+    const [otpId, setOtpId] = useState('')
     const { setIsUserLoggedIn, userData, setUserData } = useContext(UserContext);
 
     const { isLoading, setIsLoading } = useContext(LoadingContext);
@@ -42,7 +43,7 @@ const VerifyEmail = ({ navigation, route }) => {
 
             if (response.ok) {
                 const data = await response.json();
-                navigation.navigate('VerifyEmail', { otpId: data.otp_id, sessionId: sessionId });
+                setOtpId(data.otp_id);
             }
 
         } catch (error) {
@@ -69,6 +70,51 @@ const VerifyEmail = ({ navigation, route }) => {
                 },
                 body: JSON.stringify({
                     otp_id: route.params.otpId,
+                    otp: otpValue
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                setIsLoading(false);
+                if (Platform.OS === 'android') {
+                    return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+                }
+                else {
+                    return Alert.alert(data.error.description);
+                }
+            }
+
+            if (data.merchant_status === 'in_review') {
+                await SecureStore.setItemAsync('SESSION_ID', route.params.sessionId);
+                setUserData(Math.random(0, 9));
+                setIsLoading(false);
+            }
+
+            setIsLoading(false);
+            // await AsyncStorage.setItem('USER_INFO', JSON.stringify({...userData, merchant_status: data.merchant_status}));
+            // const local = JSON.parse(await AsyncStorage.getItem('USER_INFO'));
+            // setUserData(local);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async function verifyEmailHandlerReq() {
+        setIsLoading(true);
+        const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+
+        try {
+            const response = await fetch(BASE_URL + VERIFY_REGISTER_OTP, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-USER-SESSION-ID": sessionId
+                },
+                body: JSON.stringify({
+                    otp_id: otpId,
                     otp: otpValue
                 })
             });
@@ -154,7 +200,7 @@ const VerifyEmail = ({ navigation, route }) => {
                 </View>
                 <TextInput maxLength={4} keyboardType={'number-pad'} value={otpValue.toString()} onChangeText={(value) => setOtpValue(value)} ref={inputRef} style={{ opacity: 0 }} />
                 <View style={styles.submitBtnContainer}>
-                    <SubmitBtn isLoading={isLoading} onPress={verifyEmailHandler} active={isButtonActive} fill={isButtonActive} text={'Continue'} />
+                    <SubmitBtn isLoading={isLoading} onPress={userData==='otpReq'? verifyEmailHandlerReq : verifyEmailHandler} active={isButtonActive} fill={isButtonActive} text={'Continue'} />
                 </View>
             </ScrollView>
         </Pressable>

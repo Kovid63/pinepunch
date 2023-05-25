@@ -5,12 +5,14 @@ import { colors } from '../../colors'
 import { ModeContext } from '../../contexts/ModeContext'
 import { MODE_SELLER } from '../../constants'
 import { Path, Svg } from 'react-native-svg'
+import { getAppSettings } from '../../utils/getAppSettings'
 
 const AddProduct = ({ navigation }) => {
 
   const { mode } = useContext(ModeContext);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState(categories || []);
+
 
   function categoryClickHandler(category) {
     navigation.navigate('FillProduct', category)

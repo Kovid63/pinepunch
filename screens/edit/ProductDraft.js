@@ -48,6 +48,7 @@ const ProductDraft = ({navigation}) => {
   }
 
   function editDraftHandler(product){
+    console.log(product);
     navigation.navigate('FillProduct', {product, isEdit: true, description_required: true })
   }
 

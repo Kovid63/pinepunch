@@ -106,11 +106,7 @@ const ProductDetail = ({ navigation, route }) => {
   async function productDraftHandler() {
     setIsLoading(true)
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    let imageArray = [];
-    for (const img of image) {
-      const imgUrl = await getImageUrl(img.uri, 'item', sessionId);
-      imageArray.push(imgUrl);
-    }
+
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
@@ -125,7 +121,7 @@ const ProductDetail = ({ navigation, route }) => {
         quantity_um: unit,
         price: price,
         save_as_draft: true,
-        images: imageArray,
+        images: image,
         parameters: parameters.map((parameter) => {
           return { name: parameter.name, value: parameter.value, um: parameter.um }
         })
