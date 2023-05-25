@@ -15,7 +15,7 @@ import { homeBuyerAd } from '../../data/homeBuyerAd';
 import { AdRender } from '../../components/AdRender';
 import { homeCategory } from '../../data/homeCategory';
 import { BuyerListRender } from '../../components/BuyerListRender';
-import { BASE_URL, BUYER_ITEMS, FAVORITES, SELLER_ITEMS } from '@env';
+import { BASE_URL, BUYER_ITEMS, FAVORITES, SELLER_ITEMS, GET_DETAILS } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native'
 
@@ -32,6 +32,36 @@ const Home = ({ navigation }) => {
   const [sellerProducts, setSellerProducts] = useState([]);
 
   const adRef = useRef();
+
+  async function init() {
+    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+      try {
+        const response = await fetch(BASE_URL + GET_DETAILS, {
+          method: 'GET',
+          headers: {
+            "Content-Type": "application/json",
+            "X-USER-SESSION-ID": sessionId
+          }
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          if (Platform.OS === 'android') {
+            //return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+          }
+          else {
+            //return Alert.alert(data.error.description);
+          }
+        }
+
+        console.log(data);
+
+      } catch (error) {
+        console.log(error);
+      }
+  }
+
 
 
   function showAllProductHandler() {
