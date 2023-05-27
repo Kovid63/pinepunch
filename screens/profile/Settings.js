@@ -10,20 +10,41 @@ import { settingsHelp } from '../../data/settingsHelp'
 import { SettingsSlot } from '../../components/SettingsSlot'
 import { UserContext } from '../../contexts/UserContext'
 import * as SecureStore from 'expo-secure-store';
+import { LoadingContext } from '../../contexts/LoadingContext'
+import { BASE_URL, LOGOUT } from '@env';
+import { Platform } from 'react-native'
+import { ToastAndroid } from 'react-native'
+import { Alert } from 'react-native'
+
 const Settings = ({ navigation }) => {
 
     const { setIsUserLoggedIn } = useContext(UserContext);
+
+    const { isLoading, setIsLoading } = useContext(LoadingContext);
 
     function backPressHandler() {
         navigation.goBack();
     }
 
-    async function logOutUserHandler(){
-        await SecureStore.deleteItemAsync('SESSION_ID');
-        setIsUserLoggedIn(false);
+    async function logOutUserHandler() {
+        try {
+            setIsLoading(true)
+            const response = await fetch(BASE_URL + LOGOUT, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            setIsLoading(false);
+            await SecureStore.deleteItemAsync('SESSION_ID');
+            setIsUserLoggedIn(false);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-    function slotPressHandler(slotName){
+    function slotPressHandler(slotName) {
         navigation.navigate(slotName)
     }
 
@@ -49,7 +70,7 @@ const Settings = ({ navigation }) => {
                 }
             </ScrollView>
             <View style={styles.submitBtnContainer}>
-                <SubmitBtn onPress={logOutUserHandler} active={true} outline={true} text={'Log Out'} />
+                <SubmitBtn isLoading={isLoading} fill={isLoading ? 1 : 0} onPress={logOutUserHandler} active={true} outline={true} text={'Log Out'} />
             </View>
         </View>
     )
