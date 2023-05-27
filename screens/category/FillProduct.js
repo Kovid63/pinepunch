@@ -23,6 +23,7 @@ import { getImageUrl } from '../../utils/getImageUrl'
 import * as SecureStore from 'expo-secure-store';
 import { RefreshControl } from 'react-native'
 import { BASE_URL, BUYER_ITEMS } from '@env';
+import { getAppSettings } from '../../utils/getAppSettings'
 
 const FillProduct = ({ navigation, route }) => {
 
@@ -61,9 +62,15 @@ const FillProduct = ({ navigation, route }) => {
             setValue(quantity_um)
         }
 
-        mode === MODE_BUYER? getBuyerProducts(route.params.type, 0): <></>
+        mode === MODE_BUYER ? getBuyerProducts(route.params.type, 0) : <></>
 
     }, [])
+
+    useEffect(() => {
+        console.log(route.params.parameters);
+    }, [])
+
+    
 
     const HeaderComponentFlatList = () => {
         return (
@@ -222,9 +229,28 @@ const FillProduct = ({ navigation, route }) => {
         }
     }
 
+    function getOptionalParamError() {
+        const optionalParams = route.params.parameters.filter((param) => !param.optional);
+
+        return optionalParams.every((param) => {
+            return productParameters.map((productParam) => productParam.name).includes(param.name);
+        });
+    }
+
     function submitProductHandler() {
 
-        if (productName.length === 0 || productQuantity.length === 0 || productParameters.length === 0 || productImage.length === 0 || productPrice.length === 0 || productDescription.length === 0) {
+        if(!isEdit){
+            if (!getOptionalParamError()) {
+                if (Platform.OS === 'android') {
+                    return ToastAndroid.show('Fill all required Fields', ToastAndroid.SHORT);
+                }
+                else {
+                    return Alert.alert('Fill all required Fields');
+                }
+            }
+        }
+
+        if (productName.length === 0 || productQuantity.length === 0 || productImage.length === 0 || productPrice.length === 0 || productDescription.length === 0) {
 
             if (Platform.OS === 'android') {
                 return ToastAndroid.show('Fill all required Fields', ToastAndroid.SHORT);
@@ -246,7 +272,8 @@ const FillProduct = ({ navigation, route }) => {
             unit: value,
             preview: true,
             categoryType: route.params.isEdit ? route.params.product.catogery_type : route.params.type,
-            id: id
+            id: id,
+            isEdit: isEdit,
         })
     }
 
@@ -275,6 +302,7 @@ const FillProduct = ({ navigation, route }) => {
         setProducts(data.items);
     }
 
+
     return (
         <View style={styles.container}>
             {
@@ -293,7 +321,7 @@ const FillProduct = ({ navigation, route }) => {
                             {
                                 productParameters.map((parameter, index) => {
                                     return (
-                                        <ProductFillSlot um={parameter.um} key={index} name={parameter.name} value={parameter.value} productParameters={productParameters} setProductParameters={setProductParameters} />
+                                        <ProductFillSlot um={parameter.um} supportedUm={[]} key={index} name={parameter.name} value={parameter.value} productParameters={productParameters} setProductParameters={setProductParameters} />
                                     )
                                 })
 
@@ -399,7 +427,7 @@ const FillProduct = ({ navigation, route }) => {
                                             route.params.parameters.map((parameter, index) => {
 
                                                 return (
-                                                    <ProductFillSlot um={parameter.um} key={index} name={parameter.param_name} options={parameter.options} productParameters={productParameters} setProductParameters={setProductParameters} />
+                                                    <ProductFillSlot um={parameter.default_um} supportedUm={parameter.supported_um} key={index} name={parameter.name} options={parameter.options} productParameters={productParameters} setProductParameters={setProductParameters} />
                                                 )
                                             })
                                             :
@@ -450,7 +478,7 @@ const FillProduct = ({ navigation, route }) => {
                                             <Text style={styles.parameterText}>{'Quantity'}</Text>
                                             <TextInput maxLength={5} style={[styles.parameterInput, { width: '22%', textAlign: 'center', height: 25 }]} onChangeText={(quantity) => { setProductQuantity(quantity) }} />
                                             <View style={{ marginLeft: '5%' }}>
-                                                <DropDownMenu value={value} setValue={setValue} />
+                                                <DropDownMenu value={value} setValue={setValue} mapObject={units} />
                                             </View>
                                         </View>
                                         <View style={styles.parameterContainer}>
@@ -499,7 +527,7 @@ const FillProduct = ({ navigation, route }) => {
                                     unit: item.item.quantity_um,
                                     image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
                                     id: item.item.id
-                                  })} {...item} />} numColumns={2} />
+                                })} {...item} />} numColumns={2} />
                         }
                     </>
             }

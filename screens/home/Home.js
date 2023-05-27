@@ -67,6 +67,7 @@ const Home = ({ navigation }) => {
 
 
   function showAllProductHandler() {
+    if(refreshing) return;
     navigation.navigate('Product', {
       products: mode === MODE_SELLER ? sellerProducts : products
     });
@@ -173,9 +174,7 @@ const Home = ({ navigation }) => {
     const data = await response.json();
 
     if (data.error) {
-      if (data.error.code === 'BAD_REQUEST_UNAUTHORIZED') {
-        setIsUserLoggedIn(false);
-      }
+      
       if (Platform.OS === 'android') {
 
       }
@@ -260,7 +259,7 @@ const Home = ({ navigation }) => {
               <FlatList
                 showsHorizontalScrollIndicator={false}
                 horizontal
-                data={sellerProducts.slice(0, 2)}
+                data={sellerProducts}
                 renderItem={(item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
                   preview: false,
                   name: item.item.product_name,
@@ -283,7 +282,7 @@ const Home = ({ navigation }) => {
                 contentContainerStyle={{ paddingBottom: 90 }}
                 showsHorizontalScrollIndicator={false}
                 horizontal
-                data={scrapForSale.slice(0, 2)}
+                data={scrapForSale}
                 renderItem={(item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
                   preview: false
                 })} {...item} />} />
@@ -337,7 +336,7 @@ const Home = ({ navigation }) => {
                 contentContainerStyle={{ paddingBottom: 90 }}
                 showsHorizontalScrollIndicator={false}
                 horizontal
-                data={products.slice(0, 2)}
+                data={products}
                 renderItem={(item) => {
                   const isFav = favourites.some(o => o.inventory_item_id == item.item.id);
                   return (

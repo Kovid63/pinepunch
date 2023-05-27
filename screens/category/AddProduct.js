@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { categories } from '../../category'
 import { colors } from '../../colors'
 import { ModeContext } from '../../contexts/ModeContext'
 import { MODE_SELLER } from '../../constants'
@@ -11,23 +10,36 @@ const AddProduct = ({ navigation }) => {
 
   const { mode } = useContext(ModeContext);
   const [query, setQuery] = useState('');
-  const [category, setCategory] = useState(categories || []);
+  const [category, setCategory] = useState([]);
+  const [properties, setProperties] = useState({});
 
 
   function categoryClickHandler(category) {
-    navigation.navigate('FillProduct', category)
+    navigation.navigate('FillProduct', {
+      type: category,
+      parameters: mode === MODE_SELLER? properties[category].add_product.parameters_default: properties[category].filters,
+      description_required: true
+    })
   }
 
   useEffect(() => {
 
-    const obj = categories.filter(obj => obj.category_name.toLowerCase().includes(query.toLowerCase()));
-    query.length === 0 ? setCategory(categories) : setCategory(obj);
+    // const obj = categories.filter(obj => obj.category_name.toLowerCase().includes(query.toLowerCase()));
+    // query.length === 0 ? setCategory(categories) : setCategory(obj);
 
 }, [query])
 
 useEffect(() => {
+  (async function getFilters(){
+    const filters = await getAppSettings();
+    setCategory(Object.keys(filters.products));
+    setProperties(filters.products);
+  })();
+} ,[])
 
-  mode === MODE_SELLER? setCategory(categories):<></>
+useEffect(() => {
+
+  //mode === MODE_SELLER? setCategory(categories):<></>
 
 }, [mode])
 
@@ -40,11 +52,13 @@ useEffect(() => {
       </View>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.categoryListContainer}>
           {
-            category.map((category, index) => (
+            category.map((category, index) => {
+            
+              return (
               <TouchableOpacity onPress={() => categoryClickHandler(category)} activeOpacity={0.4} key={index} style={styles.categoryContainer}>
-                <Text style={styles.categoryText}>{category.category_name}</Text>
+                <Text style={styles.categoryText}>{category}</Text>
               </TouchableOpacity>
-            ))
+            )})
           }
         </ScrollView></> :
         <>

@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 import { units } from '../data/units';
 
-const DropDownMenu = ({value, setValue}) => {
+const DropDownMenu = ({value, setValue, mapObject}) => {
 
     const [isDropdownOpen, setIsDropDownOpen] = useState(false);
 
@@ -19,11 +19,11 @@ const DropDownMenu = ({value, setValue}) => {
 
     return (
         <View style={{ flexDirection: 'row', backgroundColor: '#FFFFFF', justifyContent: 'center', paddingVertical: 1}}>
-            <View style={{ paddingHorizontal: 5, marginHorizontal: '2%'}}>
-                <Text style={{ fontFamily: 'Poppins', width: 40 }}>{value}</Text>
-                {isDropdownOpen && (units.map((unit, index) => (
+            <View style={{ paddingHorizontal: 1, marginHorizontal: '2%'}}>
+                <Text style={{ fontFamily: 'Poppins', width: 30 }}>{value}</Text>
+                {isDropdownOpen && (mapObject.map((unit, index) => (
                     <TouchableOpacity key={index} onPress={() => selectValueHandler(unit)}>
-                        <Text style={{ fontFamily: 'Poppins', color: '#B3B1B0', width: 40 }}>{unit}</Text>
+                        <Text style={{ fontFamily: 'Poppins', color: '#B3B1B0', width: 30 }}>{unit}</Text>
                     </TouchableOpacity>
                 )))}
             </View>

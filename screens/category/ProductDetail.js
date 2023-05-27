@@ -21,7 +21,7 @@ import ProductImage from '../../components/ProductImage'
 const ProductDetail = ({ navigation, route }) => {
 
   const { mode } = useContext(ModeContext);
-  const { name, parameters, image, quantity, price, description, unit, categoryType, id, merchantId } = route.params;
+  const { name, parameters, image, quantity, price, description, unit, categoryType, id, merchantId, isEdit } = route.params;
   const [favourites, setFavourites] = useState([]);
   const [isFav, setIsFav] = useState(false);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
@@ -163,41 +163,80 @@ const ProductDetail = ({ navigation, route }) => {
     for (const img of image) {
       imageArray.push(img);
     }
-    
-    const response = await fetch(BASE_URL + SELLER_ITEMS, {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-        "X-USER-SESSION-ID": sessionId
-      },
-      body: JSON.stringify({
-        catogery_type: categoryType,
-        product_name: name,
-        product_description: description,
-        quantity: parseInt(quantity),
-        quantity_um: unit,
-        price: price,
-        images: imageArray,
-        parameters: parameters.map((parameter) => {
-          return { name: parameter.name, value: parameter.value, um: parameter.um }
+
+    if(isEdit){
+      const response = await fetch(BASE_URL + SELLER_ITEMS + '/' + id, {
+        method: 'PUT',
+        headers: {
+          "Content-Type": "application/json",
+          "X-USER-SESSION-ID": sessionId
+        },
+        body: JSON.stringify({
+          catogery_type: categoryType,
+          product_name: name,
+          product_description: description,
+          quantity: parseInt(quantity),
+          quantity_um: unit,
+          price: price,
+          images: imageArray,
+          parameters: parameters.map((parameter) => {
+            return { name: parameter.name, value: parameter.value, um: parameter.um }
+          })
         })
       })
-    })
-
-    const data = await response.json();
-
-    if (data.error) {
+  
+      const data = await response.json();
+  
+      if (data.error) {
+        setIsLoading(false);
+        if (Platform.OS === 'android') {
+          return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+        }
+        else {
+          return Alert.alert(data.error.description);
+        }
+      }
       setIsLoading(false);
-      if (Platform.OS === 'android') {
-        return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+      navigation.popToTop();
+      navigation.navigate('HomeStack');
+    }else{
+      const response = await fetch(BASE_URL + SELLER_ITEMS, {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+          "X-USER-SESSION-ID": sessionId
+        },
+        body: JSON.stringify({
+          catogery_type: categoryType,
+          product_name: name,
+          product_description: description,
+          quantity: parseInt(quantity),
+          quantity_um: unit,
+          price: price,
+          images: imageArray,
+          parameters: parameters.map((parameter) => {
+            return { name: parameter.name, value: parameter.value, um: parameter.um }
+          })
+        })
+      })
+  
+      const data = await response.json();
+  
+      if (data.error) {
+        setIsLoading(false);
+        if (Platform.OS === 'android') {
+          return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+        }
+        else {
+          return Alert.alert(data.error.description);
+        }
       }
-      else {
-        return Alert.alert(data.error.description);
-      }
+      setIsLoading(false);
+      navigation.popToTop();
+      navigation.navigate('HomeStack');
     }
-    setIsLoading(false);
-    navigation.popToTop();
-    navigation.navigate('HomeStack');
+    
+    
   }
 
   async function fetchFavourites() {
