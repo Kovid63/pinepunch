@@ -44,7 +44,7 @@ const FillProduct = ({ navigation, route }) => {
     const [refreshing, setRefreshing] = useState(false);
     const [products, setProducts] = useState([]);
     const [prodFilters, setProdFilters] = useState([]);
-
+    const [mounted, setMounted] = useState(false);
     useEffect(() => {
 
         if (isEdit) {
@@ -325,11 +325,14 @@ const FillProduct = ({ navigation, route }) => {
     }
 
     useEffect(() => {
-        const focusListener = navigation.addListener('blur', () => {
+        if (!mounted) {
+            setMounted(true);
+          }
+      
+          if (mounted) {
             navigation.popToTop();
-        })
-        return () => focusListener;
-    }, [navigation])
+          }
+      }, [mode]);
 
     return (
         <View style={styles.container}>
