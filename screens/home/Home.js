@@ -222,7 +222,7 @@ const Home = ({ navigation }) => {
   
 
   useEffect(() => {
-    fetchProducts(selectedCategory, 0)
+    fetchProducts(selectedCategory, 0);
   }, [selectedCategory]);
 
   useEffect(() => {
@@ -230,6 +230,7 @@ const Home = ({ navigation }) => {
       onRefresh();
       fetchSellerProducts();
       getNotificationCount();
+      fetchProducts(selectedCategory, 0);
     })
     return () => focusListener;
   }, [navigation])

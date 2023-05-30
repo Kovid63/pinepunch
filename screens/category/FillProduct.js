@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ScrollView, Alert, Linking, Platform, PermissionsAndroid, PermissionsIOS } from 'react-native'
+import { View, Text, FlatList, ScrollView, Alert, Linking, Platform, PermissionsAndroid, PermissionsIOS, Pressable } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
@@ -77,6 +77,7 @@ const FillProduct = ({ navigation, route }) => {
             newArr.splice(index, 1, arr);
             setProdFilters(newArr);
         }
+        getFilteredBuyerProducts(route.params.type, 0);
     }
 
     const HeaderComponentFlatList = () => {
@@ -109,11 +110,11 @@ const FillProduct = ({ navigation, route }) => {
                         route.params.parameters.map((parameter, index) => {
 
                             return (
-                                <View key={index} style={styles.parameterContainer}>
+                                <Pressable onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type,0)]} key={index} style={styles.parameterContainer}>
                                     <Text style={styles.parameterText}>{parameter.name}</Text>
                                     {
                                         parameter.type === 'options' ?
-                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => addToFilter(parameter.name, value)} />)} data={parameter.options} />
+                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => [addToFilter(parameter.name, value)]} />)} data={parameter.options} />
                                             :
                                             <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => addToFilter(parameter.name, value)} />)} data={[parameter.min_default, parameter.max_default]} />
                                     }
@@ -130,7 +131,7 @@ const FillProduct = ({ navigation, route }) => {
                                         paddingVertical: 3,
                                         marginHorizontal: 10
                                     }} onChangeText={(value) => { }}>{parameter.um}</Text>}
-                                </View>
+                                </Pressable>
                             )
                         })
                         : <></>}
@@ -323,6 +324,31 @@ const FillProduct = ({ navigation, route }) => {
 
         setProducts(data.items);
     }
+
+
+   async function getFilteredBuyerProducts(category, count){
+    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+        const response = await fetch(BASE_URL + BUYER_ITEMS + `?catogery_type=${category}&parameters[0][name]=${prodFilters[0]?.name}&parameters[0][value]=${prodFilters[0]?.value}&parameters[1][name]=${prodFilters[1]?.name}&parameters[1][value_min]=${prodFilters[1]?.value}&parameters[1][value_max]=150&parameters[2][name]=${prodFilters[2]?.name}&parameters[2][value_min]=${prodFilters[2]?.value}&parameters[2][value_max]=1&page=1&count=${count}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "X-USER-SESSION-ID": sessionId
+            },
+        })
+
+        const data = await response.json();
+
+        if (data.error) {
+            if (Platform.OS === 'android') {
+                //return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+            }
+            else {
+                // return Alert.alert(data.error.description);
+            }
+        }
+
+        setProducts(data.items);
+   }
 
     useEffect(() => {
         if (!mounted) {

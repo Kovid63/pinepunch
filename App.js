@@ -19,7 +19,7 @@ export default function App() {
   const [userData, setUserData] = useState(0);
   const [isNewMsgOn, setIsNewMsgOn] = useState(false);
   const [isItemSoldMsgOn, setIsItemSoldMsgOn] = useState(false);
-  const [mode, setMode] = useState(MODE_BUYER);
+  const [mode, setMode] = useState(MODE_SELLER);
   const [appIsReady, setAppIsReady] = useState(false);
   const [isFontLoaded, setIsFontLoaded] = useState(false);
   const [initialScreen, setInitialScreen] = useState('');
