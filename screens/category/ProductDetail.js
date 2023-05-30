@@ -9,7 +9,7 @@ import { Image } from 'react-native'
 import SubmitBtn from '../../components/SubmitBtn'
 import { ModeContext } from '../../contexts/ModeContext'
 import { MODE_BUYER, MODE_SELLER } from '../../constants'
-import { BASE_URL, SELLER_ITEMS, FAVORITES } from '@env';
+import { BASE_URL, SELLER_ITEMS, FAVORITES, MERCHANT_INFO } from '@env';
 import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native'
 import { Alert } from 'react-native'
@@ -26,15 +26,35 @@ const ProductDetail = ({ navigation, route }) => {
   const [isFav, setIsFav] = useState(false);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
 
+  const [merchantDetials, setMerchantDetails] = useState({});
+
 
   console.log(merchantId);
 
+  useEffect(() => {
+    getMerchantDetails();
+  }, []);
+
+  async function getMerchantDetails(){
+    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    const response = await fetch(BASE_URL + MERCHANT_INFO + `${merchantId}`, {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "X-USER-SESSION-ID": sessionId
+      },
+    })
+
+    const data = await response.json();
+    setMerchantDetails(data);
+  }
+
   function contactSellerHandler() {
-    navigation.navigate('ContactSeller');
+    navigation.navigate('ContactSeller', merchantDetials);
   }
 
   function companyClickHandler() {
-    navigation.navigate('CompanyPage')
+    navigation.navigate('CompanyPage', merchantDetials);
   }
 
   function backPressHandler() {
@@ -318,7 +338,7 @@ const ProductDetail = ({ navigation, route }) => {
         <View style={{ flexDirection: 'row', marginTop: '8%', justifyContent: 'space-between', alignItems: 'center' }}>
           <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{name}</Text>
           {!route.params.preview ? <TouchableOpacity onPress={companyClickHandler} style={{ height: 50, maxWidth: '50%', backgroundColor: '#FFFFFF', elevation: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: '3%', borderRadius: 16, marginRight: '2%' }}>
-            <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 17, color: colors.primary[0] }}>{'xyz company'}</Text>
+            <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 17, color: colors.primary[0], textAlign: 'center' }}>{merchantDetials.name}</Text>
           </TouchableOpacity>
             :
             <View style={{ flexDirection: 'row', width: '40%', justifyContent: 'space-evenly', alignItems: 'center' }}>

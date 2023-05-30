@@ -7,6 +7,8 @@ import { ScrollView } from 'react-native'
 
 const ContactSeller = ({navigation, route}) => {
 
+    const { name, address, seller_contact  } = route.params;
+
     function backPressHandler(){
         navigation.goBack();
     }
@@ -18,9 +20,9 @@ const ContactSeller = ({navigation, route}) => {
             <ScrollView>
                 <View style={{marginTop: '10%'}}>
                     <Text style={styles.textHeading}>{'Contact detail of seller: '}</Text>
-                    <Text style={styles.textHeading}>{'Name: '}</Text>
-                    <Text style={styles.text}>{'Location: '}</Text>
-                    <Text style={styles.text}>{'Contact number: '}{'23456789'}</Text>
+                    <Text style={styles.textHeading}>{'Name: '}{name}</Text>
+                    <Text style={styles.text}>{'Location: '}{address}</Text>
+                    <Text style={styles.text}>{'Contact number: '}{seller_contact}</Text>
                 </View>
             </ScrollView>
         </View>
