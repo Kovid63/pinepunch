@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
 import Header from '../../components/Header'
@@ -9,15 +9,23 @@ import { Path, Svg } from 'react-native-svg'
 import { FlatList } from 'react-native'
 import { homeCategory } from '../../data/homeCategory'
 import { recentViewed } from '../../data/recentViewed'
+import { getAppSettings } from '../../utils/getAppSettings'
 
 const Search = ({ navigation }) => {
 
     const { mode } = useContext(ModeContext);
-    const [selectedCategory, setSelectedCategory] = useState(homeCategory[0]);
-
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [category, setCategory] = useState([]);
     function backPressHandler() {
         navigation.goBack();
     }
+
+    useEffect(() => {
+        (async function getFilters(){
+          const filters = await getAppSettings();
+          setCategory(Object.keys(filters.products));
+        })();
+      } ,[])
 
     function onSelectCategoryHandler(item) {
         setSelectedCategory(item);
@@ -46,7 +54,7 @@ const Search = ({ navigation }) => {
                     </Svg>
                 </TouchableOpacity>
                 <View style={{ marginLeft: '2%' }}>
-                    <FlatList horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginLeft: -12 }} data={homeCategory} renderItem={({ item }) => {
+                    <FlatList horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ marginLeft: -12 }} data={category} renderItem={({ item }) => {
                         return (
                             <TouchableOpacity onPress={() => onSelectCategoryHandler(item)} activeOpacity={0.7} style={[{ height: 50, paddingHorizontal: 15, marginLeft: 20, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }, selectedCategory === item ? { backgroundColor: colors.primary[0] } : { backgroundColor: '#F8F8F8' }]}>
                                 <Text style={[{ fontFamily: 'Poppins' }, selectedCategory === item ? { color: '#FFFFFF' } : { color: '#B3B1B0' }]}>{item}</Text>

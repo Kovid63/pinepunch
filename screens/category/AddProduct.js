@@ -37,12 +37,6 @@ useEffect(() => {
   })();
 } ,[])
 
-useEffect(() => {
-
-  //mode === MODE_SELLER? setCategory(categories):<></>
-
-}, [mode])
-
   return (
     <View style={styles.container}>
       {mode === MODE_SELLER ? <><View style={styles.header}>
@@ -101,7 +95,7 @@ useEffect(() => {
             {
               category.map((category, index) => (
                 <TouchableOpacity onPress={() => categoryClickHandler(category)} activeOpacity={0.4} key={index} style={styles.categoryContainer}>
-                  <Text style={styles.categoryText}>{category.category_name}</Text>
+                  <Text style={styles.categoryText}>{category}</Text>
                 </TouchableOpacity>
               ))
             }

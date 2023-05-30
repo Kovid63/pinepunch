@@ -19,6 +19,7 @@ import { BASE_URL, BUYER_ITEMS, FAVORITES, SELLER_ITEMS, GET_DETAILS } from '@en
 import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native';
 import { UserContext } from '../../contexts/UserContext';
+import { getAppSettings } from '../../utils/getAppSettings';
 
 const Home = ({ navigation }) => {
 
@@ -27,12 +28,14 @@ const Home = ({ navigation }) => {
   const { width } = Dimensions.get('window');
 
   const [adIndex, setAdIndex] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState(homeCategory[0]);
+  const [category, setCategory] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [products, setProducts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [favourites, setFavourites] = useState([]);
   const [sellerProducts, setSellerProducts] = useState([]);
   const [notificationCount, setNotificationCount] = useState('0');
+
   const adRef = useRef();
 
   async function getNotificationCount() {
@@ -63,6 +66,18 @@ const Home = ({ navigation }) => {
       console.log(error);
     }
   }
+
+  useEffect(() => {
+    (async function getFilters(){
+      const filters = await getAppSettings();
+      setCategory(Object.keys(filters.products));
+    })();
+    
+  } ,[])
+
+  useEffect(() => {
+    setSelectedCategory(category[0]);
+  },[category])
 
 
 
@@ -272,7 +287,7 @@ const Home = ({ navigation }) => {
                   id: item.item.id
                 })} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} />} />
             </View>
-            <View style={styles.middle}>
+            {/* <View style={styles.middle}>
               <View>
                 <Text style={styles.headingText}>{'Scrap for sale'}</Text>
               </View>
@@ -286,7 +301,7 @@ const Home = ({ navigation }) => {
                 renderItem={(item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
                   preview: false
                 })} {...item} />} />
-            </View>
+            </View> */}
           </ScrollView>
         </>
         :
@@ -317,7 +332,7 @@ const Home = ({ navigation }) => {
               <Text onPress={categoryPageLaunchHandler} style={styles.viewAllText}>{'View All'}</Text>
             </View>
             <View style={{ marginTop: '5%' }}>
-              <FlatList horizontal showsHorizontalScrollIndicator={false} data={homeCategory} renderItem={({ item }) => {
+              <FlatList horizontal showsHorizontalScrollIndicator={false} data={category} renderItem={({ item }) => {
                 return (
                   <TouchableOpacity onPress={() => onSelectCategoryHandler(item)} activeOpacity={0.7} style={[{ height: 50, paddingHorizontal: 15, marginLeft: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }, selectedCategory === item ? { backgroundColor: colors.primary[0] } : { backgroundColor: '#F8F8F8' }]}>
                     <Text style={[{ fontFamily: 'Poppins' }, selectedCategory === item ? { color: '#FFFFFF' } : { color: '#B3B1B0' }]}>{item}</Text>

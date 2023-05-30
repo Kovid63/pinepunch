@@ -70,7 +70,6 @@ const FillProduct = ({ navigation, route }) => {
         console.log(route.params.parameters);
     }, [])
 
-    
 
     const HeaderComponentFlatList = () => {
         return (
@@ -83,7 +82,7 @@ const FillProduct = ({ navigation, route }) => {
                         <Text style={styles.parameterText}>{'Product Name'}</Text>
                         <TextInput editable={false} style={styles.parameterInput} placeholder='Item Name 1' />
                         {mode === MODE_BUYER ? <TouchableOpacity style={{ marginHorizontal: 10 }}>
-                            <Svg style={{ height: 24, width: 24, transform: [{ rotateZ: '-90deg' }] }} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                            {/* <Svg style={{ height: 24, width: 24, transform: [{ rotateZ: '-90deg' }] }} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                                 <Path
                                     d="M20 25a1 1 0 0 1-.71-.29l-8-8a1 1 0 0 1 0-1.42l8-8a1 1 0 1 1 1.42 1.42L13.41 16l7.3 7.29a1 1 0 0 1 0 1.42A1 1 0 0 1 20 25Z"
                                     data-name="Layer 2"
@@ -95,19 +94,34 @@ const FillProduct = ({ navigation, route }) => {
                                     }}
                                     d="M0 0h32v32H0z"
                                 />
-                            </Svg>
+                            </Svg> */}
                         </TouchableOpacity> : <></>}
                     </View>
                     {route.params.parameters ?
                         route.params.parameters.map((parameter, index) => {
+
                             return (
                                 <View key={index} style={styles.parameterContainer}>
-                                    <Text style={styles.parameterText}>{parameter.param_name}</Text>
+                                    <Text style={styles.parameterText}>{parameter.name}</Text>
                                     {
-                                        parameter.predefined ?
+                                        parameter.type === 'options' ?
                                             <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} onPress={() => console.log('buyer mode category clicked to be made')} />)} data={parameter.options} />
-                                            : <TextInput style={styles.parameterInput} placeholder={parameter.param_name} />
+                                            :
+                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} onPress={() => console.log('buyer mode category clicked to be made')} />)} data={[parameter.min_default, parameter.max_default]} />
                                     }
+                                    {parameter.um && <Text onFocus={() => { }} style={{
+                                        marginLeft: 2,
+                                        backgroundColor: '#FFFFFF',
+                                        paddingHorizontal: '2%',
+                                        fontFamily: 'Poppins',
+                                        fontSize: 12,
+                                        color: '#B3B1B0',
+                                        fontSize: 14,
+                                        width: 35,
+                                        textAlign: 'center',
+                                        paddingVertical: 3,
+                                        marginHorizontal: 10
+                                    }} onChangeText={(value) => { }}>{parameter.um}</Text>}
                                 </View>
                             )
                         })
@@ -239,7 +253,7 @@ const FillProduct = ({ navigation, route }) => {
 
     function submitProductHandler() {
 
-        if(!isEdit){
+        if (!isEdit) {
             if (!getOptionalParamError()) {
                 if (Platform.OS === 'android') {
                     return ToastAndroid.show('Fill all required Fields', ToastAndroid.SHORT);

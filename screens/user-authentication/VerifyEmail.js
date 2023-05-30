@@ -22,35 +22,11 @@ const VerifyEmail = ({ navigation, route }) => {
     //const [isEmailverified, setIsEmailverified] = useState(false);
     const [otpValue, setOtpValue] = useState('');
     const { setIsUserLoggedIn, userData, setUserData } = useContext(UserContext);
-
     const { isLoading, setIsLoading } = useContext(LoadingContext);
 
     const isButtonActive = otpValue.length === 4;
 
     const inputRef = useRef();
-
-    async function reqOtp() {
-        setIsLoading(true)
-        const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-        try {
-            const response = await fetch(BASE_URL + SEND_REGISTER_OTP, {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-USER-SESSION-ID": sessionId
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setIsLoading(false);
-                return data.otp_id;
-            }
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     function inputPressHandler() {
         inputRef.current.isFocused() ? inputRef.current.blur() : inputRef.current.focus();
@@ -100,7 +76,6 @@ const VerifyEmail = ({ navigation, route }) => {
     }
 
     async function verifyEmailHandlerReq() {
-        const otpId = await reqOtp();
         setIsLoading(true);
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
         try {
@@ -111,7 +86,7 @@ const VerifyEmail = ({ navigation, route }) => {
                     "X-USER-SESSION-ID": sessionId
                 },
                 body: JSON.stringify({
-                    otp_id: otpId,
+                    otp_id: route.params.otpId,
                     otp: otpValue
                 })
             });
@@ -145,7 +120,6 @@ const VerifyEmail = ({ navigation, route }) => {
     }
 
     function backPressHandler() {
-        if (userData === 'otpReq') return;
         navigation.goBack();
     }
 
