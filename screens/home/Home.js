@@ -219,9 +219,10 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     mode === MODE_BUYER ? [fetchProducts(selectedCategory, 0), fetchFavourites()] : fetchSellerProducts();
   }, [mode]);
+  
 
   useEffect(() => {
-    fetchProducts(selectedCategory, 0)
+    fetchProducts(selectedCategory, 0);
   }, [selectedCategory]);
 
   useEffect(() => {
@@ -229,6 +230,7 @@ const Home = ({ navigation }) => {
       onRefresh();
       fetchSellerProducts();
       getNotificationCount();
+      fetchProducts(selectedCategory, 0);
     })
     return () => focusListener;
   }, [navigation])

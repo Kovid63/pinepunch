@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ScrollView, Alert, Linking, Platform, PermissionsAndroid, PermissionsIOS } from 'react-native'
+import { View, Text, FlatList, ScrollView, Alert, Linking, Platform, PermissionsAndroid, PermissionsIOS, Pressable } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
@@ -43,7 +43,8 @@ const FillProduct = ({ navigation, route }) => {
     const [productDescription, setProductDescription] = useState('');
     const [refreshing, setRefreshing] = useState(false);
     const [products, setProducts] = useState([]);
-
+    const [prodFilters, setProdFilters] = useState([]);
+    const [mounted, setMounted] = useState(false);
     useEffect(() => {
 
         if (isEdit) {
@@ -66,10 +67,18 @@ const FillProduct = ({ navigation, route }) => {
 
     }, [])
 
-    useEffect(() => {
-        console.log(route.params.parameters);
-    }, [])
-
+    function addToFilter(filterName, filterValue) {
+        let arr = { name: filterName, value: filterValue }
+        const index = prodFilters.findIndex(obj => obj.name === arr.name);
+        if (index === -1) {
+            setProdFilters([...prodFilters, arr])
+        } else {
+            const newArr = [...prodFilters];
+            newArr.splice(index, 1, arr);
+            setProdFilters(newArr);
+        }
+        getFilteredBuyerProducts(route.params.type, 0);
+    }
 
     const HeaderComponentFlatList = () => {
         return (
@@ -80,7 +89,7 @@ const FillProduct = ({ navigation, route }) => {
                 <View style={{ alignItems: 'center' }}>
                     <View style={styles.parameterContainer}>
                         <Text style={styles.parameterText}>{'Product Name'}</Text>
-                        <TextInput editable={false} style={styles.parameterInput} placeholder='Item Name 1' />
+                        <TextInput onChangeText={(text) => console.log(text)} style={styles.parameterInput} placeholder='Item Name 1' />
                         {mode === MODE_BUYER ? <TouchableOpacity style={{ marginHorizontal: 10 }}>
                             {/* <Svg style={{ height: 24, width: 24, transform: [{ rotateZ: '-90deg' }] }} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                                 <Path
@@ -101,13 +110,13 @@ const FillProduct = ({ navigation, route }) => {
                         route.params.parameters.map((parameter, index) => {
 
                             return (
-                                <View key={index} style={styles.parameterContainer}>
+                                <Pressable onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type,0)]} key={index} style={styles.parameterContainer}>
                                     <Text style={styles.parameterText}>{parameter.name}</Text>
                                     {
                                         parameter.type === 'options' ?
-                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} onPress={() => console.log('buyer mode category clicked to be made')} />)} data={parameter.options} />
+                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => [addToFilter(parameter.name, value)]} />)} data={parameter.options} />
                                             :
-                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} onPress={() => console.log('buyer mode category clicked to be made')} />)} data={[parameter.min_default, parameter.max_default]} />
+                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => addToFilter(parameter.name, value)} />)} data={[parameter.min_default, parameter.max_default]} />
                                     }
                                     {parameter.um && <Text onFocus={() => { }} style={{
                                         marginLeft: 2,
@@ -122,7 +131,7 @@ const FillProduct = ({ navigation, route }) => {
                                         paddingVertical: 3,
                                         marginHorizontal: 10
                                     }} onChangeText={(value) => { }}>{parameter.um}</Text>}
-                                </View>
+                                </Pressable>
                             )
                         })
                         : <></>}
@@ -316,6 +325,40 @@ const FillProduct = ({ navigation, route }) => {
         setProducts(data.items);
     }
 
+
+   async function getFilteredBuyerProducts(category, count){
+    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+        const response = await fetch(BASE_URL + BUYER_ITEMS + `?catogery_type=${category}&parameters[0][name]=${prodFilters[0]?.name}&parameters[0][value]=${prodFilters[0]?.value}&parameters[1][name]=${prodFilters[1]?.name}&parameters[1][value_min]=${prodFilters[1]?.value}&parameters[1][value_max]=150&parameters[2][name]=${prodFilters[2]?.name}&parameters[2][value_min]=${prodFilters[2]?.value}&parameters[2][value_max]=1&page=1&count=${count}`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "X-USER-SESSION-ID": sessionId
+            },
+        })
+
+        const data = await response.json();
+
+        if (data.error) {
+            if (Platform.OS === 'android') {
+                //return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+            }
+            else {
+                // return Alert.alert(data.error.description);
+            }
+        }
+
+        setProducts(data.items);
+   }
+
+    useEffect(() => {
+        if (!mounted) {
+            setMounted(true);
+          }
+      
+          if (mounted) {
+            navigation.popToTop();
+          }
+      }, [mode]);
 
     return (
         <View style={styles.container}>
