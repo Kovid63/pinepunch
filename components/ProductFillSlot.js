@@ -39,7 +39,7 @@ const ProductFillSlot = ({ name, options, productParameters, setProductParameter
       {value && <OptionRender onPress={(item) => setSelectedParameter(item)} selected={selectedParameter} item={value} />}
       {options && <FlatList showsHorizontalScrollIndicator={false} style={{ marginRight: '2%' }} horizontal renderItem={item => (<OptionRender onPress={(item) => setSelectedParameter(item)} selected={selectedParameter} {...item} />)} data={options} />}
       <TextInput onFocus={() => { setSelectedParameter(null) }} style={styles.input} onChangeText={(value) => setSelectedParameter(value)} />
-      {supportedUm.length === 0 ? <TextInput placeholder={um} onFocus={() => {  }} style={styles.input} onChangeText={(value) => {}} />:<DropDownMenu value={valUm} setValue={setValUm} mapObject={supportedUm}/>}
+      {supportedUm && supportedUm.length === 0 ? <TextInput placeholder={um} onFocus={() => {  }} style={styles.input} onChangeText={(value) => {}} />:<DropDownMenu value={valUm} setValue={setValUm} mapObject={supportedUm}/>}
     </View>
   )
 }

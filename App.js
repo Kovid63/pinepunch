@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Alert, Platform, StyleSheet, ToastAndroid, View } from 'react-native';
 import Auth from './Auth';
-import { MODE_SELLER } from './constants';
+import { MODE_BUYER, MODE_SELLER } from './constants';
 import { ModeContext } from './contexts/ModeContext';
 import { MsgContext } from './contexts/MsgContext';
 import { UserContext } from './contexts/UserContext';
@@ -19,7 +19,7 @@ export default function App() {
   const [userData, setUserData] = useState(0);
   const [isNewMsgOn, setIsNewMsgOn] = useState(false);
   const [isItemSoldMsgOn, setIsItemSoldMsgOn] = useState(false);
-  const [mode, setMode] = useState(MODE_SELLER);
+  const [mode, setMode] = useState(MODE_BUYER);
   const [appIsReady, setAppIsReady] = useState(false);
   const [isFontLoaded, setIsFontLoaded] = useState(false);
   const [initialScreen, setInitialScreen] = useState('');

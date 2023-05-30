@@ -43,6 +43,7 @@ const FillProduct = ({ navigation, route }) => {
     const [productDescription, setProductDescription] = useState('');
     const [refreshing, setRefreshing] = useState(false);
     const [products, setProducts] = useState([]);
+    const [prodFilters, setProdFilters] = useState([]);
 
     useEffect(() => {
 
@@ -66,10 +67,17 @@ const FillProduct = ({ navigation, route }) => {
 
     }, [])
 
-    useEffect(() => {
-        console.log(route.params.parameters);
-    }, [])
-
+    function addToFilter(filterName, filterValue) {
+        let arr = { name: filterName, value: filterValue }
+        const index = prodFilters.findIndex(obj => obj.name === arr.name);
+        if (index === -1) {
+            setProdFilters([...prodFilters, arr])
+        } else {
+            const newArr = [...prodFilters];
+            newArr.splice(index, 1, arr);
+            setProdFilters(newArr);
+        }
+    }
 
     const HeaderComponentFlatList = () => {
         return (
@@ -80,7 +88,7 @@ const FillProduct = ({ navigation, route }) => {
                 <View style={{ alignItems: 'center' }}>
                     <View style={styles.parameterContainer}>
                         <Text style={styles.parameterText}>{'Product Name'}</Text>
-                        <TextInput editable={false} style={styles.parameterInput} placeholder='Item Name 1' />
+                        <TextInput onChangeText={(text) => console.log(text)} style={styles.parameterInput} placeholder='Item Name 1' />
                         {mode === MODE_BUYER ? <TouchableOpacity style={{ marginHorizontal: 10 }}>
                             {/* <Svg style={{ height: 24, width: 24, transform: [{ rotateZ: '-90deg' }] }} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
                                 <Path
@@ -105,9 +113,9 @@ const FillProduct = ({ navigation, route }) => {
                                     <Text style={styles.parameterText}>{parameter.name}</Text>
                                     {
                                         parameter.type === 'options' ?
-                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} onPress={() => console.log('buyer mode category clicked to be made')} />)} data={parameter.options} />
+                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => addToFilter(parameter.name, value)} />)} data={parameter.options} />
                                             :
-                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} onPress={() => console.log('buyer mode category clicked to be made')} />)} data={[parameter.min_default, parameter.max_default]} />
+                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => addToFilter(parameter.name, value)} />)} data={[parameter.min_default, parameter.max_default]} />
                                     }
                                     {parameter.um && <Text onFocus={() => { }} style={{
                                         marginLeft: 2,
@@ -316,6 +324,12 @@ const FillProduct = ({ navigation, route }) => {
         setProducts(data.items);
     }
 
+    useEffect(() => {
+        const focusListener = navigation.addListener('blur', () => {
+            navigation.popToTop();
+        })
+        return () => focusListener;
+    }, [navigation])
 
     return (
         <View style={styles.container}>

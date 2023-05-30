@@ -219,6 +219,7 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     mode === MODE_BUYER ? [fetchProducts(selectedCategory, 0), fetchFavourites()] : fetchSellerProducts();
   }, [mode]);
+  
 
   useEffect(() => {
     fetchProducts(selectedCategory, 0)
