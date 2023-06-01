@@ -8,15 +8,34 @@ import FAQ from "../screens/profile/FAQ";
 import ChangeEmail from "../screens/profile/ChangeEmail";
 import ChangePassword from "../screens/profile/ChangePassword";
 import Security from "../screens/profile/Security";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../contexts/UserContext";
+import { Platform } from "react-native";
+import { ToastAndroid } from "react-native";
+import { Alert } from "react-native";
 
 export const ProfileStack = () => {
 
     const Stack = createStackNavigator();
 
+    const {initialScreen} = useContext(UserContext);
+
     const options = {
         headerShown: false,
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS
     }
+
+    useEffect(() => {
+        if(initialScreen === 'ProfileStack'){
+            if (Platform.OS === 'android') {
+                return ToastAndroid.show('Your account is in review please wait.', ToastAndroid.LONG);
+              }
+              else {
+                return Alert.alert('Your account is in review please wait.');
+              }
+        }
+    }, [])
+    
 
 
     return (

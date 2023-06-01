@@ -9,13 +9,11 @@ import { BASE_URL, CONTACT_SELLER } from '@env';
 
 const ContactSeller = ({navigation, route}) => {
 
-    const { name, address, seller_contact, id  } = route.params;
+    const { name, address, seller_contact, productId } = route.params;
 
     function backPressHandler(){
         navigation.goBack();
     }
-
-
 
     async function contactSeller(id) {
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
@@ -43,7 +41,7 @@ const ContactSeller = ({navigation, route}) => {
 
 
     useEffect(() => {
-        contactSeller(id);
+        contactSeller(productId);
     }, [])
 
 

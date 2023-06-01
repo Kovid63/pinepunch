@@ -21,12 +21,12 @@ import ProductImage from '../../components/ProductImage'
 const ProductDetail = ({ navigation, route }) => {
 
   const { mode } = useContext(ModeContext);
-  const { name, parameters, image, quantity, price, description, unit, categoryType, id, merchantId, isEdit } = route.params;
+  const { name, parameters, image, quantity, price, description, unit, categoryType, id, merchantId, isEdit, isDraft } = route.params;
   const [favourites, setFavourites] = useState([]);
   const [isFav, setIsFav] = useState(false);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
 
-  const [merchantDetials, setMerchantDetails] = useState({});
+  const [merchantDetails, setMerchantDetails] = useState({});
 
 
   console.log(merchantId);
@@ -50,11 +50,11 @@ const ProductDetail = ({ navigation, route }) => {
   }
 
   function contactSellerHandler() {
-    navigation.navigate('ContactSeller', merchantDetials);
+    navigation.navigate('ContactSeller', {...merchantDetails, productId: id});
   }
 
   function companyClickHandler() {
-    navigation.navigate('CompanyPage', merchantDetials);
+    navigation.navigate('CompanyPage', merchantDetails);
   }
 
   function backPressHandler() {
@@ -85,10 +85,10 @@ const ProductDetail = ({ navigation, route }) => {
 
     if (Platform.OS === 'android') {
 
-      ToastAndroid.show('Item removed', ToastAndroid.LONG);
+      ToastAndroid.show('removed from favourites', ToastAndroid.LONG);
     }
     else {
-      Alert.alert('Item removed');
+      Alert.alert('removed from favourites');
     }
 
   }
@@ -116,10 +116,10 @@ const ProductDetail = ({ navigation, route }) => {
 
 
     if (Platform.OS === 'android') {
-      return ToastAndroid.show('Item added', ToastAndroid.LONG);
+      return ToastAndroid.show('added to favourites', ToastAndroid.LONG);
     }
     else {
-      return Alert.alert('Item added');
+      return Alert.alert('added to favourites');
     }
 
   }
@@ -184,14 +184,16 @@ const ProductDetail = ({ navigation, route }) => {
     setIsLoading(true);
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
 
-    await deleteProductHandlerDraft(id);
+    if(isDraft){
+      await deleteProductHandlerDraft(id);
+    }
 
     let imageArray = [];
     for (const img of image) {
       imageArray.push(img);
     }
 
-    if(isEdit){
+    if(isEdit && !isDraft){
       const response = await fetch(BASE_URL + SELLER_ITEMS + '/' + id, {
         method: 'PUT',
         headers: {
@@ -226,6 +228,7 @@ const ProductDetail = ({ navigation, route }) => {
       setIsLoading(false);
       navigation.popToTop();
       navigation.navigate('HomeStack');
+
     }else{
       const response = await fetch(BASE_URL + SELLER_ITEMS, {
         method: 'POST',
@@ -345,7 +348,7 @@ const ProductDetail = ({ navigation, route }) => {
         <View style={{ flexDirection: 'row', marginTop: '8%', justifyContent: 'space-between', alignItems: 'center' }}>
           <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{name}</Text>
           {!route.params.preview ? <TouchableOpacity onPress={companyClickHandler} style={{ height: 50, maxWidth: '50%', backgroundColor: '#FFFFFF', elevation: 5, justifyContent: 'center', alignItems: 'center', paddingHorizontal: '3%', borderRadius: 16, marginRight: '2%' }}>
-            <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 17, color: colors.primary[0], textAlign: 'center' }}>{merchantDetials.name}</Text>
+            <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 17, color: colors.primary[0], textAlign: 'center' }}>{merchantDetails.name}</Text>
           </TouchableOpacity>
             :
             <View style={{ flexDirection: 'row', width: '40%', justifyContent: 'space-evenly', alignItems: 'center' }}>

@@ -228,6 +228,10 @@ const Home = ({ navigation }) => {
       onRefresh();
       fetchSellerProducts();
       getNotificationCount();
+      (async function getFilters(){
+        const filters = await getAppSettings();
+        setCategory(Object.keys(filters.products));
+      })();
       setSelectedCategory(category[0]);
       fetchProducts(selectedCategory, 0);
     })

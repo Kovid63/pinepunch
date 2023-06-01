@@ -50,7 +50,7 @@ const ProductDraft = ({navigation}) => {
   function editDraftHandler(product){
     try {
     console.log(product);
-    navigation.navigate('FillProduct', {product, isEdit: true, description_required: true });
+    navigation.navigate('FillProduct', {product, isEdit: true, description_required: true, isDraft: true });
     } catch (error) {
       console.log(error.message);
     }

@@ -1,11 +1,14 @@
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header'
 import { colors } from '../../colors'
-import { notifications } from '../../dummydata/dummydata'
 import { Path, Svg } from 'react-native-svg'
+import { BASE_URL, FETCH_NOTIFICATION } from '@env';
+import * as SecureStore from 'expo-secure-store';
 
 const AccountNotification = ({ navigation }) => {
+
+    const [notifications, setNotificatons] = useState([]);
 
     function backPressHandler() {
         navigation.goBack();
@@ -14,6 +17,40 @@ const AccountNotification = ({ navigation }) => {
     function notificationClickHandler(notification) {
         navigation.navigate('Inquiry', notification);
     }
+
+    async function fetchNotification() {
+        const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+        try {
+            const response = await fetch(BASE_URL + FETCH_NOTIFICATION , {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-USER-SESSION-ID": sessionId
+                }
+            });
+
+            const data = await response.json();
+
+            if (data.error) {
+                if (Platform.OS === 'android') {
+                    //return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+                }
+                else {
+                    //return Alert.alert(data.error.description);
+                }
+            }
+
+            setNotificatons(data.items);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    useEffect(() => {
+     fetchNotification();
+    }, [])
+    
 
     return (
         <View style={styles.container}>
@@ -33,7 +70,7 @@ const AccountNotification = ({ navigation }) => {
                                     />
                                 </Svg>
                             </View>
-                            <Text style={{ width: '75%', fontFamily: 'Poppins', color: '#B3B1B0', fontSize: 14 }}>{notification.title}</Text>
+                            <Text style={{ width: '75%', fontFamily: 'Poppins', color: '#B3B1B0', fontSize: 14 }}>{notification.description}</Text>
                         </TouchableOpacity>
                     ))
                 }

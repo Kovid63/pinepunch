@@ -36,10 +36,10 @@ export const BuyerListRender = ({ item, favourite, onPress, favouriteUpdate, ima
 
         if (Platform.OS === 'android') {
 
-            ToastAndroid.show('Item removed', ToastAndroid.LONG);
+            ToastAndroid.show('removed from favourites', ToastAndroid.LONG);
         }
         else {
-            Alert.alert('Item removed');
+            Alert.alert('removed from favourites');
         }
 
     }
@@ -68,10 +68,10 @@ export const BuyerListRender = ({ item, favourite, onPress, favouriteUpdate, ima
         setIsUpdateTriggered(Math.random(0,9));
 
         if (Platform.OS === 'android') {
-            return ToastAndroid.show('Item added', ToastAndroid.LONG);
+            return ToastAndroid.show('added to favourites', ToastAndroid.LONG);
         }
         else {
-            return Alert.alert('Item added');
+            return Alert.alert('added to favourites');
         }
 
     }

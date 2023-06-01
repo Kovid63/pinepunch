@@ -33,10 +33,10 @@ export const FavouriteListRender = ({ item, fetchFavourites, onPress }) => {
 
         if (Platform.OS === 'android') {
 
-            ToastAndroid.show('Item removed', ToastAndroid.LONG);
+            ToastAndroid.show('removed from favourites', ToastAndroid.LONG);
         }
         else {
-            Alert.alert('Item removed');
+            Alert.alert('removed from favourites');
         }
 
         fetchFavourites();
