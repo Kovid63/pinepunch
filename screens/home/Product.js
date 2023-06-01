@@ -61,7 +61,7 @@ const Product = ({ route, navigation }) => {
 
     useEffect(() => {
 
-        const obj = route.params.products.filter(obj => obj.product_name.toLowerCase().includes(query.toLowerCase()));
+        const obj = route.params.products?.filter(obj => obj.product_name.toLowerCase().includes(query.toLowerCase()));
 
         query.length === 0 ? setProducts(route.params.products) : setProducts(obj);
 

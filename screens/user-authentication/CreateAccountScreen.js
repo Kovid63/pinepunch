@@ -81,6 +81,10 @@ const CreateAccountScreen = ({ navigation }) => {
         }
     }
 
+    function privacyHandler(){
+        navigation.navigate('Privacy');
+    }
+
     async function createAccountHandler() {
         setIsLoading(true)
         try {
@@ -134,7 +138,7 @@ const CreateAccountScreen = ({ navigation }) => {
             </View>
             <View style={styles.boxBtnContainer}>
                 <CheckBox isActive={getCheckboxStatus} />
-                <Text style={styles.agreeText}>{'I Agree to the'}<Text style={{ color: colors.primary[0] }}>{' '}{'Terms of Service'}</Text><Text>{' '}{'and'}</Text><Text style={{ color: colors.primary[0] }}>{' '}{'Privacy Policy'}</Text></Text>
+                <Text style={styles.agreeText}>{'I Agree to the'}<Text onPress={privacyHandler} style={{ color: colors.primary[0] }}>{' '}{'Terms of Service'}</Text><Text>{' '}{'and'}</Text><Text onPress={privacyHandler} style={{ color: colors.primary[0] }}>{' '}{'Privacy Policy'}</Text></Text>
             </View>
             <View style={styles.loginAccContainer}>
                 <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>

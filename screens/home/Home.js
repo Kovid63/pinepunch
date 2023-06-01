@@ -79,8 +79,6 @@ const Home = ({ navigation }) => {
     setSelectedCategory(category[0]);
   },[category])
 
-
-
   function showAllProductHandler() {
     if(refreshing) return;
     navigation.navigate('Product', {
@@ -230,6 +228,7 @@ const Home = ({ navigation }) => {
       onRefresh();
       fetchSellerProducts();
       getNotificationCount();
+      setSelectedCategory(category[0]);
       fetchProducts(selectedCategory, 0);
     })
     return () => focusListener;

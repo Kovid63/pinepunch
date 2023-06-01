@@ -6,9 +6,9 @@ import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from "react-native";
 import { Alert } from "react-native";
 
-export const FavouriteListRender = ({ item, fetchFavourites }) => {
+export const FavouriteListRender = ({ item, fetchFavourites, onPress }) => {
 
-    const {product_name, quantity, quantity_um, price } = item.inventory_item;
+    const {product_name, quantity, quantity_um, price, images } = item.inventory_item;
 
     async function removeFavourite(itemId){
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
@@ -43,7 +43,7 @@ export const FavouriteListRender = ({ item, fetchFavourites }) => {
     }
 
     return (
-        <View style={{ width: 160, backgroundColor: '#F8F8F8', borderRadius: 24, paddingVertical: 20, marginHorizontal: 10, marginTop: 10 }}>
+        <TouchableOpacity onPress={onPress} style={{ width: 160, backgroundColor: '#F8F8F8', borderRadius: 24, paddingVertical: 20, marginHorizontal: 10, marginTop: 10 }}>
             <TouchableOpacity onPress={() => removeFavourite(item.inventory_item_id)} style={{ flex: 1, justifyContent: 'flex-end', flexDirection: 'row', paddingHorizontal: 10 }}>
                 <Svg style={{ height: 25, marginTop: 3, width: 25 }} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
                     <Path
@@ -53,11 +53,11 @@ export const FavouriteListRender = ({ item, fetchFavourites }) => {
                     />
                 </Svg>
             </TouchableOpacity>
-            <Image source={{ uri: 'https://cdn.pixabay.com/photo/2016/06/12/20/27/macro-1452987__340.jpg' }} style={{ height: 110, width: '70%', borderRadius: 19, alignSelf: 'center' }} />
+            <Image source={{ uri: images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0] }} style={{ height: 110, width: '70%', borderRadius: 19, alignSelf: 'center' }} />
             <Text style={{ marginHorizontal: '10%', marginTop: 25, fontFamily: 'Poppins', fontSize: 12 }}>{product_name}</Text>
             <View style={{ flexDirection: 'row', marginHorizontal: '5%', justifyContent: 'space-between' }}>
-                <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 16, marginLeft: '5%' }}>{'Rs ' + (price/quantity).toFixed(2) + '/' + quantity_um}</Text>
+                <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 16, marginLeft: '5%' }}>{'Rs ' + price + '/' + quantity_um}</Text>
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }

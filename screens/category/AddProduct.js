@@ -24,10 +24,16 @@ const AddProduct = ({ navigation }) => {
 
   useEffect(() => {
 
-    // const obj = categories.filter(obj => obj.category_name.toLowerCase().includes(query.toLowerCase()));
-    // query.length === 0 ? setCategory(categories) : setCategory(obj);
+    const obj = category?.filter(obj => obj.toLowerCase().includes(query.toLowerCase()));
+    query.length === 0 ? getFilters() : setCategory(obj);
 
-}, [query])
+}, [query]);
+
+async function getFilters(){
+  const filters = await getAppSettings();
+  setCategory(Object.keys(filters.products));
+  setProperties(filters.products);
+}
 
 useEffect(() => {
   (async function getFilters(){

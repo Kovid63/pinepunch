@@ -4,6 +4,7 @@ import { FlatList } from 'react-native'
 import { OptionRender } from './OptionRender'
 import { TextInput } from 'react-native'
 import DropDownMenu from './DropDownMenu'
+import { Pressable } from 'react-native'
 
 const ProductFillSlot = ({ name, options, productParameters, setProductParameters, um, value, supportedUm }, key) => {
 
@@ -34,13 +35,13 @@ const ProductFillSlot = ({ name, options, productParameters, setProductParameter
   }, [selectedParameter, valUm])
 
   return (
-    <View key={key} style={styles.container}>
+    <Pressable onPress={() => setSelectedParameter(null)} key={key} style={styles.container}>
       <Text style={styles.text}>{name}</Text>
       {value && <OptionRender onPress={(item) => setSelectedParameter(item)} selected={selectedParameter} item={value} />}
       {options && <FlatList showsHorizontalScrollIndicator={false} style={{ marginRight: '2%' }} horizontal renderItem={item => (<OptionRender onPress={(item) => setSelectedParameter(item)} selected={selectedParameter} {...item} />)} data={options} />}
       <TextInput onFocus={() => { setSelectedParameter(null) }} style={styles.input} onChangeText={(value) => setSelectedParameter(value)} />
       {supportedUm && supportedUm.length === 0 ? <TextInput placeholder={um} onFocus={() => {  }} style={styles.input} onChangeText={(value) => {}} />:<DropDownMenu value={valUm} setValue={setValUm} mapObject={supportedUm}/>}
-    </View>
+    </Pressable>
   )
 }
 

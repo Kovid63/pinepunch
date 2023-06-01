@@ -175,9 +175,16 @@ const ProductDetail = ({ navigation, route }) => {
     navigation.navigate('CategoryStack');
   }
 
+  async function deleteProductHandlerDraft(itemId){
+    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    deleteProduct(itemId, sessionId);
+  }
+
   async function submitProductHandler() {
     setIsLoading(true);
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+
+    await deleteProductHandlerDraft(id);
 
     let imageArray = [];
     for (const img of image) {

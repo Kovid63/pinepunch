@@ -8,6 +8,7 @@ import ForgotPasswordWithNewPassword from "../screens/user-authentication/Forgot
 import PasswordUpdated from "../screens/user-authentication/PasswordUpdated";
 import VerifyEmail from "../screens/user-authentication/VerifyEmail";
 import { UserContext } from "../contexts/UserContext";
+import Privacy from "../screens/profile/Privacy";
 
 export const UserAuthStack = () => {
 
@@ -29,6 +30,7 @@ export const UserAuthStack = () => {
                 <Stack.Screen name="ForgotPasswordWithNewPassword" component={ForgotPasswordWithNewPassword} />
                 <Stack.Screen name="PasswordUpdated" component={PasswordUpdated} />
                 <Stack.Screen name="VerifyEmail" component={VerifyEmail} />
+                <Stack.Screen name="Privacy" component={Privacy} />
             </Stack.Navigator>
         </NavigationContainer>
     );

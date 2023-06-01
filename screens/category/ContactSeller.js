@@ -1,17 +1,50 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
 import Header from '../../components/Header'
 import { ScrollView } from 'react-native'
+import * as SecureStore from 'expo-secure-store';
+import { BASE_URL, CONTACT_SELLER } from '@env';
 
 const ContactSeller = ({navigation, route}) => {
 
-    const { name, address, seller_contact  } = route.params;
+    const { name, address, seller_contact, id  } = route.params;
 
     function backPressHandler(){
         navigation.goBack();
     }
+
+
+
+    async function contactSeller(id) {
+        const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+        const response = await fetch(BASE_URL + CONTACT_SELLER + `${id}/contact_seller`, {
+            method: 'GET',
+            headers: {
+                "Content-Type": "application/json",
+                "X-USER-SESSION-ID": sessionId
+            },
+        })
+
+        const data = await response.json();
+
+        if (data.error) {
+            if (Platform.OS === 'android') {
+                //return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+            }
+            else {
+                // return Alert.alert(data.error.description);
+            }
+        }
+
+        console.log(data);
+    }
+
+
+    useEffect(() => {
+        contactSeller(id);
+    }, [])
 
 
     return (

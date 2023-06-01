@@ -14,7 +14,7 @@ import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native'
 import { Alert } from 'react-native'
 
-const Favourite = ({navigation}) => {
+const Favourite = ({ navigation }) => {
 
     const [favourites, setFavourites] = useState([])
     const [query, setQuery] = useState('');
@@ -42,10 +42,11 @@ const Favourite = ({navigation}) => {
             }
         }
 
+        console.log(data.items);
         setFavourites(data.items);
     }
 
-    function onRefresh(){
+    function onRefresh() {
         setRefreshing(true);
         query.length === 0 ? fetchFavourites() : <></>
         setRefreshing(false);
@@ -53,10 +54,10 @@ const Favourite = ({navigation}) => {
 
     useEffect(() => {
         const focusListener = navigation.addListener('focus', () => {
-        fetchFavourites();
+            fetchFavourites();
         })
         return () => focusListener;
-      }, [navigation])
+    }, [navigation])
 
     useEffect(() => {
 
@@ -103,7 +104,17 @@ const Favourite = ({navigation}) => {
             <View style={{ marginTop: '5%', marginHorizontal: '8%' }}>
                 <Text style={styles.headingText}>{'Favourite items'}</Text>
             </View>
-            <FlatList refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} style={{ marginTop: '5%' }} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={favourites} renderItem={item => <FavouriteListRender fetchFavourites={fetchFavourites} {...item} />} numColumns={2} />
+            <FlatList refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} style={{ marginTop: '5%' }} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={favourites} renderItem={item => <FavouriteListRender onPress={() => navigation.navigate('ProductDetail', {
+                preview: false,
+                name: item.item.inventory_item.product_name,
+                description: item.item.inventory_item.product_description,
+                price: item.item.inventory_item.price,
+                quantity: item.item.inventory_item.quantity,
+                unit: item.item.inventory_item.quantity_um,
+                merchantId: item.item.inventory_item.merchant_id,
+                image: item.item.inventory_item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
+                id: item.item.inventory_item.id
+            })} fetchFavourites={fetchFavourites} {...item} />} numColumns={2} />
         </View>
     )
 }

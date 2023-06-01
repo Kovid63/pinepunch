@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
 
     submitBtnContainer: {
         alignItems: 'center',
-        marginTop: '10%',
+        marginTop: '5%',
         marginBottom: 20
     },
 

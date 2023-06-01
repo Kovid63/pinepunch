@@ -285,6 +285,7 @@ const FillProduct = ({ navigation, route }) => {
 
         if (refreshing) return;
 
+        navigation.popToTop();
         navigation.navigate('ProductDetail', {
             name: productName,
             parameters: productParameters,
