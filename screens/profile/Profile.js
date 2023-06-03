@@ -86,21 +86,34 @@ const Profile = ({ navigation }) => {
             </View>
         }
         <View style={styles.profileNameContainer}>
-          <Text style={styles.profileName}>{merchantData.name}</Text>
-        </View>
+                    <Text style={styles.profileName}>{merchantData.name}</Text>
+                    {mode === MODE_SELLER && <Text style={{
+                        fontFamily: 'PoppinsBold',
+                        fontSize: 18,
+                        textAlign: 'center'
+                    }}>{merchantData.seller_profile_description}</Text>}
+                </View>
+                {mode === MODE_SELLER && <View style={{ borderTopWidth: 2, width: '95%', borderColor: '#000', alignSelf: 'center', borderStyle: 'dotted', marginTop: 10 }} />}
         <TouchableOpacity onPress={settingsPageHandler} activeOpacity={0.4} style={styles.settingsBtnContainer}>
           <Text style={styles.settingsBtnText}>{'Settings Page'}</Text>
         </TouchableOpacity>
         <View style={styles.profileInfoContainer}>
-          <Text style={styles.infoTitle}>{'Company Name'}</Text>
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoText}>{merchantData.name}</Text>
-          </View>
-          <Text style={styles.infoTitle}>{'Location'}</Text>
-          <View style={styles.infoContainer}>
-            <Text style={styles.infoText}>{merchantData.address}</Text>
-          </View>
-        </View>
+                    <Text style={styles.infoTitle}>{'Company Name'}</Text>
+
+                    <Text style={styles.infoText}>{merchantData.name}</Text>
+
+                    <Text style={styles.infoTitle}>{'Location'}</Text>
+
+                    <Text style={styles.infoText}>{merchantData.address}</Text>
+                    <View style={{flexDirection: 'row', marginTop: 20}}>
+                        <Text style={styles.infoTitle}>{'Contact No:  '}</Text>
+                        <Text style={[styles.infoText, {marginTop: 6}]}>{ mode === MODE_SELLER? merchantData.seller_contact : merchantData.contact}</Text>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.infoTitle}>{'Email:  '}</Text>
+                        <Text style={[styles.infoText, {marginTop: 6}]}>{merchantData.email}</Text>
+                    </View>
+                </View>
       </ScrollView>
     </View>
   )
@@ -196,9 +209,9 @@ const styles = StyleSheet.create({
 
   infoText: {
     fontFamily: 'PoppinsBold',
-    fontSize: 20,
-    color: colors.black[4]
-  }
+    fontSize: 18,
+    color: '#000',
+},
 
 });
 
