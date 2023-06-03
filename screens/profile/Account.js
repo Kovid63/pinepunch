@@ -58,25 +58,28 @@ const Account = ({ navigation }) => {
         setIsLoading(true);
 
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-        const bgUrl = mode === MODE_SELLER? await getImageUrl(merchantData.seller_background_image_url, 'merchant_seller_background', sessionId) : await getImageUrl(merchantData.buyer_background_image_url, 'merchant_buyer_background', sessionId);
-        const profUrl = mode === MODE_SELLER? await getImageUrl(merchantData.seller_profile_image_url, 'merchant_seller_logo', sessionId) : await getImageUrl(merchantData.buyer_profile_image_url, 'merchant_buyer_logo', sessionId);
-        
+        const bgUrl = mode === MODE_SELLER ? await getImageUrl(merchantData.seller_background_image_url, 'merchant_seller_background', sessionId) : await getImageUrl(merchantData.buyer_background_image_url, 'merchant_buyer_background', sessionId);
+        const profUrl = mode === MODE_SELLER ? await getImageUrl(merchantData.seller_profile_image_url, 'merchant_seller_logo', sessionId) : await getImageUrl(merchantData.buyer_profile_image_url, 'merchant_buyer_logo', sessionId);
+
         const response = await fetch(BASE_URL + MERCHANT, {
             method: 'PUT',
             headers: {
                 "Content-Type": "application/json",
                 "X-USER-SESSION-ID": sessionId
             },
-            body: mode === MODE_SELLER? JSON.stringify({
+            body: mode === MODE_SELLER ? JSON.stringify({
                 name: merchantData.name,
                 seller_background_image_url: bgUrl,
                 seller_profile_image_url: profUrl,
-                address: merchantData.address.length === 0? "N/A" : merchantData.address
-            }): JSON.stringify({
+                address: merchantData.address.length === 0 ? "N/A" : merchantData.address,
+                seller_contact: merchantData.contact,
+                seller_profile_description: merchantData.seller_profile_description
+            }) : JSON.stringify({
                 name: merchantData.name,
                 buyer_background_image_url: bgUrl,
                 buyer_profile_image_url: profUrl,
-                address: merchantData.address.length === 0? "N/A" : merchantData.address
+                address: merchantData.address.length === 0 ? "N/A" : merchantData.address,
+                contact: merchantData.contact
             })
         });
 
@@ -85,15 +88,15 @@ const Account = ({ navigation }) => {
         if (data.error) {
             setIsLoading(false);
             if (Platform.OS === 'android') {
-               // return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+                 return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
             }
             else {
-               // return Alert.alert(data.error.description);
+                 return Alert.alert(data.error.description);
             }
         }
         setIsLoading(false);
 
-       navigation.navigate('Profile');
+        navigation.navigate('Profile');
     }
 
     async function imagePickHandler(type, mode) {
@@ -123,7 +126,7 @@ const Account = ({ navigation }) => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            aspect: type === 'Banner'? [16, 9]:[16, 16],
+            aspect: type === 'Banner' ? [16, 9] : [16, 16],
             quality: 1,
         });
 
@@ -148,7 +151,7 @@ const Account = ({ navigation }) => {
 
 
 
-    function onRefresh(){
+    function onRefresh() {
         setRefreshing(true);
         fetchDetails();
         setRefreshing(false);
@@ -161,51 +164,64 @@ const Account = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <Header onPress={backPressHandler} pageTitle={'Account'} />
-            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>} keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
+            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
                 {
                     mode === MODE_SELLER ?
                         <View>
                             <View style={styles.bannerContainer}>
-                                <Image style={[styles.bannerImage, {backgroundColor: colors.primary[0]}]} source={{ uri: merchantData.seller_background_image_url}} />
+                                <Image style={[styles.bannerImage, { backgroundColor: '#FDC89F' }]} source={{ uri: merchantData.seller_background_image_url }} />
                                 {/* <View style={styles.bannerCover} /> */}
                                 <View style={{ position: 'absolute', right: 10, top: 10 }}>
-                                    <EditProfileIcon onPress={() => imagePickHandler('Banner', MODE_SELLER)}/>
+                                    <EditProfileIcon onPress={() => imagePickHandler('Banner', MODE_SELLER)} />
                                 </View>
                             </View>
-                            <View style={styles.profileImageContainer}>
-                                <Image style={{ height: '100%', width: '100%', borderRadius: 60, backgroundColor: colors.primary[0] }} source={{ uri: merchantData.seller_profile_image_url}}/>
+                            <View style={[styles.profileImageContainer, { backgroundColor: colors.primary[0], borderRadius: 60 }]}>
+                                {merchantData.seller_profile_image_url ? <Image style={{ height: '100%', width: '100%', borderRadius: 60, backgroundColor: colors.primary[0] }} source={{ uri: merchantData.seller_profile_image_url }} /> : <Text style={{ fontFamily: 'PoppinsBold', color: "#FFFFFF", marginTop: 45, alignSelf: 'center' }}>{'Add Logo'}</Text>}
                                 <View style={{ position: 'absolute', right: 0 }}>
-                                    <EditProfileIcon onPress={() => imagePickHandler('Profile', MODE_SELLER)}/>
+                                    <EditProfileIcon onPress={() => imagePickHandler('Profile', MODE_SELLER)} />
                                 </View>
                             </View>
                         </View>
                         :
                         <View>
                             <View style={styles.bannerContainer}>
-                                <Image style={styles.bannerImage} source={{ uri:  merchantData.buyer_background_image_url}} />
+                                <Image style={styles.bannerImage} source={{ uri: merchantData.buyer_background_image_url }} />
                                 <View style={{ position: 'absolute', right: 10, top: 10 }}>
-                                    <EditProfileIcon onPress={() => imagePickHandler('Banner', MODE_BUYER)}/>
+                                    <EditProfileIcon onPress={() => imagePickHandler('Banner', MODE_BUYER)} />
                                 </View>
                             </View>
-                            <View style={styles.profileImageContainer}>
-                                <Image style={{ height: '100%', width: '100%', borderRadius: 60, backgroundColor: 'silver' }} source={{ uri: merchantData.buyer_profile_image_url}}/>
+                            <View style={[styles.profileImageContainer, { backgroundColor: 'silver', borderRadius: 60 }]}>
+                                {merchantData.buyer_profile_image_url ? <Image style={{ height: '100%', width: '100%', borderRadius: 60 }} source={{ uri: merchantData.seller_profile_image_url }} /> : <Text style={{ fontFamily: 'PoppinsBold', color: "#FFFFFF", marginTop: 45, alignSelf: 'center' }}>{'Add Logo'}</Text>}
                                 <View style={{ position: 'absolute', right: 0 }}>
-                                    <EditProfileIcon onPress={() => imagePickHandler('Profile', MODE_BUYER)}/>
+                                    <EditProfileIcon onPress={() => imagePickHandler('Profile', MODE_BUYER)} />
                                 </View>
                             </View>
                         </View>
                 }
                 <View style={styles.profileNameContainer}>
                     <Text style={styles.profileName}>{merchantData.name}</Text>
+                    {mode === MODE_SELLER && <TextInput value={merchantData.seller_profile_description} onChangeText={(desc) => setMerchantData({ ...merchantData, seller_profile_description: desc })}  style={{
+                        fontFamily: 'PoppinsBold',
+                        fontSize: 18,
+                        textAlign: 'center'
+                    }}/>}
                 </View>
+                {mode === MODE_SELLER && <View style={{ borderTopWidth: 2, width: '95%', borderColor: '#000', alignSelf: 'center', borderStyle: 'dotted', marginTop: 10 }} />}
                 <View style={styles.profileInfoContainer}>
-                    <Text style={styles.infoTitle}>{'Name'}</Text>
-                    <View style={styles.infoContainer}>
-                        <TextInput value={merchantData.name} style={styles.infoText} onChangeText={(name) => setMerchantData({ ...merchantData, name: name })} />
-                    </View>
+                    <Text style={styles.infoTitle}>{'Company Name'}</Text>
+
+                    <TextInput value={merchantData.name} style={styles.infoText} onChangeText={(name) => setMerchantData({ ...merchantData, name: name })} />
+
                     <Text style={styles.infoTitle}>{'Location'}</Text>
-                    <View style={styles.infoContainer}>
-                        <TextInput value={merchantData.address} style={styles.infoText} onChangeText={(address) => setMerchantData({ ...merchantData, address: address })} />
+
+                    <TextInput multiline={true} value={merchantData.address} style={styles.infoText} onChangeText={(address) => setMerchantData({ ...merchantData, address: address })} />
+                    <View style={{flexDirection: 'row', marginTop: 20}}>
+                        <Text style={styles.infoTitle}>{'Contact No:  '}</Text>
+                        <TextInput value={ mode === MODE_SELLER? merchantData.seller_contact : merchantData.contact} style={[styles.infoText, {marginTop: 6}]} onChangeText={(contact) => mode === MODE_SELLER? setMerchantData({ ...merchantData,  seller_contact: contact }) : setMerchantData({ ...merchantData,  contact: contact })} />
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.infoTitle}>{'Email:  '}</Text>
+                        <TextInput value={merchantData.email} style={[styles.infoText, {marginTop: 6}]} onChangeText={(email) => setMerchantData({ ...merchantData, email: email })} />
                     </View>
                 </View>
                 <View style={styles.submitBtnContainer}>
@@ -259,12 +275,14 @@ const styles = StyleSheet.create({
 
     profileNameContainer: {
         alignSelf: 'center',
+        justifyContent: 'center',
         marginTop: '5%'
     },
 
     profileName: {
         fontFamily: 'PoppinsBold',
-        fontSize: 24
+        fontSize: 24,
+        textAlign: 'center'
     },
 
     profileInfoContainer: {
@@ -287,8 +305,8 @@ const styles = StyleSheet.create({
     },
     infoText: {
         fontFamily: 'PoppinsBold',
-        fontSize: 20,
-        color: colors.black[4]
+        fontSize: 18,
+        color: '#000',
     },
     submitBtnContainer: {
         alignItems: 'center',

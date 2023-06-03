@@ -45,6 +45,10 @@ const FillProduct = ({ navigation, route }) => {
     const [products, setProducts] = useState([]);
     const [prodFilters, setProdFilters] = useState([]);
     const [mounted, setMounted] = useState(false);
+
+    const [query, setQuery] = useState('');
+
+
     useEffect(() => {
 
         if (isEdit) {
@@ -80,66 +84,97 @@ const FillProduct = ({ navigation, route }) => {
         getFilteredBuyerProducts(route.params.type, 0);
     }
 
-    const HeaderComponentFlatList = () => {
-        return (
-            <>
-                <View style={styles.categoryContainer}>
-                    <Text style={styles.categoryText}>{route.params.type}</Text>
-                </View>
-                <View style={{ alignItems: 'center' }}>
-                    <View style={styles.parameterContainer}>
-                        <Text style={styles.parameterText}>{'Product Name'}</Text>
-                        <TextInput onChangeText={(text) => console.log(text)} style={styles.parameterInput} placeholder='Item Name 1' />
-                        {mode === MODE_BUYER ? <TouchableOpacity style={{ marginHorizontal: 10 }}>
-                            {/* <Svg style={{ height: 24, width: 24, transform: [{ rotateZ: '-90deg' }] }} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                                <Path
-                                    d="M20 25a1 1 0 0 1-.71-.29l-8-8a1 1 0 0 1 0-1.42l8-8a1 1 0 1 1 1.42 1.42L13.41 16l7.3 7.29a1 1 0 0 1 0 1.42A1 1 0 0 1 20 25Z"
-                                    data-name="Layer 2"
-                                    fill={'#000000'}
-                                />
-                                <Path
-                                    style={{
-                                        fill: "none",
-                                    }}
-                                    d="M0 0h32v32H0z"
-                                />
-                            </Svg> */}
-                        </TouchableOpacity> : <></>}
-                    </View>
-                    {route.params.parameters ?
-                        route.params.parameters.map((parameter, index) => {
+    useEffect(() => {
 
-                            return (
-                                <Pressable onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type,0)]} key={index} style={styles.parameterContainer}>
-                                    <Text style={styles.parameterText}>{parameter.name}</Text>
-                                    {
-                                        parameter.type === 'options' ?
-                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => [addToFilter(parameter.name, value)]} />)} data={parameter.options} />
-                                            :
-                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => addToFilter(parameter.name, value)} />)} data={[parameter.min_default, parameter.max_default]} />
-                                    }
-                                    {parameter.um && <Text onFocus={() => { }} style={{
-                                        marginLeft: 2,
-                                        backgroundColor: '#FFFFFF',
-                                        paddingHorizontal: '2%',
-                                        fontFamily: 'Poppins',
-                                        fontSize: 12,
-                                        color: '#B3B1B0',
-                                        fontSize: 14,
-                                        width: 35,
-                                        textAlign: 'center',
-                                        paddingVertical: 3,
-                                        marginHorizontal: 10
-                                    }} onChangeText={(value) => { }}>{parameter.um}</Text>}
-                                </Pressable>
-                            )
-                        })
-                        : <></>}
+        const obj = products.filter(obj => obj.product_name.toLowerCase().includes(query.toLowerCase()));
 
-                </View>
-            </>
-        )
-    }
+        query.length === 0 ? getBuyerProducts(route.params.type, 0) : setProducts(obj);
+
+    }, [query])
+
+    // const HeaderComponentFlatList = ({ }) => {
+    //     return (
+    //         <>
+    //             <View style={styles.categoryContainer}>
+    //                 <Text style={styles.categoryText}>{route.params.type}</Text>
+    //             </View>
+    //             <View style={{ alignItems: 'center' }}>
+    //                 <View style={styles.parameterContainer}>
+    //                     <Text style={styles.parameterText}>{'Product Name'}</Text>
+    //                     <TextInput onChangeText={(text) => setNamefilteredProducts(text)} style={styles.parameterInput} placeholder='Item Name 1' />
+    //                     {mode === MODE_BUYER ? <TouchableOpacity style={{ marginHorizontal: 10 }}>
+    //                         {/* <Svg style={{ height: 24, width: 24, transform: [{ rotateZ: '-90deg' }] }} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+    //                             <Path
+    //                                 d="M20 25a1 1 0 0 1-.71-.29l-8-8a1 1 0 0 1 0-1.42l8-8a1 1 0 1 1 1.42 1.42L13.41 16l7.3 7.29a1 1 0 0 1 0 1.42A1 1 0 0 1 20 25Z"
+    //                                 data-name="Layer 2"
+    //                                 fill={'#000000'}
+    //                             />
+    //                             <Path
+    //                                 style={{
+    //                                     fill: "none",
+    //                                 }}
+    //                                 d="M0 0h32v32H0z"
+    //                             />
+    //                         </Svg> */}
+    //                     </TouchableOpacity> : <></>}
+    //                 </View>
+    //                 {route.params.parameters ?
+    //                     route.params.parameters.map((parameter, index) => {
+    //                         return (
+    //                             parameter.type === 'options' ?
+    //                                 <Pressable key={index} onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type, 0)]} style={styles.parameterContainer}>
+    //                                     <Text style={styles.parameterText}>{parameter.name}</Text>
+    //                                     <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => [addToFilter(parameter.name, value)]} />)} data={parameter.options} />
+    //                                 </Pressable>
+    //                                 :
+    //                                 <View key={index} style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
+    //                                     <Pressable onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type, 0)]} style={{
+    //                                         width: '45%',
+    //                                         paddingVertical: 5,
+    //                                         backgroundColor: '#F8F8F8',
+    //                                         borderRadius: 5,
+    //                                         flexDirection: 'row',
+    //                                         alignItems: 'center',
+    //                                         paddingHorizontal: '2%',
+    //                                         marginTop: '3%'
+    //                                     }}>
+    //                                         <Text style={{
+    //                                             fontFamily: 'Poppins',
+    //                                             color: '#B3B1B0',
+    //                                             width: '70%'
+    //                                         }}>{'Min ' + parameter.name}</Text>
+    //                                         <View style={{ paddingVertical: 1, marginHorizontal: 10, width: 35, backgroundColor: '#FFFFFF' }}>
+    //                                             <Text style={{ fontFamily: 'Poppins', textAlign: 'center', color: '#B3B1B0' }}>{parameter.min_default}</Text>
+    //                                         </View>
+    //                                     </Pressable>
+    //                                     <Pressable onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type, 0)]} style={{
+    //                                         width: '45%',
+    //                                         paddingVertical: 5,
+    //                                         backgroundColor: '#F8F8F8',
+    //                                         borderRadius: 5,
+    //                                         flexDirection: 'row',
+    //                                         alignItems: 'center',
+    //                                         paddingHorizontal: '2%',
+    //                                         marginTop: '3%'
+    //                                     }}>
+    //                                         <Text style={{
+    //                                             fontFamily: 'Poppins',
+    //                                             color: '#B3B1B0',
+    //                                             width: '70%'
+    //                                         }}>{'Max ' + parameter.name}</Text>
+    //                                         <View style={{ paddingVertical: 1, marginHorizontal: 10, width: 35, backgroundColor: '#FFFFFF' }}>
+    //                                             <Text style={{ fontFamily: 'Poppins', textAlign: 'center', color: '#B3B1B0' }}>{parameter.max_default}</Text>
+    //                                         </View>
+    //                                     </Pressable>
+    //                                 </View>
+    //                         )
+    //                     })
+    //                     : <></>}
+
+    //             </View>
+    //         </>
+    //     )
+    // }
 
     function backPressHandler() {
         navigation.goBack();
@@ -327,8 +362,8 @@ const FillProduct = ({ navigation, route }) => {
     }
 
 
-   async function getFilteredBuyerProducts(category, count){
-    const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    async function getFilteredBuyerProducts(category, count) {
+        const sessionId = await SecureStore.getItemAsync('SESSION_ID');
         const response = await fetch(BASE_URL + BUYER_ITEMS + `?catogery_type=${category}&parameters[0][name]=${prodFilters[0]?.name}&parameters[0][value]=${prodFilters[0]?.value}&parameters[1][name]=${prodFilters[1]?.name}&parameters[1][value_min]=${prodFilters[1]?.value}&parameters[1][value_max]=150&parameters[2][name]=${prodFilters[2]?.name}&parameters[2][value_min]=${prodFilters[2]?.value}&parameters[2][value_max]=1&page=1&count=${count}`, {
             method: 'GET',
             headers: {
@@ -349,17 +384,17 @@ const FillProduct = ({ navigation, route }) => {
         }
 
         setProducts(data.items);
-   }
+    }
 
     useEffect(() => {
         if (!mounted) {
             setMounted(true);
-          }
-      
-          if (mounted) {
+        }
+
+        if (mounted) {
             navigation.popToTop();
-          }
-      }, [mode]);
+        }
+    }, [mode]);
 
     return (
         <View style={styles.container}>
@@ -576,7 +611,87 @@ const FillProduct = ({ navigation, route }) => {
                                     </View>
                                 </ScrollView>
                                 :
-                                <FlatList ListHeaderComponentStyle={{ width: '100%' }} ListHeaderComponent={HeaderComponentFlatList} style={{ marginTop: 20 }} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={products} renderItem={item => <BuyerCategoryListRender imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} onPress={() => navigation.navigate('ProductDetail', {
+                                <FlatList ListHeaderComponentStyle={{ width: '100%' }} ListHeaderComponent={<>
+                                    <View style={styles.categoryContainer}>
+                                        <Text style={styles.categoryText}>{route.params.type}</Text>
+                                    </View>
+                                    <View style={{ alignItems: 'center' }}>
+                                        <View style={styles.parameterContainer}>
+                                            <Text style={styles.parameterText}>{'Product Name'}</Text>
+                                            <TextInput onChangeText={(value) => setQuery(value)}
+                                                value={query} style={styles.parameterInput} placeholder='Item Name 1' />
+                                            {mode === MODE_BUYER ? <TouchableOpacity style={{ marginHorizontal: 10 }}>
+                                                {/* <Svg style={{ height: 24, width: 24, transform: [{ rotateZ: '-90deg' }] }} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                                <Path
+                                    d="M20 25a1 1 0 0 1-.71-.29l-8-8a1 1 0 0 1 0-1.42l8-8a1 1 0 1 1 1.42 1.42L13.41 16l7.3 7.29a1 1 0 0 1 0 1.42A1 1 0 0 1 20 25Z"
+                                    data-name="Layer 2"
+                                    fill={'#000000'}
+                                />
+                                <Path
+                                    style={{
+                                        fill: "none",
+                                    }}
+                                    d="M0 0h32v32H0z"
+                                />
+                            </Svg> */}
+                                            </TouchableOpacity> : <></>}
+                                        </View>
+                                        {route.params.parameters ?
+                                            route.params.parameters.map((parameter, index) => {
+                                                return (
+                                                    parameter.type === 'options' ?
+                                                        <Pressable key={index} onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type, 0)]} style={styles.parameterContainer}>
+                                                            <Text style={styles.parameterText}>{parameter.name}</Text>
+                                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => [addToFilter(parameter.name, value)]} />)} data={parameter.options} />
+                                                        </Pressable>
+                                                        :
+                                                        <View key={index} style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
+                                                            <Pressable onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type, 0)]} style={{
+                                                                width: '45%',
+                                                                paddingVertical: 5,
+                                                                backgroundColor: '#F8F8F8',
+                                                                borderRadius: 5,
+                                                                flexDirection: 'row',
+                                                                alignItems: 'center',
+                                                                paddingHorizontal: '2%',
+                                                                marginTop: '3%'
+                                                            }}>
+                                                                <Text style={{
+                                                                    fontFamily: 'Poppins',
+                                                                    color: '#B3B1B0',
+                                                                    width: '70%'
+                                                                }}>{'Min ' + parameter.name}</Text>
+                                                                <View style={{ paddingVertical: 1, marginHorizontal: 10, width: 35, backgroundColor: '#FFFFFF' }}>
+                                                                    <Text style={{ fontFamily: 'Poppins', textAlign: 'center', color: '#B3B1B0' }}>{parameter.min_default}</Text>
+                                                                </View>
+                                                            </Pressable>
+                                                            <Pressable onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type, 0)]} style={{
+                                                                width: '45%',
+                                                                paddingVertical: 5,
+                                                                backgroundColor: '#F8F8F8',
+                                                                borderRadius: 5,
+                                                                flexDirection: 'row',
+                                                                alignItems: 'center',
+                                                                paddingHorizontal: '2%',
+                                                                marginTop: '3%'
+                                                            }}>
+                                                                <Text style={{
+                                                                    fontFamily: 'Poppins',
+                                                                    color: '#B3B1B0',
+                                                                    width: '70%'
+                                                                }}>{'Max ' + parameter.name}</Text>
+                                                                <View style={{ paddingVertical: 1, marginHorizontal: 10, width: 35, backgroundColor: '#FFFFFF' }}>
+                                                                    <Text style={{ fontFamily: 'Poppins', textAlign: 'center', color: '#B3B1B0' }}>{parameter.max_default}</Text>
+                                                                </View>
+                                                            </Pressable>
+                                                        </View>
+                                                )
+                                            })
+                                            : <></>}
+
+                                    </View>
+                                </>
+                                } style={{ marginTop: 20 }} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={products} renderItem={item => <BuyerCategoryListRender imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} onPress={() => navigation.navigate('ProductDetail', {
                                     preview: false,
                                     name: item.item.product_name,
                                     description: item.item.product_description,

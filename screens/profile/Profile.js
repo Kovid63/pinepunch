@@ -68,7 +68,7 @@ const Profile = ({ navigation }) => {
           mode === MODE_SELLER ?
             <View>
               <View style={styles.bannerContainer}>
-                <Image style={[styles.bannerImage, {backgroundColor: colors.primary[0]}]} source={{ uri: merchantData.seller_background_image_url }} />
+                <Image style={[styles.bannerImage, {backgroundColor: '#FDC89F'}]} source={{ uri: merchantData.seller_background_image_url }} />
                 {/* <View style={styles.bannerCover} /> */}
               </View>
               <View style={styles.profileImageContainer}>
@@ -78,7 +78,7 @@ const Profile = ({ navigation }) => {
             :
             <View>
               <View style={styles.bannerContainer}>
-                <Image style={styles.bannerImage} source={{ uri: merchantData.buyer_background_image_url }} />
+                <Image style={[styles.bannerImage, {backgroundColor: colors.black[5]}]} source={{ uri: merchantData.buyer_background_image_url }} />
               </View>
               <View style={styles.profileImageContainer}>
                 <Image style={{ height: '100%', width: '100%', borderRadius: 60, backgroundColor: 'silver' }} source={{ uri: merchantData.buyer_profile_image_url }} />
