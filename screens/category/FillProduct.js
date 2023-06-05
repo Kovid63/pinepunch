@@ -636,58 +636,7 @@ const FillProduct = ({ navigation, route }) => {
                             </Svg> */}
                                             </TouchableOpacity> : <></>}
                                         </View>
-                                        {route.params.parameters ?
-                                            route.params.parameters.map((parameter, index) => {
-                                                return (
-                                                    parameter.type === 'options' ?
-                                                        <Pressable key={index} onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type, 0)]} style={styles.parameterContainer}>
-                                                            <Text style={styles.parameterText}>{parameter.name}</Text>
-                                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => [addToFilter(parameter.name, value)]} />)} data={parameter.options} />
-                                                        </Pressable>
-                                                        :
-                                                        <View key={index} style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
-                                                            <Pressable onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type, 0)]} style={{
-                                                                width: '45%',
-                                                                paddingVertical: 5,
-                                                                backgroundColor: '#F8F8F8',
-                                                                borderRadius: 5,
-                                                                flexDirection: 'row',
-                                                                alignItems: 'center',
-                                                                paddingHorizontal: '2%',
-                                                                marginTop: '3%'
-                                                            }}>
-                                                                <Text style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    color: '#B3B1B0',
-                                                                    width: '70%'
-                                                                }}>{'Min ' + parameter.name}</Text>
-                                                                <View style={{ paddingVertical: 1, marginHorizontal: 10, width: 35, backgroundColor: '#FFFFFF' }}>
-                                                                    <Text style={{ fontFamily: 'Poppins', textAlign: 'center', color: '#B3B1B0' }}>{parameter.min_default}</Text>
-                                                                </View>
-                                                            </Pressable>
-                                                            <Pressable onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type, 0)]} style={{
-                                                                width: '45%',
-                                                                paddingVertical: 5,
-                                                                backgroundColor: '#F8F8F8',
-                                                                borderRadius: 5,
-                                                                flexDirection: 'row',
-                                                                alignItems: 'center',
-                                                                paddingHorizontal: '2%',
-                                                                marginTop: '3%'
-                                                            }}>
-                                                                <Text style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    color: '#B3B1B0',
-                                                                    width: '70%'
-                                                                }}>{'Max ' + parameter.name}</Text>
-                                                                <View style={{ paddingVertical: 1, marginHorizontal: 10, width: 35, backgroundColor: '#FFFFFF' }}>
-                                                                    <Text style={{ fontFamily: 'Poppins', textAlign: 'center', color: '#B3B1B0' }}>{parameter.max_default}</Text>
-                                                                </View>
-                                                            </Pressable>
-                                                        </View>
-                                                )
-                                            })
-                                            : <></>}
+                                        
 
                                     </View>
                                 </>

@@ -74,25 +74,7 @@ useEffect(() => {
             flexDirection: 'row'
           }}>
             <TextInput value={query} onChangeText={(category) => setQuery(category)}  selectionColor={'#B3B1B0'} style={styles.input} />
-            <TouchableOpacity>
-              <Svg
-                style={{
-                  fillRule: "evenodd",
-                  clipRule: "evenodd",
-                  strokeLinejoin: "round",
-                  strokeMiterlimit: 2,
-                  height: 35,
-                  width: 35,
-                  marginRight: '3%'
-                }}
-                fill={'#000'}
-                viewBox="0 0 25 24"
-                xmlSpace="preserve"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <Path d="M16.206 17.266a8.466 8.466 0 0 1-5.456 1.984c-4.691 0-8.5-3.809-8.5-8.5s3.809-8.5 8.5-8.5 8.5 3.809 8.5 8.5a8.466 8.466 0 0 1-1.984 5.456l3.264 3.264a.749.749 0 1 1-1.06 1.06l-3.264-3.264ZM10.75 3.75c3.863 0 7 3.137 7 7s-3.137 7-7 7-7-3.137-7-7 3.137-7 7-7Z" />
-              </Svg>
-            </TouchableOpacity>
+            
           </View>
           <View style={styles.header}>
             <Text style={styles.headingText}>{'Category'}</Text>
