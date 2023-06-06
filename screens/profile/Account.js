@@ -72,7 +72,7 @@ const Account = ({ navigation }) => {
                 seller_background_image_url: bgUrl,
                 seller_profile_image_url: profUrl,
                 address: merchantData.address.length === 0 ? "N/A" : merchantData.address,
-                seller_contact: merchantData.contact,
+                seller_contact: merchantData.seller_contact,
                 seller_profile_description: merchantData.seller_profile_description
             }) : JSON.stringify({
                 name: merchantData.name,

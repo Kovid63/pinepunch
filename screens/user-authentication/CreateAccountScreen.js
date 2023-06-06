@@ -131,7 +131,11 @@ const CreateAccountScreen = ({ navigation }) => {
             <View style={styles.create}>
                 <Text style={styles.createText}>{'Create New Account'}</Text>
             </View>
-           
+            <View style={styles.form}>
+                <FormInput placeholder={'Company Name'} getValue={getCompany} getError={getCompanyError} />
+                <FormInput type={'email'} autoCapitalize='none' placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
+                <FormInput secure={true} placeholder={'Password'} getValue={getPassword} getError={getPasswordError} />
+            </View>
             <View style={styles.boxBtnContainer}>
                 <CheckBox isActive={getCheckboxStatus} />
                 <Text style={styles.agreeText}>{'I Agree to the'}<Text onPress={privacyHandler} style={{ color: colors.primary[0] }}>{' '}{'Terms of Service'}</Text><Text>{' '}{'and'}</Text><Text onPress={privacyHandler} style={{ color: colors.primary[0] }}>{' '}{'Privacy Policy'}</Text></Text>

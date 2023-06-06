@@ -76,7 +76,9 @@ const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
         <FormInput secure={true} placeholder={'New Password'} getValue={getNewPassword} getError={getNewPasswordError} />
         <FormInput secure={true} placeholder={'Confirm Password'} getValue={getConfirmPassword} getError={getConfirmPasswordError} />
       </View>
-      
+      <View style={styles.loginAccContainer}>
+        <Text style={styles.accRequestText}>{"Have an account?"}{' '}<Text onPress={loginPageHandler} style={styles.loginAccText}>{'Login'}</Text></Text>
+      </View>
       <View style={styles.submitBtnContainer}>
         <SubmitBtn isLoading={isLoading} onPress={resetPasswordHandler} fill={isButtonActive} active={isButtonActive} text={'Reset Password'} />
       </View>

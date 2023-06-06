@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
+import React, { useContext, useEffect } from 'react';
+import { BackHandler, StyleSheet } from 'react-native';
 import { View } from 'react-native';
 import Svg, { Path } from "react-native-svg";
 import { ModeContext } from '../contexts/ModeContext';
@@ -11,6 +11,9 @@ import { ProfileStack } from './ProfileStack';
 import { FavouriteStack } from './FavouriteStack';
 import { EditStack } from './EditStack';
 import { UserContext } from '../contexts/UserContext';
+import { Platform } from 'react-native';
+import { ToastAndroid } from 'react-native';
+import { Alert } from 'react-native';
 
 const Tab = createBottomTabNavigator();
 
@@ -18,6 +21,28 @@ const TabNavigation = () => {
 
     const { mode } = useContext(ModeContext);
     const {initialScreen} = useContext(UserContext);
+
+
+    function handleBackButton  ()  {
+        BackHandler.exitApp();
+        return true;
+      }
+
+      useEffect(() => {
+        if(initialScreen === 'ProfileStack'){
+            const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+
+            if(Platform.OS === 'android'){
+                ToastAndroid.show('functions are currently locked', ToastAndroid.SHORT);
+            }else{
+                Alert.alert('functions are currently locked');
+            }
+          // Prevent the default back button behavior
+          return true;
+        });
+    
+        return () => backHandler.remove();}
+      }, []);
 
     return (
         <NavigationContainer>
@@ -230,6 +255,9 @@ const TabNavigation = () => {
                 <Tab.Screen
                     name="ProfileStack"
                     component={ProfileStack}
+                    listeners={{
+                       blur: () => BackHandler.addEventListener('hardwareBackPress', () => {})
+                    }}
                     options={{
                         tabBarIcon: ({ focused }) => (
                             <View

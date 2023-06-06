@@ -123,7 +123,10 @@ const LoginScreen = ({ navigation }) => {
                         <Text style={styles.text}>{'Water is life. Water is a basic human need. In various lines of life, humans need water.'}</Text>
                     </View>
                 )}
-            
+            <View style={styles.form}>
+                <FormInput type={'email'} autoCapitalize='none' placeholder={'Email'} getValue={getEmail} getError={getEmailError} />
+                <FormInput secure={true} placeholder={'Password'} getValue={getPassword} getError={getPasswordError} />
+            </View>
             <View style={styles.forgotPasswordTextContainer}>
                 <Text onPress={forgotPasswordHandler} style={styles.forgotPasswordText}>{'Forgot Password'}</Text>
             </View>

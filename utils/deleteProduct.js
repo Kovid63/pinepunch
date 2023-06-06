@@ -16,10 +16,10 @@ export async function deleteProduct(itemId, sessionId) {
 
     if (data.error) {
         if (Platform.OS === 'android') {
-            return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+           // return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
         }
         else {
-            return Alert.alert(data.error.description);
+          //  return Alert.alert(data.error.description);
         }
     }
 
