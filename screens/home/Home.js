@@ -49,7 +49,7 @@ const Home = ({ navigation }) => {
         }
       });
 
-      const data = await response.json();
+    // const data = await response.json();
 
       if (data.error) {
         if (Platform.OS === 'android') {
@@ -184,7 +184,7 @@ const Home = ({ navigation }) => {
       },
     })
 
-    const data = await response.json();
+  //  const data = await response.json();
 
     if (data.error) {
       
