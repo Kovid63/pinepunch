@@ -127,7 +127,7 @@ const CreateAccountScreen = ({ navigation }) => {
     
 
     return (
-        <ScrollView keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false} style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.create}>
                 <Text style={styles.createText}>{'Create New Account'}</Text>
             </View>
@@ -146,7 +146,7 @@ const CreateAccountScreen = ({ navigation }) => {
             <View style={styles.submitBtnContainer}>
                 <SubmitBtn isLoading={isLoading} fill={isButtonActive} onPress={createAccountHandler} active={isButtonActive} text={'Get Started'} />
             </View>
-        </ScrollView>
+        </View>
     )
 }
 
@@ -189,7 +189,9 @@ const styles = StyleSheet.create({
 
     loginAccContainer: {
         alignItems: 'center',
-        marginTop: '45%'
+        position: 'absolute',
+        bottom: 130,
+        alignSelf: 'center'
     },
 
     accRequestText: {
@@ -203,9 +205,10 @@ const styles = StyleSheet.create({
     },
 
     submitBtnContainer: {
-        alignItems: 'center',
-        marginBottom: 30,
-        marginTop: '10%'
+        position: 'absolute',
+        width: '100%',
+        bottom: 50,
+        alignSelf: 'center'
     }
 })
 

@@ -49,7 +49,7 @@ const Home = ({ navigation }) => {
         }
       });
 
-    // const data = await response.json();
+      const data = await response.json();
 
       if (data.error) {
         if (Platform.OS === 'android') {
@@ -68,19 +68,19 @@ const Home = ({ navigation }) => {
   }
 
   useEffect(() => {
-    (async function getFilters(){
+    (async function getFilters() {
       const filters = await getAppSettings();
       setCategory(Object.keys(filters.products));
     })();
-    
-  } ,[])
+
+  }, [])
 
   useEffect(() => {
     setSelectedCategory(category[0]);
-  },[category])
+  }, [category])
 
   function showAllProductHandler() {
-    if(refreshing) return;
+    if (refreshing) return;
     navigation.navigate('Product', {
       products: mode === MODE_SELLER ? sellerProducts : products
     });
@@ -156,7 +156,7 @@ const Home = ({ navigation }) => {
   };
 
   function onSelectCategoryHandler(item) {
-    setSelectedCategory(item);
+    selectedCategory === item ? setSelectedCategory(null) : setSelectedCategory(item);
   }
 
   function searchBarHandler() {
@@ -184,10 +184,10 @@ const Home = ({ navigation }) => {
       },
     })
 
-  //  const data = await response.json();
+    const data = await response.json();
 
     if (data.error) {
-      
+
       if (Platform.OS === 'android') {
 
       }
@@ -217,7 +217,7 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     mode === MODE_BUYER ? [fetchProducts(selectedCategory, 0), fetchFavourites()] : fetchSellerProducts();
   }, [mode]);
-  
+
 
   useEffect(() => {
     fetchProducts(selectedCategory, 0);
@@ -228,7 +228,7 @@ const Home = ({ navigation }) => {
       onRefresh();
       fetchSellerProducts();
       getNotificationCount();
-      (async function getFilters(){
+      (async function getFilters() {
         const filters = await getAppSettings();
         setCategory(Object.keys(filters.products));
       })();
@@ -280,17 +280,7 @@ const Home = ({ navigation }) => {
                 showsHorizontalScrollIndicator={false}
                 horizontal
                 data={sellerProducts}
-                renderItem={(item) => <ListRender onPress={() => navigation.navigate('ProductDetail', {
-                  preview: false,
-                  name: item.item.product_name,
-                  description: item.item.product_description,
-                  price: item.item.price,
-                  quantity: item.item.quantity,
-                  unit: item.item.quantity_um,
-                  merchantId: item.item.merchant_id,
-                  image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
-                  id: item.item.id
-                })} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} />} />
+                renderItem={(item) => <ListRender onPress={() => editDraftHandler(item.item)} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images?.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} />} />
             </View>
             {/* <View style={styles.middle}>
               <View>

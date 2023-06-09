@@ -58,7 +58,7 @@ const Account = ({ navigation }) => {
         setIsLoading(true);
 
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-        const bgUrl = mode === MODE_SELLER ? await getImageUrl(merchantData.seller_background_image_url, 'merchant_seller_background', sessionId) : await getImageUrl(merchantData.buyer_background_image_url, 'merchant_buyer_background', sessionId);
+        
         const profUrl = mode === MODE_SELLER ? await getImageUrl(merchantData.seller_profile_image_url, 'merchant_seller_logo', sessionId) : await getImageUrl(merchantData.buyer_profile_image_url, 'merchant_buyer_logo', sessionId);
 
         const response = await fetch(BASE_URL + MERCHANT, {
@@ -101,6 +101,7 @@ const Account = ({ navigation }) => {
 
     async function imagePickHandler(type, mode) {
         const mediaPermission = await ImagePicker.getMediaLibraryPermissionsAsync();
+        const sessionId = await SecureStore.getItemAsync('SESSION_ID');
         if (!mediaPermission.granted) {
             if (!mediaPermission.canAskAgain) {
                 return Alert.alert('Permission Required', 'Please grant access for media to add photos.', [
@@ -131,9 +132,11 @@ const Account = ({ navigation }) => {
         });
 
         if (!result.canceled) {
+            setRefreshing(true);
             if (mode === MODE_SELLER) {
+                const bgUrl = mode === MODE_SELLER ? await getImageUrl(merchantData.seller_background_image_url, 'merchant_seller_background', sessionId) : await getImageUrl(merchantData.buyer_background_image_url, 'merchant_buyer_background', sessionId);
                 if (type === 'Banner') {
-                    setMerchantData({ ...merchantData, seller_background_image_url: result.assets[0].uri });
+                    setMerchantData({ ...merchantData, seller_background_image_url: bgUrl });
                 } else {
                     setMerchantData({ ...merchantData, seller_profile_image_url: result.assets[0].uri });
                 }
@@ -208,13 +211,14 @@ const Account = ({ navigation }) => {
                 </View>
                 {mode === MODE_SELLER && <View style={{ borderTopWidth: 2, width: '95%', borderColor: '#000', alignSelf: 'center', borderStyle: 'dotted', marginTop: 10 }} />}
                 <View style={styles.profileInfoContainer}>
+                    <View style={{backgroundColor: '#F8F8F8'}}>
                     <Text style={styles.infoTitle}>{'Company Name'}</Text>
-
                     <TextInput value={merchantData.name} style={styles.infoText} onChangeText={(name) => setMerchantData({ ...merchantData, name: name })} />
-
+                    </View>
                     <Text style={styles.infoTitle}>{'Location'}</Text>
 
                     <TextInput multiline={true} value={merchantData.address} style={styles.infoText} onChangeText={(address) => setMerchantData({ ...merchantData, address: address })} />
+                    <View style={{backgroundColor: '#F8F8F8'}}>
                     <View style={{flexDirection: 'row', marginTop: 20}}>
                         <Text style={styles.infoTitle}>{'Contact No:  '}</Text>
                         <TextInput value={ mode === MODE_SELLER? merchantData.seller_contact : merchantData.contact} style={[styles.infoText, {marginTop: 6}]} onChangeText={(contact) => mode === MODE_SELLER? setMerchantData({ ...merchantData,  seller_contact: contact }) : setMerchantData({ ...merchantData,  contact: contact })} />
@@ -222,6 +226,7 @@ const Account = ({ navigation }) => {
                     <View style={{flexDirection: 'row'}}>
                         <Text style={styles.infoTitle}>{'Email:  '}</Text>
                         <TextInput value={merchantData.email} style={[styles.infoText, {marginTop: 6}]} onChangeText={(email) => setMerchantData({ ...merchantData, email: email })} />
+                    </View>
                     </View>
                 </View>
                 <View style={styles.submitBtnContainer}>

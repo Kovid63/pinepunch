@@ -45,6 +45,7 @@ const FillProduct = ({ navigation, route }) => {
     const [products, setProducts] = useState([]);
     const [prodFilters, setProdFilters] = useState([]);
     const [mounted, setMounted] = useState(false);
+    const [customParam, setCustomParam] = useState({ name: '', value: '' });
 
     const [query, setQuery] = useState('');
 
@@ -53,7 +54,7 @@ const FillProduct = ({ navigation, route }) => {
 
         if (isEdit) {
             setProductName(product_name);
-            images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',').forEach((img, index) => {
+            images?.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',').forEach((img, index) => {
                 setProductImage(prevArray => {
                     const newArray = [...prevArray];
                     newArray[index] = img;
@@ -308,7 +309,7 @@ const FillProduct = ({ navigation, route }) => {
             }
         }
 
-        if (productName.length === 0 || productQuantity.length === 0 || productImage.length === 0 || productPrice.length === 0 || productDescription.length === 0) {
+        if (productName.length === 0 || productQuantity.length === 0 || productPrice.length === 0 || productDescription.length === 0) {
 
             if (Platform.OS === 'android') {
                 return ToastAndroid.show('Fill all required Fields', ToastAndroid.SHORT);
@@ -324,7 +325,7 @@ const FillProduct = ({ navigation, route }) => {
         navigation.navigate('ProductDetail', {
             name: productName,
             parameters: productParameters,
-            image: productImage || '',
+            image: productImage || [],
             quantity: productQuantity,
             price: productPrice,
             description: productDescription,
@@ -333,6 +334,7 @@ const FillProduct = ({ navigation, route }) => {
             categoryType: route.params.isEdit ? route.params.product.catogery_type : route.params.type,
             id: id,
             isEdit: isEdit,
+            customParameter: customParam,
         })
     }
 
@@ -408,7 +410,7 @@ const FillProduct = ({ navigation, route }) => {
                         <View style={{ alignItems: 'center', paddingBottom: 90 }}>
                             <View style={styles.parameterContainer}>
                                 <Text style={styles.parameterText}>{'Product Name'}</Text>
-                                <TextInput style={styles.parameterInput} value={productName} placeholder='Item Name 1' onChangeText={(name) => { setProductName(name) }} />
+                                <TextInput style={[styles.parameterInput,{ borderRadius: 5 }]} value={productName} placeholder='Item Name 1' onChangeText={(name) => { setProductName(name) }} />
                             </View>
 
                             {
@@ -460,14 +462,14 @@ const FillProduct = ({ navigation, route }) => {
                                 marginTop: '3%'
                             }}>
                                 <Text style={styles.parameterText}>{'Quantity'}</Text>
-                                <TextInput value={productQuantity.toString()} maxLength={5} style={[styles.parameterInput, { width: '22%', textAlign: 'center', height: 25 }]} onChangeText={(quantity) => { setProductQuantity(quantity) }} />
+                                <TextInput maxLength={5} style={[styles.parameterInput, { width: '22%', textAlign: 'center', height: 25, borderRadius: 5 }]} onChangeText={(quantity) => { setProductQuantity(quantity) }} />
                                 <View style={{ marginLeft: '5%' }}>
-                                    <DropDownMenu value={value} setValue={setValue} />
+                                    <DropDownMenu value={value} setValue={setValue} mapObject={units} />
                                 </View>
                             </View>
                             <View style={styles.parameterContainer}>
                                 <Text style={styles.parameterText}>{'Price'}</Text>
-                                <TextInput value={productPrice.toString()} style={[styles.parameterInput, { fontSize: 14 }]} onChangeText={(price) => { setProductPrice(price) }} />
+                                <TextInput style={[styles.parameterInput, { fontSize: 14, borderRadius: 5 }]} onChangeText={(price) => { setProductPrice(price) }} />
                             </View>
                             {
                                 route.params.description_required ?
@@ -481,7 +483,7 @@ const FillProduct = ({ navigation, route }) => {
                                         marginTop: '3%'
                                     }}>
                                         <Text style={styles.parameterText}>{'Description'}</Text>
-                                        <TextInput multiline value={productDescription} style={[{
+                                        <TextInput multiline style={[{
                                             marginLeft: '1%',
                                             backgroundColor: 'white',
                                             width: '50%',
@@ -491,11 +493,35 @@ const FillProduct = ({ navigation, route }) => {
                                             color: '#B3B1B0',
                                             fontSize: 14,
                                             textAlignVertical: 'top',
-                                            paddingVertical: 2
-                                        }, { height: 200, width: '62%' }]} onChangeText={(description) => { setProductDescription(description) }} />
+                                            paddingVertical: 2,
+                                            borderRadius: 5
+                                        }, { height: 80, width: '62%' }]} onChangeText={(description) => { setProductDescription(description) }} />
                                     </View>
+
                                     : <></>
                             }
+                            <View style={[styles.parameterContainer, { justifyContent: 'space-evenly' }]}>
+                                <TextInput style={[{
+                                    backgroundColor: 'white',
+                                    width: '45%',
+                                    paddingHorizontal: '3%',
+                                    fontFamily: 'Poppins',
+                                    fontSize: 12,
+                                    color: '#B3B1B0',
+                                    fontSize: 12,
+                                    borderRadius: 5
+                                }, {}]} placeholder='custom Parameter' onChangeText={(v) => { setCustomParam({ ...customParam, name: v }) }} />
+                                <TextInput style={[{
+                                    backgroundColor: 'white',
+                                    width: '45%',
+                                    paddingHorizontal: '3%',
+                                    fontFamily: 'Poppins',
+                                    fontSize: 12,
+                                    color: '#B3B1B0',
+                                    fontSize: 12,
+                                    borderRadius: 5
+                                }, {}]} placeholder='custom Value' onChangeText={(v) => { setCustomParam({ ...customParam, value: v }) }} />
+                            </View>
                             <TouchableOpacity onPress={submitProductHandler} activeOpacity={0.6} style={{ alignSelf: 'flex-end', height: 60, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 30, backgroundColor: colors.primary[0], marginTop: '10%', borderRadius: 16, marginRight: '5%' }}>
                                 <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF' }}>{'Preview and Submit'}</Text>
                             </TouchableOpacity>
@@ -513,7 +539,7 @@ const FillProduct = ({ navigation, route }) => {
                                     <View style={{ alignItems: 'center', paddingBottom: 90 }}>
                                         <View style={styles.parameterContainer}>
                                             <Text style={styles.parameterText}>{'Product Name'}</Text>
-                                            <TextInput style={styles.parameterInput} placeholder='Item Name 1' onChangeText={(name) => { setProductName(name) }} />
+                                            <TextInput style={[styles.parameterInput, { borderRadius: 5 }]} placeholder='Item Name 1' onChangeText={(name) => { setProductName(name) }} />
                                         </View>
 
                                         {route.params.parameters ?
@@ -569,14 +595,14 @@ const FillProduct = ({ navigation, route }) => {
                                             marginTop: '3%'
                                         }}>
                                             <Text style={styles.parameterText}>{'Quantity'}</Text>
-                                            <TextInput maxLength={5} style={[styles.parameterInput, { width: '22%', textAlign: 'center', height: 25 }]} onChangeText={(quantity) => { setProductQuantity(quantity) }} />
+                                            <TextInput maxLength={5} style={[styles.parameterInput, { width: '22%', textAlign: 'center', height: 25, borderRadius: 5 }]} onChangeText={(quantity) => { setProductQuantity(quantity) }} />
                                             <View style={{ marginLeft: '5%' }}>
                                                 <DropDownMenu value={value} setValue={setValue} mapObject={units} />
                                             </View>
                                         </View>
                                         <View style={styles.parameterContainer}>
                                             <Text style={styles.parameterText}>{'Price'}</Text>
-                                            <TextInput style={[styles.parameterInput, { fontSize: 14 }]} onChangeText={(price) => { setProductPrice(price) }} />
+                                            <TextInput style={[styles.parameterInput, { fontSize: 14, borderRadius: 5 }]} onChangeText={(price) => { setProductPrice(price) }} />
                                         </View>
                                         {
                                             route.params.description_required ?
@@ -600,11 +626,35 @@ const FillProduct = ({ navigation, route }) => {
                                                         color: '#B3B1B0',
                                                         fontSize: 14,
                                                         textAlignVertical: 'top',
-                                                        paddingVertical: 2
-                                                    }, { height: 200, width: '62%' }]} onChangeText={(description) => { setProductDescription(description) }} />
+                                                        paddingVertical: 2,
+                                                        borderRadius: 5
+                                                    }, { height: 80, width: '62%' }]} onChangeText={(description) => { setProductDescription(description) }} />
                                                 </View>
+
                                                 : <></>
                                         }
+                                        <View style={[styles.parameterContainer, { justifyContent: 'space-evenly' }]}>
+                                            <TextInput style={[{
+                                                backgroundColor: 'white',
+                                                width: '45%',
+                                                paddingHorizontal: '3%',
+                                                fontFamily: 'Poppins',
+                                                fontSize: 12,
+                                                color: '#B3B1B0',
+                                                fontSize: 12,
+                                                borderRadius: 5
+                                            }, {}]} placeholder='custom Parameter' onChangeText={(v) => { setCustomParam({ ...customParam, name: v }) }} />
+                                            <TextInput style={[{
+                                                backgroundColor: 'white',
+                                                width: '45%',
+                                                paddingHorizontal: '3%',
+                                                fontFamily: 'Poppins',
+                                                fontSize: 12,
+                                                color: '#B3B1B0',
+                                                fontSize: 12,
+                                                borderRadius: 5
+                                            }, {}]} placeholder='custom Value' onChangeText={(v) => { setCustomParam({ ...customParam, value: v }) }} />
+                                        </View>
                                         <TouchableOpacity onPress={submitProductHandler} activeOpacity={0.6} style={{ alignSelf: 'flex-end', height: 60, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 30, backgroundColor: colors.primary[0], marginTop: '10%', borderRadius: 16, marginRight: '5%' }}>
                                             <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF' }}>{'Preview and Submit'}</Text>
                                         </TouchableOpacity>
@@ -642,7 +692,7 @@ const FillProduct = ({ navigation, route }) => {
                                                     parameter.type === 'options' ?
                                                         <Pressable key={index} onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type, 0)]} style={styles.parameterContainer}>
                                                             <Text style={styles.parameterText}>{parameter.name}</Text>
-                                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => [addToFilter(parameter.name, value)]} />)} data={parameter.options} />
+                                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => prodFilters.find(o => o.name === parameter.name)?.value === value ? [setProdFilters([]), getBuyerProducts(route.params.type, 0)] : addToFilter(parameter.name, value)} />)} data={parameter.options} />
                                                         </Pressable>
                                                         :
                                                         <View key={index} style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>

@@ -50,7 +50,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
           email: email
         })
       });
-      
+
       if (!response.ok) {
         setIsLoading(false);
         return console.log(response.status);
@@ -80,7 +80,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
           otp: otpValue
         })
       });
-      
+
       if (!response.ok) {
         setIsLoading(false);
         return console.log(response.status);
@@ -103,7 +103,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
 
   return (
     <Pressable onPress={() => Keyboard.dismiss()} style={styles.container}>
-      <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
+      <View style={{ flex: 1 }}>
         <View style={styles.welcome}>
           <Text style={styles.welcomeText}>{'Forgot\nPassword'}</Text>
         </View>
@@ -134,7 +134,7 @@ const ForgotPasswordEmail = ({ navigation }) => {
         <View style={styles.submitBtnContainer}>
           <SubmitBtn isLoading={isLoading} onPress={isEmailSent ? verifyHandler : nextHandler} fill={isButtonActive} active={isButtonActive} text={isEmailSent ? 'Verify' : 'Next'} />
         </View>
-      </ScrollView>
+      </View>
     </Pressable>
   )
 }
@@ -164,7 +164,9 @@ const styles = StyleSheet.create({
 
   loginAccContainer: {
     alignItems: 'center',
-    marginTop: '80%'
+    position: 'absolute',
+    bottom: 130,
+    alignSelf: 'center'
   },
 
   accRequestText: {
@@ -178,9 +180,10 @@ const styles = StyleSheet.create({
   },
 
   submitBtnContainer: {
-    alignItems: 'center',
-    marginTop: '10%',
-    marginBottom: 30
+    position: 'absolute',
+    width: '100%',
+    bottom: 50,
+    alignSelf: 'center'
   },
 
   otpInputContainer: {

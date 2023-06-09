@@ -50,7 +50,7 @@ const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
           password: newPassword,
         })
       });
-      
+
       if (!response.ok) {
         setIsLoading(false);
         return console.log(response.status);
@@ -68,7 +68,7 @@ const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
 
 
   return (
-    <ScrollView keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false} style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.welcome}>
         <Text style={styles.welcomeText}>{'Forgot\nPassword'}</Text>
       </View>
@@ -82,7 +82,7 @@ const ForgotPasswordWithNewPassword = ({ navigation, route }) => {
       <View style={styles.submitBtnContainer}>
         <SubmitBtn isLoading={isLoading} onPress={resetPasswordHandler} fill={isButtonActive} active={isButtonActive} text={'Reset Password'} />
       </View>
-    </ScrollView>
+    </View>
   )
 }
 
@@ -110,7 +110,9 @@ const styles = StyleSheet.create({
 
   loginAccContainer: {
     alignItems: 'center',
-    marginTop: '80%'
+    position: 'absolute',
+    bottom: 130,
+    alignSelf: 'center'
   },
 
   accRequestText: {
@@ -124,9 +126,10 @@ const styles = StyleSheet.create({
   },
 
   submitBtnContainer: {
-    alignItems: 'center',
-    marginTop: '10%',
-    marginBottom: 30
+    position: 'absolute',
+    width: '100%',
+    bottom: 50,
+    alignSelf: 'center'
   }
 
 })

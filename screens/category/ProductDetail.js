@@ -21,7 +21,7 @@ import ProductImage from '../../components/ProductImage'
 const ProductDetail = ({ navigation, route }) => {
 
   const { mode } = useContext(ModeContext);
-  const { name, parameters, image, quantity, price, description, unit, categoryType, id, merchantId, isEdit, isDraft } = route.params;
+  const { name, parameters, image, quantity, price, description, unit, categoryType, id, merchantId, isEdit, isDraft, customParameter } = route.params;
   const [favourites, setFavourites] = useState([]);
   const [isFav, setIsFav] = useState(false);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
@@ -143,6 +143,7 @@ const ProductDetail = ({ navigation, route }) => {
         price: price,
         save_as_draft: true,
         images: image,
+        custom_parameter: customParameter,
         parameters: parameters.map((parameter) => {
           return { name: parameter.name, value: parameter.value, um: parameter.um }
         })
@@ -208,6 +209,7 @@ const ProductDetail = ({ navigation, route }) => {
           quantity_um: unit,
           price: price,
           images: imageArray,
+          custom_parameter: customParameter,
           parameters: parameters.map((parameter) => {
             return { name: parameter.name, value: parameter.value, um: parameter.um }
           })
@@ -244,6 +246,7 @@ const ProductDetail = ({ navigation, route }) => {
           quantity_um: unit,
           price: price,
           images: imageArray,
+          custom_parameter: customParameter,
           parameters: parameters.map((parameter) => {
             return { name: parameter.name, value: parameter.value, um: parameter.um }
           })

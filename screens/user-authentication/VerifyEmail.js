@@ -126,7 +126,7 @@ const VerifyEmail = ({ navigation, route }) => {
 
     return (
         <Pressable onPress={() => Keyboard.dismiss()} style={styles.container}>
-            <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
+            <View style={{ flex: 1 }} keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false}>
                 <View style={styles.header}>
                     <TouchableOpacity onPress={backPressHandler} style={styles.bellIconContainer}>
                         <Svg style={styles.bellIcon} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
@@ -173,7 +173,7 @@ const VerifyEmail = ({ navigation, route }) => {
                 <View style={styles.submitBtnContainer}>
                     <SubmitBtn isLoading={isLoading} onPress={userData==='otpReq'? verifyEmailHandlerReq : verifyEmailHandler} active={isButtonActive} fill={isButtonActive} text={'Continue'} />
                 </View>
-            </ScrollView>
+            </View>
         </Pressable>
     )
 }
@@ -242,8 +242,10 @@ const styles = StyleSheet.create({
     },
 
     submitBtnContainer: {
-        alignItems: 'center',
-        marginBottom: 30,
+        position: 'absolute',
+        width: '100%',
+        bottom: 50,
+        alignSelf: 'center'
     },
 
     warning: {
@@ -258,8 +260,10 @@ const styles = StyleSheet.create({
     },
 
     submitBtnContainer: {
-        alignItems: 'center',
-        marginTop: '75%'
+        position: 'absolute',
+        width: '100%',
+        bottom: 50,
+        alignSelf: 'center'
     },
 
     otpInputContainer: {

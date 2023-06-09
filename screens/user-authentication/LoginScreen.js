@@ -113,7 +113,7 @@ const LoginScreen = ({ navigation }) => {
     }
 
     return (
-        <ScrollView keyboardShouldPersistTaps={'handled'} showsVerticalScrollIndicator={false} style={styles.container}>
+        <View style={styles.container}>
             <View style={styles.welcome}>
                 <Text style={styles.welcomeText}>{'Hello,\nWelcome Back!'}</Text>
             </View>
@@ -144,7 +144,7 @@ const LoginScreen = ({ navigation }) => {
             <View style={styles.submitBtnContainer}>
                 <SubmitBtn onPress={loginHandler} isLoading={isLoading} fill={isButtonActive} active={isButtonActive && !isLoading} text={'Get Started'} />
             </View>
-        </ScrollView>
+        </View>
     );
 }
 
@@ -208,7 +208,9 @@ const styles = StyleSheet.create({
 
     createAccContainer: {
         alignItems: 'center',
-        marginTop: '30%'
+        position: 'absolute',
+        bottom: 130,
+        alignSelf: 'center'
     },
 
     accRequestText: {
@@ -222,9 +224,10 @@ const styles = StyleSheet.create({
     },
 
     submitBtnContainer: {
-        alignItems: 'center',
-        marginTop: '5%',
-        marginBottom: 20
+        position: 'absolute',
+        width: '100%',
+        bottom: 50,
+        alignSelf: 'center'
     },
 
     forgotPasswordTextContainer: {

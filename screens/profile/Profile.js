@@ -10,10 +10,11 @@ import * as SecureStore from 'expo-secure-store';
 import { ToastAndroid } from 'react-native'
 import { Alert } from 'react-native'
 import { RefreshControl } from 'react-native'
-
+import { UserContext } from '../../contexts/UserContext';
 const Profile = ({ navigation }) => {
 
   const { mode } = useContext(ModeContext);
+  const { setUserData } = useContext(UserContext);
 
   const [merchantData, setMerchantData] = useState({ ...merchantData, seller_background_image_url: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80', buyer_background_image_url: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80' });
   const [refreshing, setRefreshing] = useState(false);
@@ -47,6 +48,7 @@ const Profile = ({ navigation }) => {
 
   function onRefresh() {
     setRefreshing(true);
+    setUserData(Math.random(0,9));
     fetchDetails();
     setRefreshing(false);
   }
@@ -68,7 +70,7 @@ const Profile = ({ navigation }) => {
           mode === MODE_SELLER ?
             <View>
               <View style={styles.bannerContainer}>
-                <Image style={[styles.bannerImage, {backgroundColor: '#FDC89F'}]} source={{ uri: merchantData.seller_background_image_url }} />
+                <Image style={[styles.bannerImage, { backgroundColor: '#FDC89F' }]} source={{ uri: merchantData.seller_background_image_url }} />
                 {/* <View style={styles.bannerCover} /> */}
               </View>
               <View style={styles.profileImageContainer}>
@@ -78,7 +80,7 @@ const Profile = ({ navigation }) => {
             :
             <View>
               <View style={styles.bannerContainer}>
-                <Image style={[styles.bannerImage, {backgroundColor: colors.black[5]}]} source={{ uri: merchantData.buyer_background_image_url }} />
+                <Image style={[styles.bannerImage, { backgroundColor: colors.black[5] }]} source={{ uri: merchantData.buyer_background_image_url }} />
               </View>
               <View style={styles.profileImageContainer}>
                 <Image style={{ height: '100%', width: '100%', borderRadius: 60, backgroundColor: 'silver' }} source={{ uri: merchantData.buyer_profile_image_url }} />
@@ -86,34 +88,38 @@ const Profile = ({ navigation }) => {
             </View>
         }
         <View style={styles.profileNameContainer}>
-                    <Text style={styles.profileName}>{merchantData.name}</Text>
-                    {mode === MODE_SELLER && <Text style={{
-                        fontFamily: 'PoppinsBold',
-                        fontSize: 18,
-                        textAlign: 'center'
-                    }}>{merchantData.seller_profile_description}</Text>}
-                </View>
-                {mode === MODE_SELLER && <View style={{ borderTopWidth: 2, width: '95%', borderColor: '#000', alignSelf: 'center', borderStyle: 'dotted', marginTop: 10 }} />}
+          <Text style={styles.profileName}>{merchantData.name}</Text>
+          {mode === MODE_SELLER && <Text style={{
+            fontFamily: 'PoppinsBold',
+            fontSize: 18,
+            textAlign: 'center'
+          }}>{merchantData.seller_profile_description}</Text>}
+        </View>
+        {mode === MODE_SELLER && <View style={{ borderTopWidth: 2, width: '95%', borderColor: '#000', alignSelf: 'center', borderStyle: 'dotted', marginTop: 10 }} />}
         <TouchableOpacity onPress={settingsPageHandler} activeOpacity={0.4} style={styles.settingsBtnContainer}>
           <Text style={styles.settingsBtnText}>{'Settings Page'}</Text>
         </TouchableOpacity>
         <View style={styles.profileInfoContainer}>
-                    <Text style={styles.infoTitle}>{'Company Name'}</Text>
+          <View style={{ backgroundColor: '#F8F8F8'}}>
+            <Text style={styles.infoTitle}>{'Company Name'}</Text>
 
-                    <Text style={styles.infoText}>{merchantData.name}</Text>
+            <Text style={styles.infoText}>{merchantData.name}</Text>
+          </View>
 
-                    <Text style={styles.infoTitle}>{'Location'}</Text>
+          <Text style={styles.infoTitle}>{'Location'}</Text>
 
-                    <Text style={styles.infoText}>{merchantData.address}</Text>
-                    <View style={{flexDirection: 'row', marginTop: 20}}>
-                        <Text style={styles.infoTitle}>{'Contact No:  '}</Text>
-                        <Text style={[styles.infoText, {marginTop: 6}]}>{ mode === MODE_SELLER? merchantData.seller_contact : merchantData.contact}</Text>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                        <Text style={styles.infoTitle}>{'Email:  '}</Text>
-                        <Text style={[styles.infoText, {marginTop: 6}]}>{merchantData.email}</Text>
-                    </View>
-                </View>
+          <Text style={styles.infoText}>{merchantData.address}</Text>
+          <View style={{ backgroundColor: '#F8F8F8'}}>
+            <View style={{ flexDirection: 'row', marginTop: 20 }}>
+              <Text style={styles.infoTitle}>{'Contact No:  '}</Text>
+              <Text style={[styles.infoText, { marginTop: 6 }]}>{mode === MODE_SELLER ? merchantData.seller_contact : merchantData.contact}</Text>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={styles.infoTitle}>{'Email:  '}</Text>
+              <Text style={[styles.infoText, { marginTop: 6 }]}>{merchantData.email}</Text>
+            </View>
+          </View>
+        </View>
       </ScrollView>
     </View>
   )
@@ -189,7 +195,7 @@ const styles = StyleSheet.create({
 
   profileInfoContainer: {
     marginTop: '5%',
-    marginBottom: 100
+    marginBottom: 100,
   },
 
   infoTitle: {
@@ -211,7 +217,7 @@ const styles = StyleSheet.create({
     fontFamily: 'PoppinsBold',
     fontSize: 18,
     color: '#000',
-},
+  },
 
 });
 

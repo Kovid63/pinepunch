@@ -20,29 +20,24 @@ const Tab = createBottomTabNavigator();
 const TabNavigation = () => {
 
     const { mode } = useContext(ModeContext);
-    const {initialScreen} = useContext(UserContext);
+    const { initialScreen } = useContext(UserContext);
 
 
-    function handleBackButton  ()  {
+    function handleBackButton() {
         BackHandler.exitApp();
         return true;
-      }
+    }
 
-      useEffect(() => {
-        if(initialScreen === 'ProfileStack'){
+    useEffect(() => {
+        if (initialScreen === 'ProfileStack') {
             const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+                BackHandler.exitApp();
+                return true;
+            });
 
-            if(Platform.OS === 'android'){
-                ToastAndroid.show('functions are currently locked', ToastAndroid.SHORT);
-            }else{
-                Alert.alert('functions are currently locked');
-            }
-          // Prevent the default back button behavior
-          return true;
-        });
-    
-        return () => backHandler.remove();}
-      }, []);
+            return () => backHandler.remove();
+        }
+    }, []);
 
     return (
         <NavigationContainer>
@@ -78,11 +73,19 @@ const TabNavigation = () => {
                     name="HomeStack"
                     listeners={{
                         tabPress: e => {
-                          if(initialScreen === 'ProfileStack'){
-                            e.preventDefault();
-                          }
+
+                            if (initialScreen === 'ProfileStack') {
+                                if (Platform.OS === 'android') {
+                                    ToastAndroid.show('This is locked, your account is in review please wait.', ToastAndroid.SHORT);
+                                }
+                                else {
+                                    Alert.alert('This is locked, your account is in review please wait.');
+                                }
+                                e.preventDefault();
+                            }
+
                         },
-                      }}
+                    }}
                     component={HomeStack}
                     options={{
                         tabBarIcon: ({ focused }) => (
@@ -122,11 +125,17 @@ const TabNavigation = () => {
                     name="CategoryStack"
                     listeners={{
                         tabPress: e => {
-                          if(initialScreen === 'ProfileStack'){
-                            e.preventDefault();
-                          }
+                            if (initialScreen === 'ProfileStack') {
+                                if (Platform.OS === 'android') {
+                                    ToastAndroid.show('This is locked, your account is in review please wait.', ToastAndroid.SHORT);
+                                }
+                                else {
+                                    Alert.alert('This is locked, your account is in review please wait.');
+                                }
+                                e.preventDefault();
+                            }
                         },
-                      }}
+                    }}
                     component={CategoryStack}
                     options={{
                         tabBarIcon: ({ focused }) => (
@@ -172,11 +181,17 @@ const TabNavigation = () => {
                     name="EditStack"
                     listeners={{
                         tabPress: e => {
-                          if(initialScreen === 'ProfileStack'){
-                            e.preventDefault();
-                          }
+                            if (initialScreen === 'ProfileStack') {
+                                if (Platform.OS === 'android') {
+                                    ToastAndroid.show('This is locked, your account is in review please wait.', ToastAndroid.SHORT);
+                                }
+                                else {
+                                    Alert.alert('This is locked, your account is in review please wait.');
+                                }
+                                e.preventDefault();
+                            }
                         },
-                      }}
+                    }}
                     component={EditStack}
                     options={{
                         tabBarIcon: ({ focused }) => (
@@ -212,11 +227,17 @@ const TabNavigation = () => {
                     name="FavouriteStack"
                     listeners={{
                         tabPress: e => {
-                          if(initialScreen === 'ProfileStack'){
-                            e.preventDefault();
-                          }
+                            if (initialScreen === 'ProfileStack') {
+                                if (Platform.OS === 'android') {
+                                    ToastAndroid.show('This is locked, your account is in review please wait.', ToastAndroid.SHORT);
+                                }
+                                else {
+                                    Alert.alert('This is locked, your account is in review please wait.');
+                                }
+                                e.preventDefault();
+                            }
                         },
-                      }}
+                    }}
                     component={FavouriteStack}
                     options={{
                         tabBarIcon: ({ focused }) => (
@@ -250,13 +271,13 @@ const TabNavigation = () => {
                     }}
                 />}
 
-            {/* Profile */}
+                {/* Profile */}
 
                 <Tab.Screen
                     name="ProfileStack"
                     component={ProfileStack}
                     listeners={{
-                       blur: () => BackHandler.addEventListener('hardwareBackPress', () => {})
+                        blur: () => BackHandler.addEventListener('hardwareBackPress', () => { })
                     }}
                     options={{
                         tabBarIcon: ({ focused }) => (
