@@ -280,7 +280,7 @@ const Home = ({ navigation }) => {
                 showsHorizontalScrollIndicator={false}
                 horizontal
                 data={sellerProducts}
-                renderItem={(item) => <ListRender onPress={() => editDraftHandler(item.item)} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images?.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} />} />
+                renderItem={(item) => <ListRender onPress={() => editDraftHandler(item.item)} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(',')[0]} />} />
             </View>
             {/* <View style={styles.middle}>
               <View>
@@ -350,7 +350,7 @@ const Home = ({ navigation }) => {
                 renderItem={(item) => {
                   const isFav = favourites.some(o => o.inventory_item_id == item.item.id);
                   return (
-                    <BuyerListRender imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} {...item} favouriteUpdate={onRefresh} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
+                    <BuyerListRender imageUri={item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(',')[0]} {...item} favouriteUpdate={onRefresh} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
                       preview: false,
                       name: item.item.product_name,
                       description: item.item.product_description,
@@ -358,7 +358,7 @@ const Home = ({ navigation }) => {
                       quantity: item.item.quantity,
                       unit: item.item.quantity_um,
                       merchantId: item.item.merchant_id,
-                      image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
+                      image: item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(','),
                       id: item.item.id
                     })} />
                   )

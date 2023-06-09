@@ -54,7 +54,7 @@ const FillProduct = ({ navigation, route }) => {
 
         if (isEdit) {
             setProductName(product_name);
-            images?.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',').forEach((img, index) => {
+            images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(',')?.forEach((img, index) => {
                 setProductImage(prevArray => {
                     const newArray = [...prevArray];
                     newArray[index] = img;
@@ -741,14 +741,14 @@ const FillProduct = ({ navigation, route }) => {
 
                                     </View>
                                 </>
-                                } style={{ marginTop: 20 }} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={products} renderItem={item => <BuyerCategoryListRender imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} onPress={() => navigation.navigate('ProductDetail', {
+                                } style={{ marginTop: 20 }} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={products} renderItem={item => <BuyerCategoryListRender imageUri={item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(',')[0]} onPress={() => navigation.navigate('ProductDetail', {
                                     preview: false,
                                     name: item.item.product_name,
                                     description: item.item.product_description,
                                     price: item.item.price,
                                     quantity: item.item.quantity,
                                     unit: item.item.quantity_um,
-                                    image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
+                                    image: item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(','),
                                     id: item.item.id,
                                     merchantId: item.item.merchant_id
                                 })} {...item} />} numColumns={2} />

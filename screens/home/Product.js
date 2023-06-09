@@ -117,11 +117,11 @@ const Product = ({ route, navigation }) => {
                 quantity: item.item.quantity,
                 unit: item.item.quantity_um,
                 merchantId: item.item.merchant_id,
-                image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
+                image: item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(','),
                 id: item.item.id
-            })} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} /> : (item) => {
+            })} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(',')[0]} /> : (item) => {
                 const isFav = favourites.some(o => o.inventory_item_id == item.item.id);
-                return (<BuyerListRender imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} favouriteUpdate={onRefresh} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
+                return (<BuyerListRender imageUri={item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '').replace(/\\/g, '')?.split(',')[0]} favouriteUpdate={onRefresh} favourite={isFav} onPress={() => navigation.navigate('ProductDetail', {
                     preview: false,
                     name: item.item.product_name,
                     description: item.item.product_description,
@@ -129,7 +129,7 @@ const Product = ({ route, navigation }) => {
                     quantity: item.item.quantity,
                     unit: item.item.quantity_um,
                     merchantId: item.item.merchant_id,
-                    image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
+                    image: item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(','),
                     id: item.item.id
                 })} {...item} />)
             }} numColumns={2} />
