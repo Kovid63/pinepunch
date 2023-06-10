@@ -200,7 +200,7 @@ const Account = ({ navigation }) => {
                                 </View>
                             </View>
                             <View style={[styles.profileImageContainer, { backgroundColor: 'silver', borderRadius: 60 }]}>
-                                {merchantData.buyer_profile_image_url ? <Image style={{ height: '100%', width: '100%', borderRadius: 60 }} source={{ uri: merchantData.seller_profile_image_url }} /> : <Text style={{ fontFamily: 'PoppinsBold', color: "#FFFFFF", marginTop: 45, alignSelf: 'center' }}>{'Add Logo'}</Text>}
+                                {merchantData.buyer_profile_image_url ? <Image style={{ height: '100%', width: '100%', borderRadius: 60 }} source={{ uri: merchantData.buyer_profile_image_url }} /> : <Text style={{ fontFamily: 'PoppinsBold', color: "#FFFFFF", marginTop: 45, alignSelf: 'center' }}>{'Add Logo'}</Text>}
                                 <View style={{ position: 'absolute', right: 0 }}>
                                     <EditProfileIcon onPress={() => imagePickHandler('Profile', MODE_BUYER)} />
                                 </View>
