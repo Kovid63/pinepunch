@@ -215,7 +215,7 @@ const Account = ({ navigation }) => {
                         textAlign: 'center'
                     }}/>}
                 </View>
-                {mode === MODE_SELLER && <View style={{ borderTopWidth: 2, width: '95%', borderColor: '#000', alignSelf: 'center', borderStyle: 'dotted', marginTop: 10 }} />}
+                {mode === MODE_SELLER && <View style={{ overflow: 'hidden'}}><View style={{ borderTopWidth: 2, width: '95%', borderColor: '#000', alignSelf: 'center', borderStyle: 'dotted', marginTop: 10 }} /></View>}
                 <View style={styles.profileInfoContainer}>
                     <View style={{backgroundColor: '#F8F8F8'}}>
                     <Text style={styles.infoTitle}>{'Company Name'}</Text>
