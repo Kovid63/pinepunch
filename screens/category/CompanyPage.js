@@ -78,14 +78,14 @@ const CompanyPage = ({ navigation, route }) => {
     return (
         <View style={styles.container}>
             <Header onPress={backPressHandler} pageTitle={name} />
-            <FlatList style={{ marginTop: 20 }} ListHeaderComponentStyle={{ width: '100%' }} ListHeaderComponent={HeaderComponentFlatlist} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={products} renderItem={item => <BuyerCategoryListRender imageUri={item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} onPress={() => navigation.navigate('ProductDetail', {
+            <FlatList style={{ marginTop: 20 }} ListHeaderComponentStyle={{ width: '100%' }} ListHeaderComponent={HeaderComponentFlatlist} contentContainerStyle={{ paddingBottom: 90, alignItems: 'center' }} showsVerticalScrollIndicator={false} data={products} renderItem={item => <BuyerCategoryListRender imageUri={item.item.images?.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0]} onPress={() => navigation.navigate('ProductDetail', {
                 preview: false,
                 name: item.item.product_name,
                 description: item.item.product_description,
                 price: item.item.price,
                 quantity: item.item.quantity,
                 unit: item.item.quantity_um,
-                image: item.item.images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
+                image: item.item.images?.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
                 id: item.item.id,
                 merchantId: item.item.merchant_id
             })} {...item} />} numColumns={2} />

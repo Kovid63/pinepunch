@@ -53,7 +53,7 @@ export const FavouriteListRender = ({ item, fetchFavourites, onPress }) => {
                     />
                 </Svg>
             </TouchableOpacity>
-            <Image source={{ uri: images.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0] }} style={{ height: 110, width: '70%', borderRadius: 19, alignSelf: 'center' }} />
+            <Image source={{ uri: images?.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(',')[0] }} style={{ height: 110, width: '70%', borderRadius: 19, alignSelf: 'center' }} />
             <Text style={{ marginHorizontal: '10%', marginTop: 25, fontFamily: 'Poppins', fontSize: 12 }}>{product_name}</Text>
             <View style={{ flexDirection: 'row', marginHorizontal: '5%', justifyContent: 'space-between' }}>
                 <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 16, marginLeft: '5%' }}>{'Rs ' + price + '/' + quantity_um}</Text>

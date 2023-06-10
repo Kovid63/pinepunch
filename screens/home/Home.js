@@ -278,8 +278,8 @@ const Home = ({ navigation }) => {
             <View style={styles.listContainer}>
               <FlatList
                 showsHorizontalScrollIndicator={false}
-                horizontal
                 data={sellerProducts}
+                numColumns={2}
                 renderItem={(item) => <ListRender onPress={() => editDraftHandler(item.item)} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(',')[0]} />} />
             </View>
             {/* <View style={styles.middle}>
@@ -449,7 +449,8 @@ const styles = StyleSheet.create({
 
   listContainer: {
     paddingHorizontal: '4%',
-    marginTop: '5%'
+    marginTop: '5%',
+    marginBottom: 80
   }
 
 });
