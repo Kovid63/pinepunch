@@ -116,7 +116,7 @@ const Home = ({ navigation }) => {
   }
 
   async function fetchProducts(category, count) {
-
+    setRefreshing(true);
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     const response = await fetch(BASE_URL + BUYER_ITEMS + `?catogery_type=${category}&count=${count}`, {
       method: 'GET',
@@ -127,7 +127,7 @@ const Home = ({ navigation }) => {
     })
 
     const data = await response.json();
-
+    setRefreshing(false);
     if (data.error) {
       if (Platform.OS === 'android') {
         //return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
@@ -245,7 +245,7 @@ const Home = ({ navigation }) => {
           <ModeBtn />
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('AccountNotification')} style={styles.bellIconContainer}>
-          <View style={{ width: 10, height: 10, backgroundColor: colors.primary[0], alignSelf: 'flex-end', borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{paddingHorizontal: 2, height: 10, backgroundColor: colors.primary[0], alignSelf: 'flex-end', borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: 7, color: 'white', fontFamily: 'Poppins' }}>{notificationCount}</Text>
           </View>
           <Svg style={styles.bellIcon} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
@@ -262,27 +262,32 @@ const Home = ({ navigation }) => {
       </View>
       {mode === MODE_SELLER ?
         <>
-          <View style={styles.addProductTextContainer}>
-            <Text style={styles.headingText}>{'Add a product to sell'}</Text>
+          <View style={styles.listContainer}>
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              key={mode}
+              refreshControl={<RefreshControl refreshing={refreshing} />}
+              data={sellerProducts}
+              ListHeaderComponent={<>
+                <View style={styles.addProductTextContainer}>
+                  <Text style={styles.headingText}>{'Add a product to sell'}</Text>
+                </View>
+                <View style={styles.addBtnContainer}>
+                  <Button onPress={addProductHandler} text={'Add'} />
+                </View>
+                <View showsVerticalScrollIndicator={false} style={{ marginTop: '5%' }}>
+                  <View style={styles.middle}>
+                    <View>
+                      <Text style={styles.headingText}>{'Items for sale'}</Text>
+                    </View>
+                    <Text onPress={showAllProductHandler} style={styles.viewAllText}>{'View All'}</Text>
+                  </View>
+                </View>
+              </>}
+              numColumns={2}
+              renderItem={(item) => <ListRender onPress={() => editDraftHandler(item.item)} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(',')[0]} />} />
           </View>
-          <View style={styles.addBtnContainer}>
-            <Button onPress={addProductHandler} text={'Add'} />
-          </View>
-          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} />} showsVerticalScrollIndicator={false} style={{ marginTop: '5%' }}>
-            <View style={styles.middle}>
-              <View>
-                <Text style={styles.headingText}>{'Items for sale'}</Text>
-              </View>
-              <Text onPress={showAllProductHandler} style={styles.viewAllText}>{'View All'}</Text>
-            </View>
-            <View style={styles.listContainer}>
-              <FlatList
-                showsHorizontalScrollIndicator={false}
-                data={sellerProducts}
-                numColumns={2}
-                renderItem={(item) => <ListRender onPress={() => editDraftHandler(item.item)} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(',')[0]} />} />
-            </View>
-            {/* <View style={styles.middle}>
+          {/* <View style={styles.middle}>
               <View>
                 <Text style={styles.headingText}>{'Scrap for sale'}</Text>
               </View>
@@ -297,13 +302,13 @@ const Home = ({ navigation }) => {
                   preview: false
                 })} {...item} />} />
             </View> */}
-          </ScrollView>
         </>
         :
         <>
           <View>
             <FlatList
               ref={adRef}
+              key={mode}
               horizontal
               data={homeBuyerAd}
               renderItem={AdRender}
@@ -319,34 +324,38 @@ const Home = ({ navigation }) => {
               ))
             }
           </View>
-          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-            <View style={styles.middle}>
-              <View>
-                <Text style={styles.headingText}>{'Category'}</Text>
-              </View>
-              <Text onPress={categoryPageLaunchHandler} style={styles.viewAllText}>{'View All'}</Text>
-            </View>
-            <View style={{ marginTop: '5%' }}>
-              <FlatList horizontal showsHorizontalScrollIndicator={false} data={category} renderItem={({ item }) => {
-                return (
-                  <TouchableOpacity onPress={() => onSelectCategoryHandler(item)} activeOpacity={0.7} style={[{ height: 50, paddingHorizontal: 15, marginLeft: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }, selectedCategory === item ? { backgroundColor: colors.primary[0] } : { backgroundColor: '#F8F8F8' }]}>
-                    <Text style={[{ fontFamily: 'Poppins' }, selectedCategory === item ? { color: '#FFFFFF' } : { color: '#B3B1B0' }]}>{item}</Text>
-                  </TouchableOpacity>
-                )
-              }} />
-            </View>
-            <View style={styles.middle}>
-              <View>
-                <Text style={styles.headingText}>{'New Arrivals'}</Text>
-              </View>
-              <Text onPress={showAllProductHandler} style={styles.viewAllText}>{'View All'}</Text>
-            </View>
+          <View>
+            
             <View style={styles.listContainer}>
               <FlatList
-                contentContainerStyle={{ paddingBottom: 90 }}
-                showsHorizontalScrollIndicator={false}
-                horizontal
+                contentContainerStyle={{ paddingBottom: 190 }}
+                showsVerticalScrollIndicator={false}
                 data={products}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                key={mode}
+                ListHeaderComponent={<><View style={styles.middle}>
+                <View>
+                  <Text style={styles.headingText}>{'Category'}</Text>
+                </View>
+                <Text onPress={categoryPageLaunchHandler} style={styles.viewAllText}>{'View All'}</Text>
+              </View>
+              <View style={{ marginTop: '5%' }}>
+                <FlatList key={mode} horizontal showsHorizontalScrollIndicator={false} data={category} renderItem={({ item }) => {
+                  return (
+                    <TouchableOpacity onPress={() => onSelectCategoryHandler(item)} activeOpacity={0.7} style={[{ height: 50, paddingHorizontal: 15, marginLeft: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }, selectedCategory === item ? { backgroundColor: colors.primary[0] } : { backgroundColor: '#F8F8F8' }]}>
+                      <Text style={[{ fontFamily: 'Poppins' }, selectedCategory === item ? { color: '#FFFFFF' } : { color: '#B3B1B0' }]}>{item}</Text>
+                    </TouchableOpacity>
+                  )
+                }} />
+              </View>
+              <View style={styles.middle}>
+                <View>
+                  <Text style={styles.headingText}>{'New Arrivals'}</Text>
+                </View>
+                <Text onPress={showAllProductHandler} style={styles.viewAllText}>{'View All'}</Text>
+              </View></>}
+                numColumns={2}
+                keyExtractor={(item, index) => index.toString()}
                 renderItem={(item) => {
                   const isFav = favourites.some(o => o.inventory_item_id == item.item.id);
                   return (
@@ -364,7 +373,7 @@ const Home = ({ navigation }) => {
                   )
                 }} />
             </View>
-          </ScrollView>
+          </View>
         </>
       }
     </View>
@@ -450,7 +459,7 @@ const styles = StyleSheet.create({
   listContainer: {
     paddingHorizontal: '4%',
     marginTop: '5%',
-    marginBottom: 80
+    paddingBottom: 280
   }
 
 });

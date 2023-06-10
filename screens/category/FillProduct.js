@@ -53,6 +53,7 @@ const FillProduct = ({ navigation, route }) => {
     useEffect(() => {
 
         if (isEdit) {
+            console.log(route.params.product);
             setProductName(product_name);
             images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(',')?.forEach((img, index) => {
                 setProductImage(prevArray => {
@@ -462,14 +463,14 @@ const FillProduct = ({ navigation, route }) => {
                                 marginTop: '3%'
                             }}>
                                 <Text style={styles.parameterText}>{'Quantity'}</Text>
-                                <TextInput maxLength={5} style={[styles.parameterInput, { width: '22%', textAlign: 'center', height: 25, borderRadius: 5 }]} onChangeText={(quantity) => { setProductQuantity(quantity) }} />
+                                <TextInput maxLength={5} value={productQuantity.toString()} style={[styles.parameterInput, { width: '22%', textAlign: 'center', height: 25, borderRadius: 5 }]} onChangeText={(quantity) => { setProductQuantity(quantity) }} />
                                 <View style={{ marginLeft: '5%' }}>
                                     <DropDownMenu value={value} setValue={setValue} mapObject={units} />
                                 </View>
                             </View>
                             <View style={styles.parameterContainer}>
                                 <Text style={styles.parameterText}>{'Price'}</Text>
-                                <TextInput style={[styles.parameterInput, { fontSize: 14, borderRadius: 5 }]} onChangeText={(price) => { setProductPrice(price) }} />
+                                <TextInput value={productPrice.toString()} style={[styles.parameterInput, { fontSize: 14, borderRadius: 5 }]} onChangeText={(price) => { setProductPrice(price) }} />
                             </View>
                             {
                                 route.params.description_required ?
@@ -495,7 +496,7 @@ const FillProduct = ({ navigation, route }) => {
                                             textAlignVertical: 'top',
                                             paddingVertical: 2,
                                             borderRadius: 5
-                                        }, { height: 80, width: '62%' }]} onChangeText={(description) => { setProductDescription(description) }} />
+                                        }, { height: 80, width: '62%' }]} value={productDescription} onChangeText={(description) => { setProductDescription(description) }} />
                                     </View>
 
                                     : <></>
