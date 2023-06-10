@@ -4,7 +4,7 @@ import Header from '../../components/Header'
 import { colors } from '../../colors'
 import { notifications } from '../../dummydata/dummydata'
 import { Path, Svg } from 'react-native-svg'
-import { BASE_URL, BUYER_ITEMS } from '@env';
+import { BASE_URL, SELLER_ITEMS } from '@env';
 import * as SecureStore from 'expo-secure-store';
 
 const Inquiry = ({ navigation, route }) => {
@@ -20,7 +20,7 @@ const Inquiry = ({ navigation, route }) => {
     async function getProduct(id) {
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
         try {
-            const response = await fetch(BASE_URL + BUYER_ITEMS + `/${id}` , {
+            const response = await fetch(BASE_URL + SELLER_ITEMS + `/${id}` , {
                 method: 'GET',
                 headers: {
                     "Content-Type": "application/json",

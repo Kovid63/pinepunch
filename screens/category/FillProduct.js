@@ -38,8 +38,8 @@ const FillProduct = ({ navigation, route }) => {
     const [productParameters, setProductParameters] = useState([]);
     const [productImage, setProductImage] = useState([]);
     const [productName, setProductName] = useState('');
-    const [productQuantity, setProductQuantity] = useState(0);
-    const [productPrice, setProductPrice] = useState(0);
+    const [productQuantity, setProductQuantity] = useState('');
+    const [productPrice, setProductPrice] = useState('');
     const [productDescription, setProductDescription] = useState('');
     const [refreshing, setRefreshing] = useState(false);
     const [products, setProducts] = useState([]);
@@ -302,22 +302,50 @@ const FillProduct = ({ navigation, route }) => {
         if (!isEdit) {
             if (!getOptionalParamError()) {
                 if (Platform.OS === 'android') {
-                    return ToastAndroid.show('Fill all required Fields', ToastAndroid.SHORT);
+                    return ToastAndroid.show('Please fill required Parameters', ToastAndroid.SHORT);
                 }
                 else {
-                    return Alert.alert('Fill all required Fields');
+                    return Alert.alert('Please fill required Parameters');
                 }
             }
         }
 
-        if (productName.length === 0 || productQuantity.length === 0 || productPrice.length === 0 || productDescription.length === 0) {
-
+        if (productName.length === 0){
             if (Platform.OS === 'android') {
-                return ToastAndroid.show('Fill all required Fields', ToastAndroid.SHORT);
+                return ToastAndroid.show('Product name is required.', ToastAndroid.SHORT);
             }
             else {
-                return Alert.alert('Fill all required Fields');
+                return Alert.alert('Product name is required.');
             }
+
+        }
+
+        if (productQuantity.toString().length === 0){
+            if (Platform.OS === 'android') {
+                return ToastAndroid.show('Product quantity is required.', ToastAndroid.SHORT);
+            }
+            else {
+                return Alert.alert('Product quantity is required.');
+            }
+
+        }
+        if (productPrice.length === 0){
+            if (Platform.OS === 'android') {
+                return ToastAndroid.show('Product price is required.', ToastAndroid.SHORT);
+            }
+            else {
+                return Alert.alert('Product price is required.');
+            }
+
+        }
+        if (productDescription.length === 0){
+            if (Platform.OS === 'android') {
+                return ToastAndroid.show('Product description is required.', ToastAndroid.SHORT);
+            }
+            else {
+                return Alert.alert('Product is description required.');
+            }
+
         }
 
         if (refreshing) return;
