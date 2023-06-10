@@ -95,7 +95,7 @@ const Profile = ({ navigation }) => {
             textAlign: 'center'
           }}>{merchantData.seller_profile_description}</Text>}
         </View>
-        {mode === MODE_SELLER && <View style={{ borderTopWidth: 2, width: '95%', borderColor: '#000', alignSelf: 'center', borderStyle: 'dotted', marginTop: 10 }} />}
+        {mode === MODE_SELLER && <View style={{ overflow: 'hidden'}}><View style={{ borderTopWidth: 2, width: '95%', borderColor: '#000', alignSelf: 'center', borderStyle: 'dotted', marginTop: 10 }} /></View>}
         <TouchableOpacity onPress={settingsPageHandler} activeOpacity={0.4} style={styles.settingsBtnContainer}>
           <Text style={styles.settingsBtnText}>{'Settings Page'}</Text>
         </TouchableOpacity>
