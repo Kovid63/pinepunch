@@ -144,9 +144,9 @@ const ProductDetail = ({ navigation, route }) => {
         save_as_draft: true,
         images: image,
         custom_parameter: customParameter,
-        parameters: parameters.map((parameter) => {
+        parameters: [{custom_parameter: customParameter}, parameters.map((parameter) => {
           return { name: parameter.name, value: parameter.value, um: parameter.um }
-        })
+        })]
       })
     })
 
@@ -209,10 +209,9 @@ const ProductDetail = ({ navigation, route }) => {
           quantity_um: unit,
           price: price,
           images: imageArray,
-          custom_parameter: customParameter,
-          parameters: parameters.map((parameter) => {
+          parameters: [{custom_parameter: customParameter}, parameters.map((parameter) => {
             return { name: parameter.name, value: parameter.value, um: parameter.um }
-          })
+          })]
         })
       })
   
@@ -247,9 +246,9 @@ const ProductDetail = ({ navigation, route }) => {
           price: price,
           images: imageArray,
           custom_parameter: customParameter,
-          parameters: parameters.map((parameter) => {
+          parameters: [{custom_parameter: customParameter}, parameters.map((parameter) => {
             return { name: parameter.name, value: parameter.value, um: parameter.um }
-          })
+          })]
         })
       })
   

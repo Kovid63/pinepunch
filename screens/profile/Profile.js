@@ -48,7 +48,7 @@ const Profile = ({ navigation }) => {
 
   function onRefresh() {
     setRefreshing(true);
-    setUserData(Math.random(0,9));
+    setUserData(Math.random(0, 9));
     fetchDetails();
     setRefreshing(false);
   }
@@ -95,12 +95,23 @@ const Profile = ({ navigation }) => {
             textAlign: 'center'
           }}>{merchantData.seller_profile_description}</Text>}
         </View>
-        {mode === MODE_SELLER && <View style={{ overflow: 'hidden'}}><View style={{ borderTopWidth: 2, width: '95%', borderColor: '#000', alignSelf: 'center', borderStyle: 'dotted', marginTop: 10 }} /></View>}
+        {mode === MODE_SELLER && <View style={{ overflow: 'hidden' }}>
+          <View
+            style={{
+              borderStyle: 'dotted',
+              borderWidth: 2,
+              borderColor: '#000',
+              margin: -2,
+              marginTop: 10,
+            }}>
+            <View style={{ width: '95%' }} />
+          </View>
+        </View>}
         <TouchableOpacity onPress={settingsPageHandler} activeOpacity={0.4} style={styles.settingsBtnContainer}>
           <Text style={styles.settingsBtnText}>{'Settings Page'}</Text>
         </TouchableOpacity>
         <View style={styles.profileInfoContainer}>
-          <View style={{ backgroundColor: '#F8F8F8'}}>
+          <View style={{ backgroundColor: '#F8F8F8' }}>
             <Text style={styles.infoTitle}>{'Company Name'}</Text>
 
             <Text style={styles.infoText}>{merchantData.name}</Text>
@@ -109,7 +120,7 @@ const Profile = ({ navigation }) => {
           <Text style={styles.infoTitle}>{'Location'}</Text>
 
           <Text style={styles.infoText}>{merchantData.address}</Text>
-          <View style={{ backgroundColor: '#F8F8F8'}}>
+          <View style={{ backgroundColor: '#F8F8F8' }}>
             <View style={{ flexDirection: 'row', marginTop: 20 }}>
               <Text style={styles.infoTitle}>{'Contact No:  '}</Text>
               <Text style={[styles.infoText, { marginTop: 6 }]}>{mode === MODE_SELLER ? merchantData.seller_contact : merchantData.contact}</Text>

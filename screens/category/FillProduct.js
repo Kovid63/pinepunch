@@ -31,7 +31,7 @@ const FillProduct = ({ navigation, route }) => {
 
     const { isEdit } = route.params;
 
-    const { product_name, images, product_description, parameters, quantity_um, quantity, price, id } = route.params.product || {}
+    const { product_name, images, product_description, parameters, quantity_um, quantity, price, id, custom_parameter} = route.params.product || {}
 
 
     const [value, setValue] = useState(units[0]);
@@ -67,6 +67,7 @@ const FillProduct = ({ navigation, route }) => {
             setProductQuantity(quantity)
             setProductPrice(price)
             setValue(quantity_um)
+            setCustomParam(custom_parameter)
         }
 
         mode === MODE_BUYER ? getBuyerProducts(route.params.type, 0) : <></>
@@ -539,7 +540,7 @@ const FillProduct = ({ navigation, route }) => {
                                     color: '#B3B1B0',
                                     fontSize: 12,
                                     borderRadius: 5
-                                }, {}]} placeholder='custom Parameter' onChangeText={(v) => { setCustomParam({ ...customParam, name: v }) }} />
+                                }, {}]} placeholder='custom Parameter' value={customParam.name} onChangeText={(v) => { setCustomParam({ ...customParam, name: v }) }} />
                                 <TextInput style={[{
                                     backgroundColor: 'white',
                                     width: '45%',
@@ -549,7 +550,7 @@ const FillProduct = ({ navigation, route }) => {
                                     color: '#B3B1B0',
                                     fontSize: 12,
                                     borderRadius: 5
-                                }, {}]} placeholder='custom Value' onChangeText={(v) => { setCustomParam({ ...customParam, value: v }) }} />
+                                }, {}]} placeholder='custom Value' value={customParam.value} onChangeText={(v) => { setCustomParam({ ...customParam, value: v }) }} />
                             </View>
                             <TouchableOpacity onPress={submitProductHandler} activeOpacity={0.6} style={{ alignSelf: 'flex-end', height: 60, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 30, backgroundColor: colors.primary[0], marginTop: '10%', borderRadius: 16, marginRight: '5%' }}>
                                 <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF' }}>{'Preview and Submit'}</Text>

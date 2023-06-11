@@ -85,10 +85,10 @@ const Account = ({ navigation }) => {
         if (data.error) {
             setIsLoading(false);
             if (Platform.OS === 'android') {
-                 return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
+                return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
             }
             else {
-                 return Alert.alert(data.error.description);
+                return Alert.alert(data.error.description);
             }
         }
         setIsLoading(false);
@@ -131,7 +131,7 @@ const Account = ({ navigation }) => {
         if (!result.canceled) {
             setRefreshing(true);
             if (mode === MODE_SELLER) {
-                
+
                 if (type === 'Banner') {
                     const bgUrl = await getImageUrl(result.assets[0].uri, 'merchant_seller_background', sessionId);
                     setMerchantData({ ...merchantData, seller_background_image_url: bgUrl });
@@ -209,30 +209,41 @@ const Account = ({ navigation }) => {
                 }
                 <View style={styles.profileNameContainer}>
                     <Text style={styles.profileName}>{merchantData.name}</Text>
-                    {mode === MODE_SELLER && <TextInput value={merchantData.seller_profile_description} onChangeText={(desc) => setMerchantData({ ...merchantData, seller_profile_description: desc })}  style={{
+                    {mode === MODE_SELLER && <TextInput value={merchantData.seller_profile_description} onChangeText={(desc) => setMerchantData({ ...merchantData, seller_profile_description: desc })} style={{
                         fontFamily: 'PoppinsBold',
                         fontSize: 18,
                         textAlign: 'center'
-                    }}/>}
+                    }} />}
                 </View>
-                {mode === MODE_SELLER && <View style={{ overflow: 'hidden'}}><View style={{ borderTopWidth: 2, width: '95%', borderColor: '#000', alignSelf: 'center', borderStyle: 'dotted', marginTop: 10 }} /></View>}
+                {mode === MODE_SELLER && <View style={{ overflow: 'hidden' }}>
+                    <View
+                        style={{
+                            borderStyle: 'dotted',
+                            borderWidth: 2,
+                            borderColor: '#000',
+                            margin: -2,
+                            marginTop: 10,
+                        }}>
+                        <View style={{ width: '95%' }} />
+                    </View>
+                </View>}
                 <View style={styles.profileInfoContainer}>
-                    <View style={{backgroundColor: '#F8F8F8'}}>
-                    <Text style={styles.infoTitle}>{'Company Name'}</Text>
-                    <TextInput value={merchantData.name} style={styles.infoText} onChangeText={(name) => setMerchantData({ ...merchantData, name: name })} />
+                    <View style={{ backgroundColor: '#F8F8F8' }}>
+                        <Text style={styles.infoTitle}>{'Company Name'}</Text>
+                        <TextInput value={merchantData.name} style={styles.infoText} onChangeText={(name) => setMerchantData({ ...merchantData, name: name })} />
                     </View>
                     <Text style={styles.infoTitle}>{'Location'}</Text>
 
                     <TextInput multiline={true} value={merchantData.address} style={styles.infoText} onChangeText={(address) => setMerchantData({ ...merchantData, address: address })} />
-                    <View style={{backgroundColor: '#F8F8F8'}}>
-                    <View style={{flexDirection: 'row', marginTop: 20}}>
-                        <Text style={styles.infoTitle}>{'Contact No:  '}</Text>
-                        <TextInput value={ mode === MODE_SELLER? merchantData.seller_contact : merchantData.contact} style={[styles.infoText, {marginTop: 6}]} onChangeText={(contact) => mode === MODE_SELLER? setMerchantData({ ...merchantData,  seller_contact: contact }) : setMerchantData({ ...merchantData,  contact: contact })} />
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                        <Text style={styles.infoTitle}>{'Email:  '}</Text>
-                        <TextInput value={merchantData.email} style={[styles.infoText, {marginTop: 6}]} onChangeText={(email) => setMerchantData({ ...merchantData, email: email })} />
-                    </View>
+                    <View style={{ backgroundColor: '#F8F8F8' }}>
+                        <View style={{ flexDirection: 'row', marginTop: 20 }}>
+                            <Text style={styles.infoTitle}>{'Contact No:  '}</Text>
+                            <TextInput value={mode === MODE_SELLER ? merchantData.seller_contact : merchantData.contact} style={[styles.infoText, { marginTop: 6 }]} onChangeText={(contact) => mode === MODE_SELLER ? setMerchantData({ ...merchantData, seller_contact: contact }) : setMerchantData({ ...merchantData, contact: contact })} />
+                        </View>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Text style={styles.infoTitle}>{'Email:  '}</Text>
+                            <TextInput value={merchantData.email} style={[styles.infoText, { marginTop: 6 }]} onChangeText={(email) => setMerchantData({ ...merchantData, email: email })} />
+                        </View>
                     </View>
                 </View>
                 <View style={styles.submitBtnContainer}>
