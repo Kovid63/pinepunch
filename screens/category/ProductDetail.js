@@ -127,7 +127,6 @@ const ProductDetail = ({ navigation, route }) => {
   async function productDraftHandler() {
     setIsLoading(true)
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
@@ -144,9 +143,9 @@ const ProductDetail = ({ navigation, route }) => {
         save_as_draft: true,
         images: image,
         custom_parameter: customParameter,
-        parameters: [{custom_parameter: customParameter}, parameters.map((parameter) => {
+        parameters: parameters.map((parameter) => {
           return { name: parameter.name, value: parameter.value, um: parameter.um }
-        })]
+        }).push({custom_parameter: customParameter})
       })
     })
 
@@ -209,9 +208,9 @@ const ProductDetail = ({ navigation, route }) => {
           quantity_um: unit,
           price: price,
           images: imageArray,
-          parameters: [{custom_parameter: customParameter}, parameters.map((parameter) => {
+          parameters: parameters.map((parameter) => {
             return { name: parameter.name, value: parameter.value, um: parameter.um }
-          })]
+          }).push({custom_parameter: customParameter})
         })
       })
   
@@ -246,9 +245,9 @@ const ProductDetail = ({ navigation, route }) => {
           price: price,
           images: imageArray,
           custom_parameter: customParameter,
-          parameters: [{custom_parameter: customParameter}, parameters.map((parameter) => {
+          parameters: parameters.map((parameter) => {
             return { name: parameter.name, value: parameter.value, um: parameter.um }
-          })]
+          }).push({custom_parameter: customParameter})
         })
       })
   
