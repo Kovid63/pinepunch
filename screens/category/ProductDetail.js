@@ -130,7 +130,7 @@ const ProductDetail = ({ navigation, route }) => {
     let paramArr = await parameters.map((parameter) => {
       return { name: parameter.name, value: parameter.value, um: parameter.um }
     });
-    customParameter? paramArr.push(customParameter): {}
+    customParameter.name.length && customParameter.value.length === 0? paramArr.push(customParameter): {}
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
@@ -198,7 +198,7 @@ const ProductDetail = ({ navigation, route }) => {
       let paramArr = await parameters.map((parameter) => {
         return { name: parameter.name, value: parameter.value, um: parameter.um }
       });
-      customParameter? paramArr.push(customParameter): {}
+      customParameter.name.length && customParameter.value.length === 0? paramArr.push(customParameter): {}
       console.log(paramArr);
       const response = await fetch(BASE_URL + SELLER_ITEMS + '/' + id, {
         method: 'PUT',
@@ -237,7 +237,7 @@ const ProductDetail = ({ navigation, route }) => {
       let paramArr = await parameters.map((parameter) => {
         return { name: parameter.name, value: parameter.value, um: parameter.um }
       });
-      customParameter? paramArr.push(customParameter): {}
+      customParameter.name.length && customParameter.value.length === 0? paramArr.push(customParameter): {}
       console.log(paramArr);
       const response = await fetch(BASE_URL + SELLER_ITEMS, {
         method: 'POST',
