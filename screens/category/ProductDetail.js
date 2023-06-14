@@ -127,6 +127,10 @@ const ProductDetail = ({ navigation, route }) => {
   async function productDraftHandler() {
     setIsLoading(true)
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
+    let paramArr = await parameters.map((parameter) => {
+      return { name: parameter.name, value: parameter.value, um: parameter.um }
+    });
+    customParameter? paramArr.push(customParameter): {}
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
@@ -142,10 +146,7 @@ const ProductDetail = ({ navigation, route }) => {
         price: price,
         save_as_draft: true,
         images: image,
-        custom_parameter: customParameter,
-        parameters: parameters.map((parameter) => {
-          return { name: parameter.name, value: parameter.value, um: parameter.um }
-        }).push({custom_parameter: customParameter})
+        parameters: paramArr
       })
     })
 
@@ -194,6 +195,11 @@ const ProductDetail = ({ navigation, route }) => {
     }
 
     if(isEdit && !isDraft){
+      let paramArr = await parameters.map((parameter) => {
+        return { name: parameter.name, value: parameter.value, um: parameter.um }
+      });
+      customParameter? paramArr.push(customParameter): {}
+      console.log(paramArr);
       const response = await fetch(BASE_URL + SELLER_ITEMS + '/' + id, {
         method: 'PUT',
         headers: {
@@ -208,9 +214,7 @@ const ProductDetail = ({ navigation, route }) => {
           quantity_um: unit,
           price: price,
           images: imageArray,
-          parameters: parameters.map((parameter) => {
-            return { name: parameter.name, value: parameter.value, um: parameter.um }
-          }).push({custom_parameter: customParameter})
+          parameters: paramArr
         })
       })
   
@@ -230,6 +234,11 @@ const ProductDetail = ({ navigation, route }) => {
       navigation.navigate('HomeStack');
 
     }else{
+      let paramArr = await parameters.map((parameter) => {
+        return { name: parameter.name, value: parameter.value, um: parameter.um }
+      });
+      customParameter? paramArr.push(customParameter): {}
+      console.log(paramArr);
       const response = await fetch(BASE_URL + SELLER_ITEMS, {
         method: 'POST',
         headers: {
@@ -245,9 +254,7 @@ const ProductDetail = ({ navigation, route }) => {
           price: price,
           images: imageArray,
           custom_parameter: customParameter,
-          parameters: parameters.map((parameter) => {
-            return { name: parameter.name, value: parameter.value, um: parameter.um }
-          }).push({custom_parameter: customParameter})
+          parameters: paramArr
         })
       })
   
