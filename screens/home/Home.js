@@ -245,7 +245,7 @@ const Home = ({ navigation }) => {
           <ModeBtn />
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('AccountNotification')} style={styles.bellIconContainer}>
-          <View style={{paddingHorizontal: 2, height: 10, backgroundColor: colors.primary[0], alignSelf: 'flex-end', borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ paddingHorizontal: 2, height: 10, backgroundColor: colors.primary[0], alignSelf: 'flex-end', borderRadius: 5, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontSize: 7, color: 'white', fontFamily: 'Poppins' }}>{notificationCount}</Text>
           </View>
           <Svg style={styles.bellIcon} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
@@ -284,6 +284,7 @@ const Home = ({ navigation }) => {
                   </View>
                 </View>
               </>}
+              columnWrapperStyle={{justifyContent: 'center'}}
               numColumns={2}
               renderItem={(item) => <ListRender onPress={() => editDraftHandler(item.item)} {...item} onPressEdit={() => editDraftHandler(item.item)} imageUri={item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(',')[0]} />} />
           </View>
@@ -305,27 +306,9 @@ const Home = ({ navigation }) => {
         </>
         :
         <>
+
           <View>
-            <FlatList
-              ref={adRef}
-              key={mode}
-              horizontal
-              data={homeBuyerAd}
-              renderItem={AdRender}
-              pagingEnabled
-              showsHorizontalScrollIndicator={false}
-              scrollEventThrottle={16}
-              onMomentumScrollEnd={onMomentumScrollEndHandler} />
-          </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: '-4%', marginBottom: '5%' }}>
-            {
-              homeBuyerAd.map((banner, index) => (
-                <View key={index} style={[{ height: 10, width: 10, borderRadius: 5, marginHorizontal: 5 }, index === adIndex ? { backgroundColor: 'white' } : { backgroundColor: '#D9D9D9' }]} />
-              ))
-            }
-          </View>
-          <View>
-            
+
             <View style={styles.listContainer}>
               <FlatList
                 contentContainerStyle={{ paddingBottom: 190 }}
@@ -333,28 +316,47 @@ const Home = ({ navigation }) => {
                 data={products}
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 key={mode}
-                ListHeaderComponent={<><View style={styles.middle}>
-                <View>
-                  <Text style={styles.headingText}>{'Category'}</Text>
+                ListHeaderComponent={<><View>
+                  <FlatList
+                    ref={adRef}
+                    key={mode}
+                    horizontal
+                    data={homeBuyerAd}
+                    renderItem={AdRender}
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    scrollEventThrottle={16}
+                    onMomentumScrollEnd={onMomentumScrollEndHandler} />
                 </View>
-                <Text onPress={categoryPageLaunchHandler} style={styles.viewAllText}>{'View All'}</Text>
-              </View>
-              <View style={{ marginTop: '5%' }}>
-                <FlatList key={mode} horizontal showsHorizontalScrollIndicator={false} data={category} renderItem={({ item }) => {
-                  return (
-                    <TouchableOpacity onPress={() => onSelectCategoryHandler(item)} activeOpacity={0.7} style={[{ height: 50, paddingHorizontal: 15, marginLeft: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }, selectedCategory === item ? { backgroundColor: colors.primary[0] } : { backgroundColor: '#F8F8F8' }]}>
-                      <Text style={[{ fontFamily: 'Poppins' }, selectedCategory === item ? { color: '#FFFFFF' } : { color: '#B3B1B0' }]}>{item}</Text>
-                    </TouchableOpacity>
-                  )
-                }} />
-              </View>
-              <View style={styles.middle}>
-                <View>
-                  <Text style={styles.headingText}>{'New Arrivals'}</Text>
-                </View>
-                <Text onPress={showAllProductHandler} style={styles.viewAllText}>{'View All'}</Text>
-              </View></>}
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: '-4%', marginBottom: '5%' }}>
+                    {
+                      homeBuyerAd.map((banner, index) => (
+                        <View key={index} style={[{ height: 10, width: 10, borderRadius: 5, marginHorizontal: 5 }, index === adIndex ? { backgroundColor: 'white' } : { backgroundColor: '#D9D9D9' }]} />
+                      ))
+                    }
+                  </View><View style={styles.middle}>
+                    <View>
+                      <Text style={styles.headingText}>{'Category'}</Text>
+                    </View>
+                    <Text onPress={categoryPageLaunchHandler} style={styles.viewAllText}>{'View All'}</Text>
+                  </View>
+                  <View style={{ marginTop: '5%' }}>
+                    <FlatList key={mode} horizontal showsHorizontalScrollIndicator={false} data={category} renderItem={({ item }) => {
+                      return (
+                        <TouchableOpacity onPress={() => onSelectCategoryHandler(item)} activeOpacity={0.7} style={[{ height: 50, paddingHorizontal: 15, marginLeft: 30, justifyContent: 'center', alignItems: 'center', borderRadius: 16 }, selectedCategory === item ? { backgroundColor: colors.primary[0] } : { backgroundColor: '#F8F8F8' }]}>
+                          <Text style={[{ fontFamily: 'Poppins' }, selectedCategory === item ? { color: '#FFFFFF' } : { color: '#B3B1B0' }]}>{item}</Text>
+                        </TouchableOpacity>
+                      )
+                    }} />
+                  </View>
+                  <View style={styles.middle}>
+                    <View>
+                      <Text style={styles.headingText}>{'New Arrivals'}</Text>
+                    </View>
+                    <Text onPress={showAllProductHandler} style={styles.viewAllText}>{'View All'}</Text>
+                  </View></>}
                 numColumns={2}
+                columnWrapperStyle={{justifyContent: 'center'}}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={(item) => {
                   const isFav = favourites.some(o => o.inventory_item_id == item.item.id);
@@ -457,7 +459,6 @@ const styles = StyleSheet.create({
   },
 
   listContainer: {
-    paddingHorizontal: '4%',
     marginTop: '5%',
     paddingBottom: 280
   }

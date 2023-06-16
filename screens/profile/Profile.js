@@ -14,7 +14,7 @@ import { UserContext } from '../../contexts/UserContext';
 const Profile = ({ navigation }) => {
 
   const { mode } = useContext(ModeContext);
-  const { setUserData } = useContext(UserContext);
+  const { setUserData, initialScreen } = useContext(UserContext);
 
   const [merchantData, setMerchantData] = useState({ ...merchantData, seller_background_image_url: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80', buyer_background_image_url: 'https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80' });
   const [refreshing, setRefreshing] = useState(false);
@@ -69,21 +69,24 @@ const Profile = ({ navigation }) => {
         {
           mode === MODE_SELLER ?
             <View>
-              <View style={styles.bannerContainer}>
+              <View style={[styles.bannerContainer, {justifyContent: 'center', alignItems: 'center'}]}>
+              
                 <Image style={[styles.bannerImage, { backgroundColor: '#FDC89F' }]} source={{ uri: merchantData.seller_background_image_url }} />
                 {/* <View style={styles.bannerCover} /> */}
+                { initialScreen === 'ProfileStack' && <Text style={{position: 'absolute', textAlign: 'center', fontFamily: 'PoppinsBold', fontSize: 20, width: '95%'}}>{'Your Identity is under review. It would take 2 - 3 working days.'}</Text>}
               </View>
               <View style={styles.profileImageContainer}>
-                <Image style={{ height: '100%', width: '100%', borderRadius: 60, backgroundColor: colors.primary[0] }} source={{ uri: merchantData.seller_profile_image_url }} />
+                <Image style={{ height: '100%', width: '100%', borderRadius: 60 }} source={{ uri: merchantData.seller_profile_image_url }} />
               </View>
             </View>
             :
             <View>
-              <View style={styles.bannerContainer}>
+              <View style={[styles.bannerContainer, {justifyContent: 'center', alignItems: 'center'}]}>
                 <Image style={[styles.bannerImage, { backgroundColor: colors.black[5] }]} source={{ uri: merchantData.buyer_background_image_url }} />
+                { initialScreen === 'ProfileStack' && <Text style={{position: 'absolute', textAlign: 'center', fontFamily: 'PoppinsBold', fontSize: 20, width: '95%'}}>{'Your Identity is under review. It would take 2 - 3 working days.'}</Text>}
               </View>
               <View style={styles.profileImageContainer}>
-                <Image style={{ height: '100%', width: '100%', borderRadius: 60, backgroundColor: 'silver' }} source={{ uri: merchantData.buyer_profile_image_url }} />
+                <Image style={{ height: '100%', width: '100%', borderRadius: 60}} source={{ uri: merchantData.buyer_profile_image_url }} />
               </View>
             </View>
         }

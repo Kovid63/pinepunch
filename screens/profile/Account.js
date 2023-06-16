@@ -68,14 +68,14 @@ const Account = ({ navigation }) => {
                 name: merchantData.name,
                 seller_background_image_url: merchantData.seller_background_image_url,
                 seller_profile_image_url: merchantData.seller_profile_image_url,
-                address: merchantData.address.length === 0 ? "N/A" : merchantData.address,
+                address: merchantData.address?.length === 0 ? "N/A" : merchantData.address,
                 seller_contact: merchantData.seller_contact,
                 seller_profile_description: merchantData.seller_profile_description
             }) : JSON.stringify({
                 name: merchantData.name,
                 buyer_background_image_url: merchantData.buyer_background_image_url,
                 buyer_profile_image_url: merchantData.buyer_profile_image_url,
-                address: merchantData.address.length === 0 ? "N/A" : merchantData.address,
+                address: merchantData.address?.length === 0 ? "N/A" : merchantData.address,
                 contact: merchantData.contact
             })
         });

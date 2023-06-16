@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, BackHandler } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native'
@@ -21,7 +21,7 @@ const VerifyEmail = ({ navigation, route }) => {
 
     //const [isEmailverified, setIsEmailverified] = useState(false);
     const [otpValue, setOtpValue] = useState('');
-    const { setIsUserLoggedIn, userData, setUserData } = useContext(UserContext);
+    const { setIsUserLoggedIn, userData, setUserData, initialScreen } = useContext(UserContext);
     const { isLoading, setIsLoading } = useContext(LoadingContext);
 
     const isButtonActive = otpValue.length === 4;
@@ -31,6 +31,18 @@ const VerifyEmail = ({ navigation, route }) => {
     function inputPressHandler() {
         inputRef.current.isFocused() ? inputRef.current.blur() : inputRef.current.focus();
     }
+
+    useEffect(() => {
+
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            navigation.popToTop();
+            navigation.navigate('LoginScreen');
+            return true;
+        });
+
+        return () => backHandler.remove();
+
+    }, []);
 
     async function verifyEmailHandler() {
         setIsLoading(true);
@@ -120,7 +132,8 @@ const VerifyEmail = ({ navigation, route }) => {
     }
 
     function backPressHandler() {
-        navigation.goBack();
+        navigation.popToTop();
+        navigation.navigate('LoginScreen');
     }
 
 
@@ -171,7 +184,7 @@ const VerifyEmail = ({ navigation, route }) => {
                 </View>
                 <TextInput maxLength={4} keyboardType={'number-pad'} value={otpValue.toString()} onChangeText={(value) => setOtpValue(value)} ref={inputRef} style={{ opacity: 0 }} />
                 <View style={styles.submitBtnContainer}>
-                    <SubmitBtn isLoading={isLoading} onPress={userData==='otpReq'? verifyEmailHandlerReq : verifyEmailHandler} active={isButtonActive} fill={isButtonActive} text={'Continue'} />
+                    <SubmitBtn isLoading={isLoading} onPress={userData === 'otpReq' ? verifyEmailHandlerReq : verifyEmailHandler} active={isButtonActive} fill={isButtonActive} text={'Continue'} />
                 </View>
             </View>
         </Pressable>

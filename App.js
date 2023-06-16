@@ -53,6 +53,7 @@ export default function App() {
   async function init() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     console.log(sessionId);
+    setMode(MODE_SELLER);
     if (sessionId) {
       try {
         const response = await fetch(BASE_URL + GET_DETAILS, {
