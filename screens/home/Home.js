@@ -257,9 +257,6 @@ const Home = ({ navigation }) => {
           </Svg>
         </TouchableOpacity>
       </View>
-      <View style={styles.searchBarContainer}>
-        <SearchBar editable={false} onPress={searchBarHandler} />
-      </View>
       {mode === MODE_SELLER ?
         <>
           <View style={styles.listContainer}>
@@ -460,7 +457,7 @@ const styles = StyleSheet.create({
 
   listContainer: {
     marginTop: '5%',
-    paddingBottom: 280
+    paddingBottom: 180
   }
 
 });
