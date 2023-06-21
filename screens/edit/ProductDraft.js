@@ -10,11 +10,13 @@ import { TouchableOpacity } from 'react-native';
 import { Path, Svg } from 'react-native-svg';
 import { RefreshControl } from 'react-native';
 import { deleteProduct } from '../../utils/deleteProduct';
+import { Pressable } from 'react-native';
 
-const ProductDraft = ({navigation}) => {
+const ProductDraft = ({ navigation }) => {
 
   const [draftProducts, setDraftProducts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [modalOpen, setModalOpen] = useState({open: false, draftId: null});
 
   async function fetchDrafts() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
@@ -36,61 +38,54 @@ const ProductDraft = ({navigation}) => {
         return Alert.alert(data.error.description);
       }
     }
-    
+
     setDraftProducts(data.items);
 
   }
 
-  async function deleteProductHandler(itemId){
+  async function deleteProductHandler(itemId) {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     deleteProduct(itemId, sessionId);
     onRefresh();
   }
 
-  function editDraftHandler(product){
+  function editDraftHandler(product) {
     try {
-    console.log(product);
-    navigation.navigate('FillProduct', {product, isEdit: true, description_required: true, isDraft: true });
+      console.log(product);
+      navigation.navigate('FillProduct', { product, isEdit: true, description_required: true, isDraft: true });
     } catch (error) {
       console.log(error.message);
     }
-    
+
   }
 
-  function onRefresh(){
+  function onRefresh() {
     setRefreshing(true);
     fetchDrafts();
     setRefreshing(false);
   }
 
-useEffect(() => {
-  const focusListener = navigation.addListener('focus', () => {
-    fetchDrafts();
-  })
-  return () => focusListener;
-}, [navigation])
+  useEffect(() => {
+    const focusListener = navigation.addListener('focus', () => {
+      fetchDrafts();
+    })
+    return () => focusListener;
+  }, [navigation])
 
   return (
-    <View style={styles.container}>
-      <View style={styles.heading}>
-        <Text style={styles.headingText}>{'Drafts of item to sell'}</Text>
-      </View>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>} showsVerticalScrollIndicator={false} contentContainerStyle={styles.categoryListContainer}>
-        {
-          draftProducts.map((draft, index) => (
-            <View key={index} style={styles.categoryContainer}>
-              <Text style={styles.categoryText}>{draft.catogery_type}</Text>
-              <View style={{ flexDirection: 'row', width: '25%', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                <TouchableOpacity onPress={() => editDraftHandler(draft)}>
-                  <Svg style={{ height: 25, marginTop: 3, width: 25 }} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
-                    <Path
-                      d="M16.665 2.01A5.323 5.323 0 0 1 20.591 3.4a5.381 5.381 0 0 1 1.399 3.936v9.33a5.373 5.373 0 0 1-1.389 3.936 5.346 5.346 0 0 1-3.936 1.389h-9.33A5.332 5.332 0 0 1 3.399 20.6a5.332 5.332 0 0 1-1.389-3.936v-9.33A5.332 5.332 0 0 1 3.4 3.399 5.332 5.332 0 0 1 7.335 2.01Zm-.26 4.566a1.58 1.58 0 0 0-2.237 0l-.67.679c-.1.1-.1.27 0 .37l.055.054.246.244.497.496.605.604c.126.126.21.211.216.22.11.12.18.28.18.46 0 .359-.29.659-.66.659-.17 0-.33-.07-.44-.18L12.53 8.524a.217.217 0 0 0-.3 0l-4.765 4.765a1.8 1.8 0 0 0-.53 1.238l-.06 2.368c0 .13.04.25.13.34.09.09.21.14.34.14h2.347c.48 0 .94-.19 1.29-.53l6.722-6.743c.61-.62.61-1.618 0-2.228Z"
-                      fill="#130F26"
-                      fillRule="nonzero"
-                    />
-                  </Svg>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => deleteProductHandler(draft.id)}>
+    <>
+      <View style={styles.container}>
+        <View style={styles.heading}>
+          <Text style={styles.headingText}>{'Drafts of item to sell'}</Text>
+        </View>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} showsVerticalScrollIndicator={false} contentContainerStyle={styles.categoryListContainer}>
+          {
+            draftProducts.map((draft, index) => (
+              <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginTop: '5%' }}>
+                <View style={styles.categoryContainer}>
+                  <Text style={styles.categoryText}>{draft.catogery_type}</Text>
+                </View>
+                <TouchableOpacity style={{ marginHorizontal: '8%' }} onPress={() => setModalOpen({open: true, draftId: draft.id})}>
                   <Svg style={{ height: 25, marginTop: 3, width: 25 }} viewBox="0 0 24 25" xmlns="http://www.w3.org/2000/svg">
                     <Path
                       fill="#000"
@@ -100,11 +95,21 @@ useEffect(() => {
                   </Svg>
                 </TouchableOpacity>
               </View>
-            </View>
-          ))
-        }
-      </ScrollView>
-    </View>
+            ))
+          }
+        </ScrollView>
+      </View>
+      {modalOpen.open && <Pressable onPress={() => {setModalOpen({open: false, draftId: null})}} style={{ backgroundColor: 'rgba(0, 0, 0, 0.3)', position: 'absolute', height: '100%', width: '100%', justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ backgroundColor: 'white', height: 200, width: 225, borderRadius: 25, justifyContent: 'space-evenly', alignItems: 'center' }}>
+          <Text style={{ fontFamily: 'PoppinsBold', textAlign: 'center', width: '70%' }}>
+            {'Are you sure you want to delete?'}
+          </Text>
+          <TouchableOpacity onPress={() => [deleteProductHandler(modalOpen.draftId), setModalOpen({open: false, draftId: null})]} style={{ paddingVertical: 10, paddingHorizontal: '8%', backgroundColor: colors.primary[0], borderRadius: 16, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF', fontSize: 13 }}>{'Delete'}</Text>
+          </TouchableOpacity>
+        </View>
+      </Pressable>}
+    </>
   )
 }
 
@@ -133,12 +138,12 @@ const styles = StyleSheet.create({
   categoryContainer: {
     height: 50,
     backgroundColor: '#F8F8F8',
-    marginTop: 20,
     borderRadius: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: '5%'
+    paddingHorizontal: '5%',
+    width: '75%'
   },
 
   categoryText: {
