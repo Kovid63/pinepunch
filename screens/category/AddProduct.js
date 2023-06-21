@@ -62,7 +62,7 @@ useEffect(() => {
           }
         </ScrollView></> :
         <>
-          <View style={{
+          {/* <View style={{
             backgroundColor: '#FFFFFF', alignItems: 'center', marginTop: '20%', height: 50, width: '70%', marginHorizontal: '8%', shadowColor: "#B3B1B0",
             shadowOffset: {
               width: 0,
@@ -93,10 +93,12 @@ useEffect(() => {
                 <Path d="M16.206 17.266a8.466 8.466 0 0 1-5.456 1.984c-4.691 0-8.5-3.809-8.5-8.5s3.809-8.5 8.5-8.5 8.5 3.809 8.5 8.5a8.466 8.466 0 0 1-1.984 5.456l3.264 3.264a.749.749 0 1 1-1.06 1.06l-3.264-3.264ZM10.75 3.75c3.863 0 7 3.137 7 7s-3.137 7-7 7-7-3.137-7-7 3.137-7 7-7Z" />
               </Svg>
             </TouchableOpacity>
+          </View> */}
+          <View style={[styles.header, {justifyContent: 'center', flexDirection: 'column'}]}>
+            <Text style={[styles.headingText]}>{'Category'}</Text>
+            <Text style={{fontFamily: 'Poppins', color: '#B3B1B0'}}>{'Select the category of item you want'}</Text>
           </View>
-          <View style={styles.header}>
-            <Text style={styles.headingText}>{'Category'}</Text>
-          </View>
+          
           <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.categoryListContainer}>
             {
               category.map((category, index) => (
@@ -134,7 +136,8 @@ const styles = StyleSheet.create({
 
   categoryListContainer: {
     marginHorizontal: '8%',
-    paddingBottom: 90
+    paddingBottom: 90,
+    marginTop: 10
   },
 
   categoryContainer: {
