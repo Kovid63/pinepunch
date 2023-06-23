@@ -24,6 +24,7 @@ import * as SecureStore from 'expo-secure-store';
 import { RefreshControl } from 'react-native'
 import { BASE_URL, BUYER_ITEMS } from '@env';
 import { getAppSettings } from '../../utils/getAppSettings'
+import * as Progress from 'react-native-progress';
 
 const FillProduct = ({ navigation, route }) => {
 
@@ -36,7 +37,7 @@ const FillProduct = ({ navigation, route }) => {
 
     const [value, setValue] = useState(units[0]);
     const [productParameters, setProductParameters] = useState([]);
-    const [productImage, setProductImage] = useState([{}, {}, {}, {}]);
+    const [productImage, setProductImage] = useState(['']);
     const [productName, setProductName] = useState('');
     const [productQuantity, setProductQuantity] = useState('');
     const [productPrice, setProductPrice] = useState('');
@@ -93,9 +94,8 @@ const FillProduct = ({ navigation, route }) => {
 
         query.length === 0 ? getBuyerProducts(route.params.type, 0) : setProducts(obj);
 
-    }, [query]);
+    }, [query])
 
-    console.log(progress);
     // const HeaderComponentFlatList = ({ }) => {
     //     return (
     //         <>
@@ -184,19 +184,17 @@ const FillProduct = ({ navigation, route }) => {
         navigation.goBack();
     }
 
-    console.log(productImage);
-
-    async function imagePickHandler(type, index) {
+    async function imagePickHandler(type) {
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
 
-        // if (productImage.length === 4) {
-        //     if (Platform.OS === 'android') {
-        //         return ToastAndroid.show('Images limit reached', ToastAndroid.SHORT);
-        //     }
-        //     else {
-        //         return Alert.alert('Images limit reached');
-        //     }
-        // }
+        if (productImage.length === 4) {
+            if (Platform.OS === 'android') {
+                return ToastAndroid.show('Images limit reached', ToastAndroid.SHORT);
+            }
+            else {
+                return Alert.alert('Images limit reached');
+            }
+        }
 
         const cameraPermission = await ImagePicker.getCameraPermissionsAsync();
         const mediaPermission = await ImagePicker.getMediaLibraryPermissionsAsync();
@@ -235,11 +233,13 @@ const FillProduct = ({ navigation, route }) => {
             if (!result.canceled) {
                 if (result.assets.length == 1) {
                     setRefreshing(true);
-                    console.log(index);
-                    const url = await getImageUrl(result.assets[0].uri, 'item', sessionId, setProgress)
+                    setProductImage([...productImage, '']);
+                    const prevIndex = productImage.length - 1;
+                    const url = await getImageUrl(result.assets[0].uri, 'item', sessionId, setProgress);
+                    console.log(url);
                     setProductImage(prevArray => {
                         const newArray = [...prevArray];
-                        newArray[index] = { ...newArray[index], uri: url };
+                        newArray[prevIndex] = { url };
                         return newArray
                     });
                     setRefreshing(false);
@@ -248,13 +248,20 @@ const FillProduct = ({ navigation, route }) => {
                     // return newArray;);
                 } else {
                     if (result.assets.length >= 5) {
-
                         setRefreshing(true);
                         for (const img of result.assets.slice(0, productImage.length === 0 ? 4 : Math.abs(4 - (productImage.length - 1)))) {
-                            const url = await getImageUrl(img.uri, 'item', sessionId)
                             setProductImage(prevArray => {
                                 const newArray = [...prevArray];
-                                newArray.push(url);
+                                newArray.push('');
+                                return newArray;
+                            });
+                            const prevIndex = productImage.length - 1;
+                            const url = await getImageUrl(img.uri, 'item', sessionId, setProgress);
+                            console.log(url);
+                            setProductImage(prevArray => {
+                                const newArray = [...prevArray];
+                                //newArray.push(url);
+                                newArray[prevIndex] = { url };
                                 return newArray;
                             });
                         }
@@ -262,10 +269,18 @@ const FillProduct = ({ navigation, route }) => {
                     } else {
                         setRefreshing(true);
                         for (const img of result.assets.slice(0, productImage.length === 0 ? 4 : Math.abs(4 - (productImage.length)))) {
-                            const url = await getImageUrl(img.uri, 'item', sessionId)
                             setProductImage(prevArray => {
                                 const newArray = [...prevArray];
-                                newArray.push(url);
+                                newArray.push('');
+                                return newArray;
+                            });
+                            const prevIndex = productImage.length - 1;
+                            const url = await getImageUrl(img.uri, 'item', sessionId, setProgress);
+                            console.log(url);
+                            setProductImage(prevArray => {
+                                const newArray = [...prevArray];
+                                //newArray.push(url);
+                                newArray[prevIndex] = { url };
                                 return newArray;
                             });
                         }
@@ -280,7 +295,7 @@ const FillProduct = ({ navigation, route }) => {
         if (type === 'Camera') {
             const result = await ImagePicker.launchCameraAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: true,
+                allowsEditing: false,
                 aspect: [16, 9],
                 quality: 1,
                 base64: true
@@ -289,8 +304,14 @@ const FillProduct = ({ navigation, route }) => {
             if (!result.canceled) {
                 if (result.assets.length == 1) {
                     setRefreshing(true);
+                    setProductImage([...productImage, '']);
+                    const prevIndex = productImage.length - 1;
                     const url = await getImageUrl(result.assets[0].uri, 'item', sessionId)
-                    setProductImage([...productImage, url]);
+                    setProductImage(prevArray => {
+                        const newArray = [...prevArray];
+                        newArray[prevIndex] = { url };
+                        return newArray
+                    });
                     setRefreshing(false);
                 }
             }
@@ -464,16 +485,16 @@ const FillProduct = ({ navigation, route }) => {
                                 <Text style={[styles.parameterText, { marginHorizontal: '2%', marginTop: 5 }]}>{'Product images'}</Text>
                                 <View style={{ height: '65%', width: '100%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                                     {productImage.map((image, index) => (
-
                                         <View key={index} style={{ height: 75, width: 75, marginTop: '10%' }}>
-                                            <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={{ uri: image.uri }} />
+                                            <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={image?.length === 0 ? null : { uri: image }} />
+                                            <Progress.Bar progress={0.4} size={50}/>
                                             <TouchableOpacity activeOpacity={0.5} onPress={() => {
                                                 const newArray = [...productImage];
                                                 newArray.splice(index, 1);
                                                 setProductImage(newArray);
                                             }} style={{ height: 15, width: 15, backgroundColor: '#FFFFFF', borderRadius: 8, position: 'absolute', right: 0, alignItems: 'center', justifyContent: 'center' }}>
                                                 <Svg style={{ height: 8, width: 8 }} viewBox="0 0 612.043 612.043">
-                                                    <Path fill={colors.primary[0]} d="M397.503 306.011 593.08 110.434c25.27-25.269 25.27-66.213 0-91.482-25.269-25.269-66.213-25.269-91.481 0L306.022 214.551 110.445 18.974c-25.269-25.269-66.213-25.269-91.482 0s-25.269 66.213 0 91.482L214.54 306.033 18.963 501.61c-25.269 25.269-25.269 66.213 0 91.481 25.269 25.27 66.213 25.27 91.482 0l195.577-195.576 195.577 195.576c25.269 25.27 66.213 25.27 91.481 0 25.27-25.269 25.27-66.213 0-91.481L397.503 306.011z" />
+                                                    <Path fill={'#000000'} d="M397.503 306.011 593.08 110.434c25.27-25.269 25.27-66.213 0-91.482-25.269-25.269-66.213-25.269-91.481 0L306.022 214.551 110.445 18.974c-25.269-25.269-66.213-25.269-91.482 0s-25.269 66.213 0 91.482L214.54 306.033 18.963 501.61c-25.269 25.269-25.269 66.213 0 91.481 25.269 25.27 66.213 25.27 91.482 0l195.577-195.576 195.577 195.576c25.269 25.27 66.213 25.27 91.481 0 25.27-25.269 25.27-66.213 0-91.481L397.503 306.011z" />
                                                 </Svg>
                                             </TouchableOpacity>
                                         </View>
@@ -482,9 +503,9 @@ const FillProduct = ({ navigation, route }) => {
                                 <View style={{ flexDirection: 'row', alignSelf: 'flex-end', justifyContent: 'center', marginRight: '1%', marginTop: '1%' }}>
                                     {
                                         productImagesIcon.map((icon, index) => {
-                                            const imageNextEmptySlot = productImage.findIndex((emptySlot) => emptySlot.uri === '' || emptySlot.uri === undefined);
+                                            //const imageNextEmptySlot = productImage.findIndex((emptySlot) => emptySlot.uri === '');
                                             return (
-                                                <TouchableOpacity disabled={refreshing} onPress={() => imagePickHandler(icon.type, imageNextEmptySlot)} key={index} style={{ height: 25, width: 25, marginHorizontal: '1%' }}>
+                                                <TouchableOpacity disabled={refreshing} onPress={() => imagePickHandler(icon.type)} key={index} style={{ height: 25, width: 25, marginHorizontal: '1%' }}>
                                                     {icon.icon}
                                                 </TouchableOpacity>
                                             )
@@ -597,14 +618,15 @@ const FillProduct = ({ navigation, route }) => {
                                             <View style={{ height: '65%', width: '100%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                                                 {productImage.map((image, index) => (
                                                     <View key={index} style={{ height: 75, width: 75, marginTop: '10%' }}>
-                                                        <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={{ uri: image.uri }} />
+                                                        <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={image?.length === 0 ? null : { uri: image }} />
+                                                        <Progress.Bar progress={0.4} height={5} width={100}/>
                                                         <TouchableOpacity activeOpacity={0.5} onPress={() => {
                                                             const newArray = [...productImage];
                                                             newArray.splice(index, 1);
                                                             setProductImage(newArray);
                                                         }} style={{ height: 15, width: 15, backgroundColor: '#FFFFFF', borderRadius: 8, position: 'absolute', right: 0, alignItems: 'center', justifyContent: 'center' }}>
                                                             <Svg style={{ height: 8, width: 8 }} viewBox="0 0 612.043 612.043">
-                                                                <Path fill={colors.primary[0]} d="M397.503 306.011 593.08 110.434c25.27-25.269 25.27-66.213 0-91.482-25.269-25.269-66.213-25.269-91.481 0L306.022 214.551 110.445 18.974c-25.269-25.269-66.213-25.269-91.482 0s-25.269 66.213 0 91.482L214.54 306.033 18.963 501.61c-25.269 25.269-25.269 66.213 0 91.481 25.269 25.27 66.213 25.27 91.482 0l195.577-195.576 195.577 195.576c25.269 25.27 66.213 25.27 91.481 0 25.27-25.269 25.27-66.213 0-91.481L397.503 306.011z" />
+                                                                <Path fill={'#000000'} d="M397.503 306.011 593.08 110.434c25.27-25.269 25.27-66.213 0-91.482-25.269-25.269-66.213-25.269-91.481 0L306.022 214.551 110.445 18.974c-25.269-25.269-66.213-25.269-91.482 0s-25.269 66.213 0 91.482L214.54 306.033 18.963 501.61c-25.269 25.269-25.269 66.213 0 91.481 25.269 25.27 66.213 25.27 91.482 0l195.577-195.576 195.577 195.576c25.269 25.27 66.213 25.27 91.481 0 25.27-25.269 25.27-66.213 0-91.481L397.503 306.011z" />
                                                             </Svg>
                                                         </TouchableOpacity>
                                                     </View>
@@ -614,10 +636,10 @@ const FillProduct = ({ navigation, route }) => {
                                                 {
                                                     productImagesIcon.map((icon, index) => {
 
-                                                        const imageNextEmptySlot = productImage.findIndex((emptySlot) => emptySlot.uri === '' || emptySlot.uri === undefined);
+                                                        // const imageNextEmptySlot = productImage.findIndex((emptySlot) => emptySlot.uri === '');
 
                                                         return (
-                                                            <TouchableOpacity disabled={refreshing} onPress={() => imagePickHandler(icon.type, imageNextEmptySlot)} key={index} style={{ height: 25, width: 25, marginHorizontal: '1%' }}>
+                                                            <TouchableOpacity disabled={refreshing} onPress={() => imagePickHandler(icon.type)} key={index} style={{ height: 25, width: 25, marginHorizontal: '1%' }}>
                                                                 {icon.icon}
                                                             </TouchableOpacity>
                                                         )
