@@ -46,10 +46,13 @@ useEffect(() => {
   return (
     <View style={styles.container}>
       {mode === MODE_SELLER ? <><View style={styles.header}>
+        <View style={{marginTop:"10%"}}>
+          <Text style={styles.headingText}>{'Category'}</Text>
         <View>
-          <Text style={styles.headingText}>{'Category of item to sell'}</Text>
+        <Text style={{color:"#B3B1B0"}}>{'Select the Category of Item you want to sell'}</Text>
         </View>
-      </View>
+        </View>
+        </View>
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.categoryListContainer}>
           {
             category.map((category, index) => {
@@ -94,7 +97,7 @@ useEffect(() => {
               </Svg>
             </TouchableOpacity>
           </View> */}
-          <View style={[styles.header, {justifyContent: 'center', flexDirection: 'column'}]}>
+          <View style={[styles.header, {justifyContent: 'center', flexDirection: 'column', marginTop:"20%"}]}>
             <Text style={[styles.headingText]}>{'Category'}</Text>
             <Text style={{fontFamily: 'Poppins', color: '#B3B1B0'}}>{'Select the category of item you want'}</Text>
           </View>
@@ -122,7 +125,7 @@ const styles = StyleSheet.create({
   },
 
   header: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
     paddingHorizontal: '8%',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -130,8 +133,9 @@ const styles = StyleSheet.create({
   },
 
   headingText: {
-    fontFamily: 'PoppinsSemiBold',
-    fontSize: 17
+    fontFamily: 'PoppinsBold',
+    fontSize: 17,
+    textAlign:'center',
   },
 
   categoryListContainer: {

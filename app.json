@@ -4,7 +4,7 @@
     "slug": "finepunch",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/UExcessSplash screen.gif",
+    "icon": "./assets/UExcessSplashScreen.gif",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "",
