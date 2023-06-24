@@ -104,9 +104,14 @@ const ProductDraft = ({ navigation }) => {
           <Text style={{ fontFamily: 'PoppinsBold', textAlign: 'center', width: '70%' }}>
             {'Are you sure you want to delete?'}
           </Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-evenly', width: '90%'}}>
           <TouchableOpacity onPress={() => [deleteProductHandler(modalOpen.draftId), setModalOpen({open: false, draftId: null})]} style={{ paddingVertical: 10, paddingHorizontal: '8%', backgroundColor: colors.primary[0], borderRadius: 16, alignItems: 'center', justifyContent: 'center' }}>
             <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF', fontSize: 13 }}>{'Delete'}</Text>
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => setModalOpen({open: false, draftId: null})} style={{ paddingVertical: 10, paddingHorizontal: '8%', backgroundColor: colors.black[5], borderRadius: 16, alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={{ fontFamily: 'Poppins', color: '#b3b1b0', fontSize: 13 }}>{'No'}</Text>
+          </TouchableOpacity>
+          </View>
         </View>
       </Pressable>}
     </>
