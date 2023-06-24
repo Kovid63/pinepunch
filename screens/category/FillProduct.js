@@ -37,7 +37,7 @@ const FillProduct = ({ navigation, route }) => {
 
     const [value, setValue] = useState(units[0]);
     const [productParameters, setProductParameters] = useState([]);
-    const [productImage, setProductImage] = useState(['']);
+    const [productImage, setProductImage] = useState([]);
     const [productName, setProductName] = useState('');
     const [productQuantity, setProductQuantity] = useState('');
     const [productPrice, setProductPrice] = useState('');
@@ -47,10 +47,11 @@ const FillProduct = ({ navigation, route }) => {
     const [prodFilters, setProdFilters] = useState([]);
     const [mounted, setMounted] = useState(false);
     const [customParam, setCustomParam] = useState({ name: '', value: '', um: 'na' });
-    const [progress, setProgress] = useState(0);
+    const [progress, setProgress] = useState({progress: 0, index: 0});
     const [query, setQuery] = useState('');
 
-
+    //console.log(productImage);
+    //console.log(progress);
     useEffect(() => {
 
         if (isEdit) {
@@ -234,12 +235,12 @@ const FillProduct = ({ navigation, route }) => {
                 if (result.assets.length == 1) {
                     setRefreshing(true);
                     setProductImage([...productImage, '']);
-                    const prevIndex = productImage.length - 1;
-                    const url = await getImageUrl(result.assets[0].uri, 'item', sessionId, setProgress);
-                    console.log(url);
+                    const prevIndex = productImage.length;
+                    const url = await getImageUrl(result.assets[0].uri, 'item', sessionId, setProgress, prevIndex);
+                    console.log(prevIndex);
                     setProductImage(prevArray => {
                         const newArray = [...prevArray];
-                        newArray[prevIndex] = { url };
+                        newArray[prevIndex] = url;
                         return newArray
                     });
                     setRefreshing(false);
@@ -251,17 +252,17 @@ const FillProduct = ({ navigation, route }) => {
                         setRefreshing(true);
                         for (const img of result.assets.slice(0, productImage.length === 0 ? 4 : Math.abs(4 - (productImage.length - 1)))) {
                             setProductImage(prevArray => {
-                                const newArray = [...prevArray];
+                            const newArray = [...prevArray];
                                 newArray.push('');
                                 return newArray;
-                            });
-                            const prevIndex = productImage.length - 1;
-                            const url = await getImageUrl(img.uri, 'item', sessionId, setProgress);
-                            console.log(url);
+                           });
+                           const prevIndex = productImage.length === 0 ? productImage.length: productImage.length - 1;
+                            // const url = await getImageUrl(img.uri, 'item', sessionId, setProgress);
+                           //console.log(prevIndex);
                             setProductImage(prevArray => {
                                 const newArray = [...prevArray];
                                 //newArray.push(url);
-                                newArray[prevIndex] = { url };
+                                newArray[prevIndex] = 'url';
                                 return newArray;
                             });
                         }
@@ -274,13 +275,13 @@ const FillProduct = ({ navigation, route }) => {
                                 newArray.push('');
                                 return newArray;
                             });
-                            const prevIndex = productImage.length - 1;
+                            const prevIndex = productImage.length;
                             const url = await getImageUrl(img.uri, 'item', sessionId, setProgress);
                             console.log(url);
                             setProductImage(prevArray => {
                                 const newArray = [...prevArray];
                                 //newArray.push(url);
-                                newArray[prevIndex] = { url };
+                                newArray[prevIndex] = url;
                                 return newArray;
                             });
                         }
@@ -305,11 +306,11 @@ const FillProduct = ({ navigation, route }) => {
                 if (result.assets.length == 1) {
                     setRefreshing(true);
                     setProductImage([...productImage, '']);
-                    const prevIndex = productImage.length - 1;
+                    const prevIndex = productImage.length;
                     const url = await getImageUrl(result.assets[0].uri, 'item', sessionId)
                     setProductImage(prevArray => {
                         const newArray = [...prevArray];
-                        newArray[prevIndex] = { url };
+                        newArray[prevIndex] = url;
                         return newArray
                     });
                     setRefreshing(false);
@@ -487,7 +488,7 @@ const FillProduct = ({ navigation, route }) => {
                                     {productImage.map((image, index) => (
                                         <View key={index} style={{ height: 75, width: 75, marginTop: '10%' }}>
                                             <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={image?.length === 0 ? null : { uri: image }} />
-                                            <Progress.Bar progress={0.4} size={50}/>
+                                            <Progress.Bar color={colors.primary[0]} style={{position: 'absolute', bottom: 2, backgroundColor: 'white' }} progress={index === progress.index? progress.progress/100 : 1} height={5} width={72}/>
                                             <TouchableOpacity activeOpacity={0.5} onPress={() => {
                                                 const newArray = [...productImage];
                                                 newArray.splice(index, 1);
@@ -617,16 +618,16 @@ const FillProduct = ({ navigation, route }) => {
                                             <Text style={[styles.parameterText, { marginHorizontal: '2%', marginTop: 5 }]}>{'Product images'}</Text>
                                             <View style={{ height: '65%', width: '100%', alignSelf: 'center', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                                                 {productImage.map((image, index) => (
-                                                    <View key={index} style={{ height: 75, width: 75, marginTop: '10%' }}>
+                                                    <View key={index} style={{ height: 75, width: 75, marginTop: '10%', alignItems: 'center' }}>
                                                         <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={image?.length === 0 ? null : { uri: image }} />
-                                                        <Progress.Bar progress={0.4} height={5} width={100}/>
+                                                        <Progress.Bar color={colors.primary[0]} style={{position: 'absolute', bottom: 2, backgroundColor: 'white' }} progress={index === progress.index? progress.progress/100 : 1} height={5} width={72}/>
                                                         <TouchableOpacity activeOpacity={0.5} onPress={() => {
                                                             const newArray = [...productImage];
                                                             newArray.splice(index, 1);
                                                             setProductImage(newArray);
                                                         }} style={{ height: 15, width: 15, backgroundColor: '#FFFFFF', borderRadius: 8, position: 'absolute', right: 0, alignItems: 'center', justifyContent: 'center' }}>
                                                             <Svg style={{ height: 8, width: 8 }} viewBox="0 0 612.043 612.043">
-                                                                <Path fill={'#000000'} d="M397.503 306.011 593.08 110.434c25.27-25.269 25.27-66.213 0-91.482-25.269-25.269-66.213-25.269-91.481 0L306.022 214.551 110.445 18.974c-25.269-25.269-66.213-25.269-91.482 0s-25.269 66.213 0 91.482L214.54 306.033 18.963 501.61c-25.269 25.269-25.269 66.213 0 91.481 25.269 25.27 66.213 25.27 91.482 0l195.577-195.576 195.577 195.576c25.269 25.27 66.213 25.27 91.481 0 25.27-25.269 25.27-66.213 0-91.481L397.503 306.011z" />
+                                                                <Path fill={colors.primary[0]} d="M397.503 306.011 593.08 110.434c25.27-25.269 25.27-66.213 0-91.482-25.269-25.269-66.213-25.269-91.481 0L306.022 214.551 110.445 18.974c-25.269-25.269-66.213-25.269-91.482 0s-25.269 66.213 0 91.482L214.54 306.033 18.963 501.61c-25.269 25.269-25.269 66.213 0 91.481 25.269 25.27 66.213 25.27 91.482 0l195.577-195.576 195.577 195.576c25.269 25.27 66.213 25.27 91.481 0 25.27-25.269 25.27-66.213 0-91.481L397.503 306.011z" />
                                                             </Svg>
                                                         </TouchableOpacity>
                                                     </View>

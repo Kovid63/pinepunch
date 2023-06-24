@@ -4,7 +4,7 @@ import { ToastAndroid } from 'react-native';
 import mime from "mime";
 import axios from 'axios';
 
-export async function getImageUrl(image, purpose, sessionId, setProgress) {
+export async function getImageUrl(image, purpose, sessionId, setProgress, index) {
     try {
         const formData = new FormData();
         formData.append('image_file', {
@@ -27,7 +27,7 @@ export async function getImageUrl(image, purpose, sessionId, setProgress) {
             onUploadProgress: progressEvent => {
                 const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
                 if(progress === 100){
-                    setProgress(Math.floor(Math.random() * 41) + 10);
+                    setProgress({progress: Math.floor(Math.random() * 41) + 10, index: index});
                 }
                 // Handle progress update
                // console.log(`Upload Progress: ${progress}%`);
@@ -37,7 +37,7 @@ export async function getImageUrl(image, purpose, sessionId, setProgress) {
                 const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
                 if (progress === 100 || !progress.isInFinite) {
                     setTimeout(() => {
-                      setProgress(100);
+                      setProgress({progress: 100, index: index});
                     }, 400);
                   }
             },
@@ -59,7 +59,7 @@ export async function getImageUrl(image, purpose, sessionId, setProgress) {
             }
         }
 
-
+       // console.log(response.data.image_url);
 
         return response.data.image_url;
 
