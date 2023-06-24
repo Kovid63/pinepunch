@@ -194,7 +194,7 @@ const Profile = ({ navigation }) => {
         </TouchableOpacity>
         <View style={styles.profileInfoContainer}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={styles.infoTitle}>{'Company Name'}</Text>
+            <Text style={[styles.infoTitle, {marginTop: 10}]}>{'Company Name'}</Text>
             <TouchableOpacity>
               <Svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -210,17 +210,17 @@ const Profile = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <Text style={[styles.infoText, {backgroundColor: '#fff', width: '75%'}]}>{merchantData.name}</Text>
-          <Text style={styles.infoTitle}>{'Location'}</Text>
+          <Text style={[styles.infoTitle, {marginTop: 10}]}>{'Location'}</Text>
 
           <Text style={[styles.infoText, {backgroundColor: '#fff', width: '75%'}]}>{merchantData.address}</Text>
           <View style={{ backgroundColor: '#F8F8F8' }}>
-            <View style={{ flexDirection: 'row', marginTop: 20 }}>
+            <View style={{ flexDirection: 'row', marginTop: 20, alignItems: 'center' }}>
               <Text style={styles.infoTitle}>{'Contact No:  '}</Text>
-              <Text style={[styles.infoText, {backgroundColor: '#fff', width: '75%', marginTop: 6}]}>{mode === MODE_SELLER ? merchantData.seller_contact : merchantData.contact}</Text>
+              <Text style={[styles.infoText, {backgroundColor: '#fff', width: '75%'}]}>{mode === MODE_SELLER ? merchantData.seller_contact : merchantData.contact}</Text>
             </View>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
               <Text style={styles.infoTitle}>{'Email:  '}</Text>
-              <Text style={[styles.infoText, {backgroundColor: '#fff', width: '75%', marginTop: 6}]}>{merchantData.email}</Text>
+              <Text style={[styles.infoText, {backgroundColor: '#fff', width: '75%'}]}>{merchantData.email}</Text>
             </View>
           </View>
         </View>
@@ -305,12 +305,12 @@ const styles = StyleSheet.create({
     marginBottom: 100,
     backgroundColor: '#F8F8F8',
     paddingHorizontal: '8%',
-    paddingBottom: 10
+    paddingBottom: 10,
+    justifyContent: 'center'
   },
 
   infoTitle: {
     fontFamily: 'Poppins',
-    marginTop: '3%'
   },
 
   infoContainer: {
