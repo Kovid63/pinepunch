@@ -54,21 +54,21 @@ const Inquiry = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
-            <View>
+            <View style={{paddingHorizontal: '8%'}}>
                 <Header onPress={backPressHandler} pageTitle={'Inquiry'} />
             </View>
             <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1, marginBottom: 80 }}>
-                <View style={{ alignItems: 'center', marginTop: '5%' }}>
+                <View style={{ alignItems: 'center', marginTop: '5%', paddingHorizontal: '8%' }}>
                     <Text style={{ width: '95%', fontFamily: 'Poppins', color: '#B3B1B0', fontSize: 14 }}>{description}</Text>
                 </View>
-                <View style={{ backgroundColor: '#F8F8F8', height: 300, marginTop: '10%', borderRadius: 24 }}>
+                <View style={{ backgroundColor: '#F8F8F8', height: 300, marginTop: '10%', borderRadius: 24, paddingHorizontal: '8%' }}>
                     <Image style={{ height: '100%', width: '100%', borderRadius: 24 }} source={{uri: product.images?.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '')}}/>
                 </View>
-                <View style={{ width: '100%', marginTop: '5%' }}>
+                <View style={{ width: '100%', marginTop: '5%', paddingHorizontal: '8%' }}>
                     <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{product.product_name}</Text>
                     <Text style={{ fontFamily: 'Poppins', fontSize: 14, color: '#B3B1B0' }}>{product.product_description}</Text>
                 </View>
-                <View style={{ width: '100%', marginTop: '0%' }}>
+                <View style={{ width: '100%', marginTop: '0%',paddingHorizontal: '8%' }}>
                     <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: '#B3B1B0' }}>{'Parameter'}</Text>
                     {
                         product.parameters?.map((parameter, index) => (
@@ -79,8 +79,8 @@ const Inquiry = ({ navigation, route }) => {
                         ))
                     }
                 </View>
-                <View style={{ marginTop: '10%' }}>
-                    <Text style={styles.textHeading}>{'Contact detail of seller: '}</Text>
+                <View style={{ marginTop: '10%', backgroundColor: '#f8f8f8' }}>
+                    <Text style={[styles.textHeading, {fontFamily: 'PoppinsBold', marginHorizontal: '8%'}]}>{'Contact detail of Buyer: '}</Text>
                     <Text style={styles.textHeading}>{'Name: '}{product.merchant?.name}</Text>
                     <Text style={styles.text}>{'Location: '}{product.merchant?.address}</Text>
                     <Text style={styles.text}>{'Contact number: '}{product.merchant?.contact}</Text>
@@ -95,18 +95,19 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.background,
-        paddingHorizontal: '8%'
     },
 
     textHeading: {
         fontFamily: 'Poppins',
         color: '#B3B1B0',
+        marginHorizontal: '8%'
     },
 
     text: {
         fontFamily: 'Poppins',
         color: '#B3B1B0',
-        marginTop: '5%'
+        marginTop: '5%',
+        marginHorizontal: '8%'
     }
 
 })

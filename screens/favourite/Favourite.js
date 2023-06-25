@@ -112,6 +112,7 @@ const Favourite = ({ navigation }) => {
                 quantity: item.item.inventory_item.quantity,
                 unit: item.item.inventory_item.quantity_um,
                 merchantId: item.item.inventory_item.merchant_id,
+                parameters: item.item.inventory_item.parameters,
                 image: item.item.inventory_item.images?.toString().replace(/\[/g, '').replace(/\]/g, '').replace(/"/g, '').replace(/\\/g, '').split(','),
                 id: item.item.inventory_item.id
             })} fetchFavourites={fetchFavourites} {...item} />} numColumns={2} />
