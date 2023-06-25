@@ -10,6 +10,7 @@ import { MODE_BUYER, MODE_SELLER } from './constants';
 import { ModeContext } from './contexts/ModeContext';
 import { MsgContext } from './contexts/MsgContext';
 import { UserContext } from './contexts/UserContext';
+import { LoadingContext } from './contexts/LoadingContext';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -23,6 +24,7 @@ export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
   const [isFontLoaded, setIsFontLoaded] = useState(false);
   const [initialScreen, setInitialScreen] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
@@ -51,6 +53,7 @@ export default function App() {
 
 
   async function init() {
+    setIsLoading(true);
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     console.log(sessionId);
     setMode(MODE_SELLER);
@@ -68,6 +71,7 @@ export default function App() {
 
         if (data.error) {
           setAppIsReady(true);
+          setIsLoading(false);
           if (Platform.OS === 'android') {
             return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
           }
@@ -75,14 +79,14 @@ export default function App() {
             return Alert.alert(data.error.description);
           }
         }
-
+        setIsLoading(false);
         console.log(data);
 
         if (data.merchant_status === 'afa_pending') {
-            setUserData('otpReq');
-            setIsUserLoggedIn(false);
-            setAppIsReady(true);
-            return;
+          setUserData('otpReq');
+          setIsUserLoggedIn(false);
+          setAppIsReady(true);
+          return;
         }
 
         if (data.merchant_status === 'in_review') {
@@ -123,12 +127,14 @@ export default function App() {
   return (
     <UserContext.Provider value={{ isUserLoggedIn, setIsUserLoggedIn, userData, setUserData, initialScreen, setInitialScreen }}>
       <ModeContext.Provider value={{ mode, setMode }}>
-        <MsgContext.Provider value={{ isNewMsgOn, setIsNewMsgOn, isItemSoldMsgOn, setIsItemSoldMsgOn }}>
-          <View onLayout={onLayoutRootView} style={styles.container}>
-            <StatusBar style="auto" />
-            <Auth appIsReady={appIsReady} setAppIsReady={setAppIsReady} />
-          </View>
-        </MsgContext.Provider>
+        <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
+          <MsgContext.Provider value={{ isNewMsgOn, setIsNewMsgOn, isItemSoldMsgOn, setIsItemSoldMsgOn }}>
+            <View onLayout={onLayoutRootView} style={styles.container}>
+              <StatusBar style="auto" />
+              <Auth appIsReady={appIsReady} setAppIsReady={setAppIsReady} />
+            </View>
+          </MsgContext.Provider>
+        </LoadingContext.Provider>
       </ModeContext.Provider>
     </UserContext.Provider>
   );

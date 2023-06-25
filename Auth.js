@@ -13,16 +13,16 @@ const Auth = ({appIsReady, setAppIsReady}) => {
 
     const { isUserLoggedIn } = useContext(UserContext);
     
-    const [isLoading, setIsLoading] = useState(false);
+   // const [isLoading, setIsLoading] = useState(false);
     //const [isFirstLoading, setIsFirstLoading] = useState(true);
 
     return (
         <>
-            <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
+            {/* <LoadingContext.Provider value={{ isLoading, setIsLoading }}> */}
                 {
                     isUserLoggedIn ? <TabNavigation /> : <UserAuthStack/>
                 }
-            </LoadingContext.Provider>
+            {/* </LoadingContext.Provider> */}
         </>
     )
 }
