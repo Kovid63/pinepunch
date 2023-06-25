@@ -35,7 +35,7 @@ const ProductDetail = ({ navigation, route }) => {
     getMerchantDetails();
   }, []);
 
-  async function getMerchantDetails(){
+  async function getMerchantDetails() {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     const response = await fetch(BASE_URL + MERCHANT_INFO + `${merchantId}`, {
       method: 'GET',
@@ -50,7 +50,7 @@ const ProductDetail = ({ navigation, route }) => {
   }
 
   function contactSellerHandler() {
-    navigation.navigate('ContactSeller', {...merchantDetails, productId: id});
+    navigation.navigate('ContactSeller', { ...merchantDetails, productId: id });
   }
 
   function companyClickHandler() {
@@ -130,7 +130,7 @@ const ProductDetail = ({ navigation, route }) => {
     let paramArr = await parameters.map((parameter) => {
       return { name: parameter.name, value: parameter.value, um: parameter.um }
     });
-    customParameter.name.length && customParameter.value.length === 0? paramArr.push(customParameter): {}
+    customParameter.name.length && customParameter.value.length === 0 ? paramArr.push(customParameter) : {}
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
@@ -176,16 +176,18 @@ const ProductDetail = ({ navigation, route }) => {
     navigation.navigate('CategoryStack');
   }
 
-  async function deleteProductHandlerDraft(itemId){
+  async function deleteProductHandlerDraft(itemId) {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     deleteProduct(itemId, sessionId);
   }
+
+  console.log(parameters)
 
   async function submitProductHandler() {
     setIsLoading(true);
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
 
-    if(isDraft){
+    if (isDraft) {
       await deleteProductHandlerDraft(id);
     }
 
@@ -194,11 +196,11 @@ const ProductDetail = ({ navigation, route }) => {
       imageArray.push(img);
     }
 
-    if(isEdit && !isDraft){
+    if (isEdit && !isDraft) {
       let paramArr = await parameters.map((parameter) => {
         return { name: parameter.name, value: parameter.value, um: parameter.um }
       });
-      customParameter.name.length && customParameter.value.length === 0? paramArr.push(customParameter): {}
+      customParameter.name.length && customParameter.value.length === 0 ? paramArr.push(customParameter) : {}
       console.log(paramArr);
       const response = await fetch(BASE_URL + SELLER_ITEMS + '/' + id, {
         method: 'PUT',
@@ -217,9 +219,9 @@ const ProductDetail = ({ navigation, route }) => {
           parameters: paramArr
         })
       })
-  
+
       const data = await response.json();
-  
+
       if (data.error) {
         setIsLoading(false);
         if (Platform.OS === 'android') {
@@ -233,11 +235,11 @@ const ProductDetail = ({ navigation, route }) => {
       navigation.popToTop();
       navigation.navigate('HomeStack');
 
-    }else{
+    } else {
       let paramArr = await parameters.map((parameter) => {
         return { name: parameter.name, value: parameter.value, um: parameter.um }
       });
-      customParameter.name.length && customParameter.value.length === 0? paramArr.push(customParameter): {}
+      customParameter.name.length && customParameter.value.length === 0 ? paramArr.push(customParameter) : {}
       console.log(paramArr);
       const response = await fetch(BASE_URL + SELLER_ITEMS, {
         method: 'POST',
@@ -257,9 +259,9 @@ const ProductDetail = ({ navigation, route }) => {
           parameters: paramArr
         })
       })
-  
+
       const data = await response.json();
-  
+
       if (data.error) {
         setIsLoading(false);
         if (Platform.OS === 'android') {
@@ -273,8 +275,8 @@ const ProductDetail = ({ navigation, route }) => {
       navigation.popToTop();
       navigation.navigate('HomeStack');
     }
-    
-    
+
+
   }
 
   async function fetchFavourites() {
@@ -377,6 +379,15 @@ const ProductDetail = ({ navigation, route }) => {
         <View style={{ width: '60%', marginTop: '1%' }}>
           <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: '#B3B1B0' }}>{description}</Text>
         </View>
+        {
+          
+          parameters?.map((parameter, index) => (
+            <View key={index} style={{ flexDirection: 'row' }}>
+              <Text style={{ fontFamily: 'Poppins', fontSize: 14, color: '#B3B1B0' }}>{parameter.name + ': '}</Text>
+              <Text style={{ fontFamily: 'Poppins', fontSize: 14, color: '#B3B1B0' }}>{parameter.value}</Text>
+            </View>
+          ))
+        }
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '10%', marginTop: '5%' }}>
           <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{quantity + unit}</Text>
           <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs ' + price}</Text>

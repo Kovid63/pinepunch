@@ -30,6 +30,8 @@ const Inquiry = ({ navigation, route }) => {
 
             const data = await response.json();
 
+            console.log(data);
+
             if (data.error) {
                 if (Platform.OS === 'android') {
                     //return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
@@ -65,6 +67,17 @@ const Inquiry = ({ navigation, route }) => {
                 <View style={{ width: '100%', marginTop: '5%' }}>
                     <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{product.product_name}</Text>
                     <Text style={{ fontFamily: 'Poppins', fontSize: 14, color: '#B3B1B0' }}>{product.product_description}</Text>
+                </View>
+                <View style={{ width: '100%', marginTop: '0%' }}>
+                    <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: '#B3B1B0' }}>{'Parameter'}</Text>
+                    {
+                        product.parameters?.map((parameter, index) => (
+                            <View key={index} style={{flexDirection: 'row'}}>
+                            <Text style={{ fontFamily: 'Poppins', fontSize: 14, color: '#B3B1B0' }}>{parameter.name+': '}</Text>
+                            <Text style={{ fontFamily: 'Poppins', fontSize: 14, color: '#B3B1B0' }}>{parameter.value}</Text>
+                            </View>
+                        ))
+                    }
                 </View>
                 <View style={{ marginTop: '10%' }}>
                     <Text style={styles.textHeading}>{'Contact detail of seller: '}</Text>

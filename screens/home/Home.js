@@ -366,6 +366,7 @@ const Home = ({ navigation }) => {
                       quantity: item.item.quantity,
                       unit: item.item.quantity_um,
                       merchantId: item.item.merchant_id,
+                      parameters: item.item.parameters,
                       image: item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(','),
                       id: item.item.id
                     })} />
