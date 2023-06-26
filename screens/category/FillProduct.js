@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { colors } from '../../colors'
 import { TouchableOpacity } from 'react-native'
-import { Path, Svg } from 'react-native-svg'
+import { Circle, Path, Rect, Svg } from 'react-native-svg'
 import { TextInput } from 'react-native'
 import { OptionRender } from '../../components/OptionRender'
 import Header from '../../components/Header'
@@ -46,8 +46,9 @@ const FillProduct = ({ navigation, route }) => {
     const [products, setProducts] = useState([]);
     const [prodFilters, setProdFilters] = useState([]);
     const [mounted, setMounted] = useState(false);
-    const [customParam, setCustomParam] = useState({ name: '', value: '', um: 'na' });
-    const [progress, setProgress] = useState({progress: 0, index: 0});
+    const [customParam, setCustomParam] = useState([]);
+    const [firstCustomParam, setFirstCustomParam] = useState(true);
+    const [progress, setProgress] = useState({ progress: 100, index: 0 });
     const [query, setQuery] = useState('');
 
     //console.log(productImage);
@@ -252,13 +253,13 @@ const FillProduct = ({ navigation, route }) => {
                         setRefreshing(true);
                         for (const img of result.assets.slice(0, productImage.length === 0 ? 4 : Math.abs(4 - (productImage.length - 1)))) {
                             setProductImage(prevArray => {
-                            const newArray = [...prevArray];
+                                const newArray = [...prevArray];
                                 newArray.push('');
                                 return newArray;
-                           });
-                           const prevIndex = productImage.length === 0 ? productImage.length: productImage.length - 1;
+                            });
+                            const prevIndex = productImage.length === 0 ? productImage.length : productImage.length - 1;
                             // const url = await getImageUrl(img.uri, 'item', sessionId, setProgress);
-                           //console.log(prevIndex);
+                            //console.log(prevIndex);
                             setProductImage(prevArray => {
                                 const newArray = [...prevArray];
                                 //newArray.push(url);
@@ -459,6 +460,11 @@ const FillProduct = ({ navigation, route }) => {
         }
     }, [mode]);
 
+    console.log(customParam);
+    function customParamIncrementHandler() {
+        setCustomParam(prevArray => [...prevArray, { name: '', value: '', um: 'na' }]);
+    }
+
     return (
         <View style={styles.container}>
             {
@@ -488,7 +494,7 @@ const FillProduct = ({ navigation, route }) => {
                                     {productImage.map((image, index) => (
                                         <View key={index} style={{ height: 75, width: 75, marginTop: '10%' }}>
                                             <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={image?.length === 0 ? null : { uri: image }} />
-                                            <Progress.Bar color={colors.primary[0]} style={{position: 'absolute', bottom: 2, backgroundColor: 'white' }} progress={index === progress.index? progress.progress/100 : 1} height={5} width={72}/>
+                                            <Progress.Bar color={colors.primary[0]} style={{ position: 'absolute', bottom: 2, backgroundColor: 'white' }} progress={index === progress.index ? progress.progress / 100 : 1} height={5} width={72} />
                                             <TouchableOpacity activeOpacity={0.5} onPress={() => {
                                                 const newArray = [...productImage];
                                                 newArray.splice(index, 1);
@@ -562,28 +568,122 @@ const FillProduct = ({ navigation, route }) => {
 
                                     : <></>
                             }
-                            <View style={[styles.parameterContainer, { justifyContent: 'space-evenly' }]}>
-                                <TextInput style={[{
-                                    backgroundColor: 'white',
-                                    width: '45%',
-                                    paddingHorizontal: '3%',
-                                    fontFamily: 'Poppins',
-                                    fontSize: 12,
-                                    color: '#B3B1B0',
-                                    fontSize: 12,
-                                    borderRadius: 5
-                                }, {}]} placeholder='custom Parameter' onChangeText={(v) => { setCustomParam({ ...customParam, name: v }) }} />
-                                <TextInput style={[{
-                                    backgroundColor: 'white',
-                                    width: '45%',
-                                    paddingHorizontal: '3%',
-                                    fontFamily: 'Poppins',
-                                    fontSize: 12,
-                                    color: '#B3B1B0',
-                                    fontSize: 12,
-                                    borderRadius: 5
-                                }, {}]} placeholder='custom Value' onChangeText={(v) => { setCustomParam({ ...customParam, value: v }) }} />
-                            </View>
+                            <View style={[styles.parameterContainer, { flexDirection: 'column' }]}>
+                                            {!firstCustomParam && <><Text style={[styles.parameterText, { alignSelf: 'flex-start', width: '100%' }]}>{'Custom Parameter'}</Text>
+                                                {
+                                                    customParam?.map((param, index) => (
+                                                        <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: '100%', marginTop: 5 }}>
+                                                            <TextInput style={[{
+                                                                backgroundColor: 'white',
+                                                                width: '45%',
+                                                                paddingHorizontal: '3%',
+                                                                fontFamily: 'Poppins',
+                                                                fontSize: 12,
+                                                                color: '#B3B1B0',
+                                                                fontSize: 12,
+                                                                borderRadius: 5
+                                                            }, {}]} placeholder='custom Parameter' onChangeText={(v) => {
+                                                                setCustomParam(prevArray => {
+                                                                    const newArray = [...prevArray];
+                                                                    newArray[index] = { ...prevArray[index], name: v }
+                                                                    return newArray;
+                                                                })
+                                                            }} />
+                                                            <TextInput style={[{
+                                                                backgroundColor: 'white',
+                                                                width: '45%',
+                                                                paddingHorizontal: '3%',
+                                                                fontFamily: 'Poppins',
+                                                                fontSize: 12,
+                                                                color: '#B3B1B0',
+                                                                fontSize: 12,
+                                                                borderRadius: 5
+                                                            }, {}]} placeholder='custom Value' onChangeText={(v) => {
+                                                                setCustomParam(prevArray => {
+                                                                    const newArray = [...prevArray];
+                                                                    newArray[index] = { ...prevArray[index], value: v }
+                                                                    return newArray;
+                                                                })
+                                                            }} /></View>
+                                                    ))
+                                                }
+                                                <TouchableOpacity style={{ marginTop: 5 }} onPress={() => [customParamIncrementHandler()]}>
+                                                    <Svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width={23}
+                                                        height={22}
+                                                        fill="none"
+                                                    >
+                                                        <Circle cx={11.498} cy={10.645} r={10.537} fill="#130F26" />
+                                                        <Rect
+                                                            width={2.412}
+                                                            height={14.078}
+                                                            x={10.293}
+                                                            y={3.605}
+                                                            fill="#fff"
+                                                            rx={1.206}
+                                                        />
+                                                        <Rect
+                                                            width={2.412}
+                                                            height={14.078}
+                                                            x={4.461}
+                                                            y={11.851}
+                                                            fill="#fff"
+                                                            rx={1.206}
+                                                            transform="rotate(-90 4.46 11.85)"
+                                                        />
+                                                    </Svg>
+                                                </TouchableOpacity>
+                                            </>}
+                                            {firstCustomParam && <><Text style={[styles.parameterText, { alignSelf: 'flex-start', width: '100%' }]}>{'Add Custom Parameter'}</Text>
+                                                <TouchableOpacity onPress={() => [setFirstCustomParam(false), customParamIncrementHandler()]}>
+                                                    <Svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width={23}
+                                                        height={22}
+                                                        fill="none"
+                                                    >
+                                                        <Circle cx={11.498} cy={10.645} r={10.537} fill="#130F26" />
+                                                        <Rect
+                                                            width={2.412}
+                                                            height={14.078}
+                                                            x={10.293}
+                                                            y={3.605}
+                                                            fill="#fff"
+                                                            rx={1.206}
+                                                        />
+                                                        <Rect
+                                                            width={2.412}
+                                                            height={14.078}
+                                                            x={4.461}
+                                                            y={11.851}
+                                                            fill="#fff"
+                                                            rx={1.206}
+                                                            transform="rotate(-90 4.46 11.85)"
+                                                        />
+                                                    </Svg>
+                                                </TouchableOpacity></>}
+                                            {/* <TextInput style={[{
+                                                backgroundColor: 'white',
+                                                width: '45%',
+                                                paddingHorizontal: '3%',
+                                                fontFamily: 'Poppins',
+                                                fontSize: 12,
+                                                color: '#B3B1B0',
+                                                fontSize: 12,
+                                                borderRadius: 5
+                                            }, {}]} placeholder='custom Parameter' onChangeText={(v) => { setCustomParam({ ...customParam, name: v }) }} />
+                                            <TextInput style={[{
+                                                backgroundColor: 'white',
+                                                width: '45%',
+                                                paddingHorizontal: '3%',
+                                                fontFamily: 'Poppins',
+                                                fontSize: 12,
+                                                color: '#B3B1B0',
+                                                fontSize: 12,
+                                                borderRadius: 5
+                                            }, {}]} placeholder='custom Value' onChangeText={(v) => { setCustomParam({ ...customParam, value: v }) }} /> */}
+                                        </View>
                             <TouchableOpacity onPress={submitProductHandler} activeOpacity={0.6} style={{ alignSelf: 'flex-end', height: 60, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 30, backgroundColor: colors.primary[0], marginTop: '10%', borderRadius: 16, marginRight: '5%' }}>
                                 <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF' }}>{'Preview and Submit'}</Text>
                             </TouchableOpacity>
@@ -620,7 +720,7 @@ const FillProduct = ({ navigation, route }) => {
                                                 {productImage.map((image, index) => (
                                                     <View key={index} style={{ height: 75, width: 75, marginTop: '10%', alignItems: 'center' }}>
                                                         <Image style={{ height: '100%', width: '100%', backgroundColor: '#B3B1B0' }} source={image?.length === 0 ? null : { uri: image }} />
-                                                        <Progress.Bar color={colors.primary[0]} style={{position: 'absolute', bottom: 2, backgroundColor: 'white' }} progress={index === progress.index? progress.progress/100 : 1} height={5} width={72}/>
+                                                        <Progress.Bar color={colors.primary[0]} style={{ position: 'absolute', bottom: 2, backgroundColor: 'white' }} progress={index === progress.index ? progress.progress / 100 : 1} height={5} width={72} />
                                                         <TouchableOpacity activeOpacity={0.5} onPress={() => {
                                                             const newArray = [...productImage];
                                                             newArray.splice(index, 1);
@@ -696,8 +796,102 @@ const FillProduct = ({ navigation, route }) => {
 
                                                 : <></>
                                         }
-                                        <View style={[styles.parameterContainer, { justifyContent: 'space-evenly' }]}>
-                                            <TextInput style={[{
+                                        <View style={[styles.parameterContainer, { flexDirection: 'column' }]}>
+                                            {!firstCustomParam && <><Text style={[styles.parameterText, { alignSelf: 'flex-start', width: '100%' }]}>{'Custom Parameter'}</Text>
+                                                {
+                                                    customParam?.map((param, index) => (
+                                                        <View key={index} style={{ flexDirection: 'row', justifyContent: 'space-evenly', width: '100%', marginTop: 5 }}>
+                                                            <TextInput style={[{
+                                                                backgroundColor: 'white',
+                                                                width: '45%',
+                                                                paddingHorizontal: '3%',
+                                                                fontFamily: 'Poppins',
+                                                                fontSize: 12,
+                                                                color: '#B3B1B0',
+                                                                fontSize: 12,
+                                                                borderRadius: 5
+                                                            }, {}]} placeholder='custom Parameter' onChangeText={(v) => {
+                                                                setCustomParam(prevArray => {
+                                                                    const newArray = [...prevArray];
+                                                                    newArray[index] = { ...prevArray[index], name: v }
+                                                                    return newArray;
+                                                                })
+                                                            }} />
+                                                            <TextInput style={[{
+                                                                backgroundColor: 'white',
+                                                                width: '45%',
+                                                                paddingHorizontal: '3%',
+                                                                fontFamily: 'Poppins',
+                                                                fontSize: 12,
+                                                                color: '#B3B1B0',
+                                                                fontSize: 12,
+                                                                borderRadius: 5
+                                                            }, {}]} placeholder='custom Value' onChangeText={(v) => {
+                                                                setCustomParam(prevArray => {
+                                                                    const newArray = [...prevArray];
+                                                                    newArray[index] = { ...prevArray[index], value: v }
+                                                                    return newArray;
+                                                                })
+                                                            }} /></View>
+                                                    ))
+                                                }
+                                                <TouchableOpacity style={{ marginTop: 5 }} onPress={() => [customParamIncrementHandler()]}>
+                                                    <Svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width={23}
+                                                        height={22}
+                                                        fill="none"
+                                                    >
+                                                        <Circle cx={11.498} cy={10.645} r={10.537} fill="#130F26" />
+                                                        <Rect
+                                                            width={2.412}
+                                                            height={14.078}
+                                                            x={10.293}
+                                                            y={3.605}
+                                                            fill="#fff"
+                                                            rx={1.206}
+                                                        />
+                                                        <Rect
+                                                            width={2.412}
+                                                            height={14.078}
+                                                            x={4.461}
+                                                            y={11.851}
+                                                            fill="#fff"
+                                                            rx={1.206}
+                                                            transform="rotate(-90 4.46 11.85)"
+                                                        />
+                                                    </Svg>
+                                                </TouchableOpacity>
+                                            </>}
+                                            {firstCustomParam && <><Text style={[styles.parameterText, { alignSelf: 'flex-start', width: '100%' }]}>{'Add Custom Parameter'}</Text>
+                                                <TouchableOpacity onPress={() => [setFirstCustomParam(false), customParamIncrementHandler()]}>
+                                                    <Svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width={23}
+                                                        height={22}
+                                                        fill="none"
+                                                    >
+                                                        <Circle cx={11.498} cy={10.645} r={10.537} fill="#130F26" />
+                                                        <Rect
+                                                            width={2.412}
+                                                            height={14.078}
+                                                            x={10.293}
+                                                            y={3.605}
+                                                            fill="#fff"
+                                                            rx={1.206}
+                                                        />
+                                                        <Rect
+                                                            width={2.412}
+                                                            height={14.078}
+                                                            x={4.461}
+                                                            y={11.851}
+                                                            fill="#fff"
+                                                            rx={1.206}
+                                                            transform="rotate(-90 4.46 11.85)"
+                                                        />
+                                                    </Svg>
+                                                </TouchableOpacity></>}
+                                            {/* <TextInput style={[{
                                                 backgroundColor: 'white',
                                                 width: '45%',
                                                 paddingHorizontal: '3%',
@@ -716,7 +910,7 @@ const FillProduct = ({ navigation, route }) => {
                                                 color: '#B3B1B0',
                                                 fontSize: 12,
                                                 borderRadius: 5
-                                            }, {}]} placeholder='custom Value' onChangeText={(v) => { setCustomParam({ ...customParam, value: v }) }} />
+                                            }, {}]} placeholder='custom Value' onChangeText={(v) => { setCustomParam({ ...customParam, value: v }) }} /> */}
                                         </View>
                                         <TouchableOpacity onPress={submitProductHandler} activeOpacity={0.6} style={{ alignSelf: 'flex-end', height: 60, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 30, backgroundColor: colors.primary[0], marginTop: '10%', borderRadius: 16, marginRight: '5%' }}>
                                             <Text style={{ fontFamily: 'Poppins', color: '#FFFFFF' }}>{'Preview and Submit'}</Text>

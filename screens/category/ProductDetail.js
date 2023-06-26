@@ -1,5 +1,5 @@
 import { View, Text, FlatList } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { TouchableOpacity } from 'react-native'
 import { Path, Svg } from 'react-native-svg'
@@ -25,11 +25,9 @@ const ProductDetail = ({ navigation, route }) => {
   const [favourites, setFavourites] = useState([]);
   const [isFav, setIsFav] = useState(false);
   const { isLoading, setIsLoading } = useContext(LoadingContext);
-
+  const imageRef = useRef();
   const [merchantDetails, setMerchantDetails] = useState({});
-
-
-  console.log(merchantId);
+  const [imageIndex, setImageIndex] = useState(0);
 
   useEffect(() => {
     getMerchantDetails();
@@ -130,7 +128,7 @@ const ProductDetail = ({ navigation, route }) => {
     let paramArr = await parameters.map((parameter) => {
       return { name: parameter.name, value: parameter.value, um: parameter.um }
     });
-    customParameter.name.length && customParameter.value.length === 0 ? paramArr.push(customParameter) : {}
+    paramArr = [...paramArr, ...customParameter];
     const response = await fetch(BASE_URL + SELLER_ITEMS, {
       method: 'POST',
       headers: {
@@ -173,15 +171,13 @@ const ProductDetail = ({ navigation, route }) => {
     deleteProduct(id, sessionId);
     setIsLoading(false);
     navigation.popToTop();
-    navigation.navigate('CategoryStack');
+    navigation.navigate('HomeStack');
   }
 
   async function deleteProductHandlerDraft(itemId) {
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     deleteProduct(itemId, sessionId);
   }
-
-  console.log(parameters)
 
   async function submitProductHandler() {
     setIsLoading(true);
@@ -200,8 +196,7 @@ const ProductDetail = ({ navigation, route }) => {
       let paramArr = await parameters.map((parameter) => {
         return { name: parameter.name, value: parameter.value, um: parameter.um }
       });
-      customParameter.name.length && customParameter.value.length === 0 ? paramArr.push(customParameter) : {}
-      console.log(paramArr);
+      paramArr = [...paramArr, ...customParameter]
       const response = await fetch(BASE_URL + SELLER_ITEMS + '/' + id, {
         method: 'PUT',
         headers: {
@@ -239,8 +234,7 @@ const ProductDetail = ({ navigation, route }) => {
       let paramArr = await parameters.map((parameter) => {
         return { name: parameter.name, value: parameter.value, um: parameter.um }
       });
-      customParameter.name.length && customParameter.value.length === 0 ? paramArr.push(customParameter) : {}
-      console.log(paramArr);
+      paramArr = [...paramArr, ...customParameter];
       const response = await fetch(BASE_URL + SELLER_ITEMS, {
         method: 'POST',
         headers: {
@@ -312,6 +306,13 @@ const ProductDetail = ({ navigation, route }) => {
     setIsFav(favourites.some(o => o.inventory_item_id == id));
   }, [favourites]);
 
+  const onMomentumScrollEndHandler = (event) => {
+    const contentOffset = event.nativeEvent.contentOffset.x; // get the x-axis offset of the content
+    const viewSize = event.nativeEvent.layoutMeasurement.width; // get the width of the viewport
+    const index = Math.round(contentOffset / viewSize); // calculate the index of the item closest to the center of the screen
+    setImageIndex(index);
+  };
+
 
   return (
     <View style={styles.container}>
@@ -351,9 +352,16 @@ const ProductDetail = ({ navigation, route }) => {
         </TouchableOpacity> : <View style={{ width: '10%' }} />}
       </View>
       {/* <Image style={{ height: '100%', width: '100%', borderRadius: 24 }} source={{ uri: image }} /> */}
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View>
-          <FlatList horizontal showsHorizontalScrollIndicator={false} pagingEnabled scrollEventThrottle={16} data={image} renderItem={ProductImage} />
+          <FlatList onMomentumScrollEnd={onMomentumScrollEndHandler} ref={imageRef} horizontal showsHorizontalScrollIndicator={false} pagingEnabled scrollEventThrottle={16} data={image} renderItem={ProductImage} />
+        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: '-6%', marginBottom: '5%' }}>
+          {
+            image?.map((banner, index) => (
+              <View key={index} style={[{ height: 13, width: 13, borderRadius: 7, marginHorizontal: 5 }, index === imageIndex ? { backgroundColor: 'white' } : { backgroundColor: '#D9D9D9' }]} />
+            ))
+          }
         </View>
         <View style={{ flexDirection: 'row', marginTop: '8%', justifyContent: 'space-between', alignItems: 'center' }}>
           <Text style={{ width: '50%', fontFamily: 'PoppinsSemiBold', fontSize: 17 }}>{name}</Text>
@@ -380,7 +388,7 @@ const ProductDetail = ({ navigation, route }) => {
           <Text style={{ fontFamily: 'Poppins', fontSize: 12, color: '#B3B1B0' }}>{description}</Text>
         </View>
         {
-          
+
           parameters?.map((parameter, index) => (
             <View key={index} style={{ flexDirection: 'row' }}>
               <Text style={{ fontFamily: 'Poppins', fontSize: 14, color: '#B3B1B0' }}>{parameter.name + ': '}</Text>
@@ -434,7 +442,7 @@ const styles = StyleSheet.create({
 
   submitBtnContainer: {
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 80,
     marginTop: '10%'
   }
 

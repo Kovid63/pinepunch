@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { colors } from '../../colors'
 import ModeBtn from '../../components/ModeBtn'
 import { ModeContext } from '../../contexts/ModeContext'
-import { MODE_SELLER } from '../../constants'
+import { MODE_SELLER, MODE_BUYER } from '../../constants'
 import { TouchableOpacity } from 'react-native'
 import { BASE_URL, MERCHANT } from '@env';
 import * as SecureStore from 'expo-secure-store';
@@ -139,6 +139,8 @@ const Profile = ({ navigation }) => {
           setRefreshing(false);
         }
       }
+
+      onRefresh();
 
     }
     return;

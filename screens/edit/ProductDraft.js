@@ -19,6 +19,7 @@ const ProductDraft = ({ navigation }) => {
   const [modalOpen, setModalOpen] = useState({open: false, draftId: null});
 
   async function fetchDrafts() {
+    setRefreshing(true);
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
     const response = await fetch(BASE_URL + SELLER_ITEMS + `?status=draft`, {
       method: 'GET',
@@ -31,6 +32,7 @@ const ProductDraft = ({ navigation }) => {
     const data = await response.json();
 
     if (data.error) {
+      setRefreshing(false);
       if (Platform.OS === 'android') {
         return ToastAndroid.show(data.error.description, ToastAndroid.LONG);
       }
@@ -39,6 +41,7 @@ const ProductDraft = ({ navigation }) => {
       }
     }
 
+    setRefreshing(false);
     setDraftProducts(data.items);
 
   }
@@ -81,7 +84,7 @@ const ProductDraft = ({ navigation }) => {
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} showsVerticalScrollIndicator={false} contentContainerStyle={styles.categoryListContainer}>
           {
             draftProducts.map((draft, index) => (
-              <View key={index} style={{ flexDirection: 'row', alignItems: 'center', marginTop: '5%' }}>
+              <TouchableOpacity onPress={() => editDraftHandler(draft)} key={index} style={{ flexDirection: 'row', alignItems: 'center', marginTop: '5%' }}>
                 <View style={styles.categoryContainer}>
                   <Text style={styles.categoryText}>{draft.catogery_type}</Text>
                 </View>
@@ -94,7 +97,7 @@ const ProductDraft = ({ navigation }) => {
                     />
                   </Svg>
                 </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
             ))
           }
         </ScrollView>
