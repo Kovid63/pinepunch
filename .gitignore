@@ -9,7 +9,7 @@ npm-debug.*
 *.mobileprovision
 *.orig.*
 web-build/
-
+*.xlsx
 # macOS
 .DS_Store
 
@@ -18,3 +18,4 @@ web-build/
 
 hidetabbarnestedstack.txt
 otpscreen.txt
+*.apk

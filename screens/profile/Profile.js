@@ -153,10 +153,11 @@ const Profile = ({ navigation }) => {
 
     if (mode === MODE_SELLER) {
       merchantData.seller_contact && (details.seller_contact = merchantData.seller_contact);
+      merchantData.seller_profile_description && (details.seller_profile_description = merchantData.seller_profile_description);
     } else {
       merchantData.contact && (details.contact = merchantData.contact);
     }
-    merchantData.email && (details.email = merchantData.email);
+    //merchantData.email && (details.email = merchantData.email);
     updateDetails(details);
     setIsModalOpen(false);
   }
@@ -218,7 +219,7 @@ const Profile = ({ navigation }) => {
                 </View>}
               </View>
           }
-          <View style={styles.profileNameContainer}>
+          <View style={[styles.profileNameContainer, {paddingHorizontal: '8%'}]}>
             <Text style={styles.profileName}>{merchantData.name}</Text>
             {mode === MODE_SELLER && <Text style={{
               fontFamily: 'PoppinsBold',
@@ -290,8 +291,8 @@ const Profile = ({ navigation }) => {
               <TextInput value={mode === MODE_SELLER ? merchantData.seller_contact : merchantData.contact} style={[styles.infoText, { backgroundColor: '#fff', width: '65%' }]} onChangeText={(contact) => mode === MODE_SELLER ? setMerchantData({ ...merchantData, seller_contact: contact }) : setMerchantData({ ...merchantData, contact: contact })} />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10, justifyContent: 'space-between' }}>
-              <Text style={styles.infoTitle}>{'Email:  '}</Text>
-              <TextInput value={merchantData.email} style={[styles.infoText, { backgroundColor: '#fff', width: '65%' }]} onChangeText={(email) => setMerchantData({ ...merchantData, email: email })} />
+              <Text style={styles.infoTitle}>{'Description:  '}</Text>
+              <TextInput value={merchantData.seller_profile_description} multiline style={[styles.infoText, { backgroundColor: '#fff', width: '65%' }]} onChangeText={(seller_profile_description) => setMerchantData({ ...merchantData, seller_profile_description: seller_profile_description })} />
             </View>
           </View>
           <TouchableOpacity onPress={() => saveBtnHandler()} style={{ paddingVertical: 10, paddingHorizontal: '8%', backgroundColor: colors.primary[0], borderRadius: 16, alignItems: 'center', justifyContent: 'center', marginTop: 20, alignSelf: 'center' }}>

@@ -75,9 +75,9 @@ const Home = ({ navigation }) => {
 
   }, [])
 
-  useEffect(() => {
-    setSelectedCategory(category[0]);
-  }, [category])
+  // useEffect(() => {
+  //   setSelectedCategory(category[0]);
+  // }, [category])
 
   function showAllProductHandler() {
     if (refreshing) return;
@@ -118,7 +118,7 @@ const Home = ({ navigation }) => {
   async function fetchProducts(category, count) {
     setRefreshing(true);
     const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-    const response = await fetch(BASE_URL + BUYER_ITEMS + `?catogery_type=${category}&count=${count}`, {
+    const response = await fetch(BASE_URL + BUYER_ITEMS + `?${category?.length === 0? ``: `catogery_type=${category}`}&count=${count}`, {
       method: 'GET',
       headers: {
         "Content-Type": "application/json",
@@ -136,7 +136,7 @@ const Home = ({ navigation }) => {
         // return Alert.alert(data.error.description);
       }
     }
-
+    console.log(data);
     setProducts(data.items);
   }
 
@@ -156,7 +156,7 @@ const Home = ({ navigation }) => {
   };
 
   function onSelectCategoryHandler(item) {
-    selectedCategory === item ? setSelectedCategory(null) : setSelectedCategory(item);
+    selectedCategory === item ? [setSelectedCategory(''), fetchProducts('', 0)] : [setSelectedCategory(item), fetchProducts(item, 0)];
   }
 
   function searchBarHandler() {
@@ -219,21 +219,21 @@ const Home = ({ navigation }) => {
   }, [mode]);
 
 
-  useEffect(() => {
-    fetchProducts(selectedCategory, 0);
-  }, [selectedCategory]);
+  // useEffect(() => {
+  //   fetchProducts(selectedCategory, 0);
+  // }, [selectedCategory]);
 
   useEffect(() => {
     const focusListener = navigation.addListener('focus', () => {
-      onRefresh();
+      //onRefresh();
       fetchSellerProducts();
       getNotificationCount();
-      (async function getFilters() {
-        const filters = await getAppSettings();
-        setCategory(Object.keys(filters.products));
-      })();
-      setSelectedCategory(category[0]);
-      fetchProducts(selectedCategory, 0);
+      // (async function getFilters() {
+      //   const filters = await getAppSettings();
+      //   setCategory(Object.keys(filters.products));
+      // })();
+      //setSelectedCategory(selectedCategory);
+      //fetchProducts(selectedCategory, 0);
     })
     return () => focusListener;
   }, [navigation])
