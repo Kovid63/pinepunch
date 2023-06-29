@@ -51,12 +51,12 @@ const FillProduct = ({ navigation, route }) => {
     const [progress, setProgress] = useState({ progress: 100, index: 0 });
     const [query, setQuery] = useState('');
 
-    //console.log(productImage);
+    console.log(productImage);
     //console.log(progress);
     useEffect(() => {
 
         if (isEdit) {
-            console.log(route.params.product);
+            //console.log(route.params.product);
             setProductName(product_name);
             images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(',')?.forEach((img, index) => {
                 setProductImage(prevArray => {
@@ -238,7 +238,7 @@ const FillProduct = ({ navigation, route }) => {
                     setProductImage([...productImage, '']);
                     const prevIndex = productImage.length;
                     const url = await getImageUrl(result.assets[0].uri, 'item', sessionId, setProgress, prevIndex);
-                    console.log(prevIndex);
+                    //console.log(prevIndex);
                     setProductImage(prevArray => {
                         const newArray = [...prevArray];
                         newArray[prevIndex] = url;
@@ -269,24 +269,31 @@ const FillProduct = ({ navigation, route }) => {
                         }
                         setRefreshing(false);
                     } else {
-                        setRefreshing(true);
-                        for (const img of result.assets.slice(0, productImage.length === 0 ? 4 : Math.abs(4 - (productImage.length)))) {
-                            setProductImage(prevArray => {
+                        //setRefreshing(true);
+
+                        let count = productImage.length === 0 ? 4 : Math.abs(4 - (productImage.length));
+                        
+                        for (const img of result.assets.slice(0, count)) {
+
+                            setProductImage((prevArray) => {
                                 const newArray = [...prevArray];
-                                newArray.push('');
+                                newArray.push('url');
                                 return newArray;
                             });
-                            const prevIndex = productImage.length;
-                            const url = await getImageUrl(img.uri, 'item', sessionId, setProgress);
-                            console.log(url);
-                            setProductImage(prevArray => {
-                                const newArray = [...prevArray];
-                                //newArray.push(url);
-                                newArray[prevIndex] = url;
-                                return newArray;
-                            });
+
+                            
+                            // const url = await getImageUrl(img.uri, 'item', sessionId, setProgress, productImage.length);
+                            // console.log(url);
+                            // console.log(productImage.length);
+                            // setProductImage(prevArray => {
+                            //     const newArray = [...prevArray];
+                            //     //newArray.push(url);
+                            //     newArray[prevIndex] = url;
+                            //     return newArray;
+                            // });
                         }
-                        setRefreshing(false);
+                        console.log(productImage.length);
+                        //setRefreshing(false);
                     }
                 }
                 //setProductImage([{name: 'image1', uri: result.assets[0].uri}, {name: 'image2', uri: result.assets[1].uri}, {name: 'image3', uri: result.assets[2].uri}, {name: 'image4', uri: result.assets[3].uri}]);
@@ -308,7 +315,7 @@ const FillProduct = ({ navigation, route }) => {
                     setRefreshing(true);
                     setProductImage([...productImage, '']);
                     const prevIndex = productImage.length;
-                    const url = await getImageUrl(result.assets[0].uri, 'item', sessionId)
+                    const url = await getImageUrl(result.assets[0].uri, 'item', sessionId, setProgress, prevIndex);
                     setProductImage(prevArray => {
                         const newArray = [...prevArray];
                         newArray[prevIndex] = url;
@@ -460,7 +467,7 @@ const FillProduct = ({ navigation, route }) => {
         }
     }, [mode]);
 
-    console.log(customParam);
+    //console.log(customParam);
     function customParamIncrementHandler() {
         setCustomParam(prevArray => [...prevArray, { name: '', value: '', um: 'na' }]);
     }
