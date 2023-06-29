@@ -107,6 +107,7 @@ export default function App() {
       }
     } else {
       setAppIsReady(true);
+      setIsLoading(false);
     }
   }
 
