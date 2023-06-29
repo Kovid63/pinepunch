@@ -278,10 +278,11 @@ const FillProduct = ({ navigation, route }) => {
                             setProductImage((prevArray) => {
                                 const newArray = [...prevArray];
                                 newArray.push('url');
+                                count += 1;
                                 return newArray;
                             });
 
-                            
+                            console.log(count);                            
                             // const url = await getImageUrl(img.uri, 'item', sessionId, setProgress, productImage.length);
                             // console.log(url);
                             // console.log(productImage.length);
@@ -292,7 +293,6 @@ const FillProduct = ({ navigation, route }) => {
                             //     return newArray;
                             // });
                         }
-                        console.log(productImage.length);
                         //setRefreshing(false);
                     }
                 }
