@@ -8,7 +8,7 @@ import { Alert } from "react-native";
 
 export const FavouriteListRender = ({ item, fetchFavourites, onPress }) => {
 
-    const {product_name, quantity, quantity_um, price, images } = item.inventory_item;
+    const {product_name, quantity, quantity_um, price, images } = item.inventory_item??{};
 
     async function removeFavourite(itemId){
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
