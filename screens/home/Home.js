@@ -348,9 +348,9 @@ const Home = ({ navigation }) => {
                   </View>
                   <View style={styles.middle}>
                     <View>
-                      <Text style={styles.headingText}>{'New Arrivals'}</Text>
+                      <Text style={styles.headingText}>{'Listed Items'}</Text>
                     </View>
-                    <Text onPress={showAllProductHandler} style={styles.viewAllText}>{'View All'}</Text>
+                    {/* <Text onPress={showAllProductHandler} style={styles.viewAllText}>{'View All'}</Text> */}
                   </View></>}
                 numColumns={2}
                 columnWrapperStyle={{justifyContent: 'center'}}

@@ -3,6 +3,7 @@ import Profile from '../screens/profile/Profile';
 import Settings from "../screens/profile/Settings";
 import Account from "../screens/profile/Account";
 import Privacy from "../screens/profile/Privacy";
+import ContactUs from "../screens/profile/ContactUs";
 import Notification from "../screens/profile/Notification";
 import FAQ from "../screens/profile/FAQ";
 import ChangeEmail from "../screens/profile/ChangeEmail";
@@ -48,6 +49,7 @@ export const ProfileStack = () => {
             <Stack.Screen name="Security" component={Security} />
             <Stack.Screen name="Change Password" component={ChangePassword} />
             <Stack.Screen name="Change Email" component={ChangeEmail} />
+            <Stack.Screen name="Contact Us" component={ContactUs} />
             <Stack.Screen name="FAQ" component={FAQ} />
         </Stack.Navigator>
     )

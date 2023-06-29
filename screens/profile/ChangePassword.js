@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
 
     submitBtnContainer: {
         alignItems: 'center',
-        marginTop: '70%',
+        marginTop: '40%',
         marginBottom: 80
     }
 
