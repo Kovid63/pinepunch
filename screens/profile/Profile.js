@@ -191,11 +191,11 @@ const Profile = ({ navigation }) => {
                   <Image style={[styles.bannerImage, { backgroundColor: '#FDC89F' }]} source={{ uri: merchantData.seller_background_image_url }} />
                   {/* <View style={styles.bannerCover} /> */}
                   {initialScreen === 'ProfileStack' && <Text style={{ position: 'absolute', textAlign: 'center', fontFamily: 'PoppinsBold', fontSize: 20, width: '95%' }}>{'Your Identity is under review. It would take 2 - 3 working days.'}</Text>}
-                  {!initialScreen === 'ProfileStack' && <View style={{ position: 'absolute', right: 40, top: 5 }}>
+                  {initialScreen === 'ProfileStack'? <></>: <View style={{ position: 'absolute', right: 40, top: 5 }}>
                     <EditProfileIcon onPress={() => imagePickHandler('Banner', MODE_SELLER)} />
                   </View>}
                 </View>
-                {!initialScreen === 'ProfileStack' && <View style={[styles.profileImageContainer, { backgroundColor: colors.primary[0], borderRadius: 60 }]}>
+                {initialScreen === 'ProfileStack'? <></>: <View style={[styles.profileImageContainer, { backgroundColor: colors.primary[0], borderRadius: 60 }]}>
                   {merchantData.seller_profile_image_url ? <Image style={{ height: '100%', width: '100%', borderRadius: 60, backgroundColor: colors.primary[0] }} source={{ uri: merchantData.seller_profile_image_url }} /> : <Text style={{ fontFamily: 'PoppinsBold', color: "#FFFFFF", marginTop: 45, alignSelf: 'center' }}>{'Add Logo'}</Text>}
                   <View style={{ position: 'absolute', right: 0 }}>
                     <EditProfileIcon onPress={() => imagePickHandler('Profile', MODE_SELLER)} />
@@ -207,7 +207,7 @@ const Profile = ({ navigation }) => {
                 <View style={[styles.bannerContainer, { justifyContent: 'center', alignItems: 'center' }]}>
                   <Image style={[styles.bannerImage, { backgroundColor: colors.black[5] }]} source={{ uri: merchantData.buyer_background_image_url }} />
                   {initialScreen === 'ProfileStack' && <Text style={{ position: 'absolute', textAlign: 'center', fontFamily: 'PoppinsBold', fontSize: 20, width: '95%' }}>{'Your Identity is under review. It would take 2 - 3 working days.'}</Text>}
-                  {!initialScreen === 'ProfileStack' &&  <View style={{ position: 'absolute', right: 40, top: 5 }}>
+                  {initialScreen === 'ProfileStack'? <></>: <View style={{ position: 'absolute', right: 40, top: 5 }}>
                     <EditProfileIcon onPress={() => imagePickHandler('Banner', MODE_BUYER)} />
                   </View>}
                 </View>
