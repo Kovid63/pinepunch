@@ -25,6 +25,8 @@ import { RefreshControl } from 'react-native'
 import { BASE_URL, BUYER_ITEMS } from '@env';
 import { getAppSettings } from '../../utils/getAppSettings'
 import * as Progress from 'react-native-progress';
+import EntryFilter from '../../components/search/EntryFilter'
+import DropDownFilter from '../../components/search/DropDownFilter'
 
 const FillProduct = ({ navigation, route }) => {
 
@@ -76,6 +78,23 @@ const FillProduct = ({ navigation, route }) => {
         mode === MODE_BUYER ? getBuyerProducts(route.params.type, 0) : <></>
 
     }, [])
+
+    function addFilterHandler(parameterName, value) {
+        console.log(parameterName, value);
+        let filter = { name: parameterName, value: value }
+        const index = prodFilters.findIndex(obj => obj.name === filter.name);
+        if (index === -1) {
+            setProdFilters([...prodFilters, filter])
+        } else {
+            const newArr = [...prodFilters];
+            newArr.splice(index, 1, filter);
+            setProdFilters(newArr);
+        }
+    }
+
+    useEffect(() => {
+        getFilteredBuyerProducts(route.params.type, 0);
+    }, [prodFilters])
 
     function addToFilter(filterName, filterValue) {
         let arr = { name: filterName, value: filterValue }
@@ -435,7 +454,19 @@ const FillProduct = ({ navigation, route }) => {
 
     async function getFilteredBuyerProducts(category, count) {
         const sessionId = await SecureStore.getItemAsync('SESSION_ID');
-        const response = await fetch(BASE_URL + BUYER_ITEMS + `?catogery_type=${category}&parameters[0][name]=${prodFilters[0]?.name}&parameters[0][value]=${prodFilters[0]?.value}&parameters[1][name]=${prodFilters[1]?.name}&parameters[1][value_min]=${prodFilters[1]?.value}&parameters[1][value_max]=150&parameters[2][name]=${prodFilters[2]?.name}&parameters[2][value_min]=${prodFilters[2]?.value}&parameters[2][value_max]=1&page=1&count=${count}`, {
+
+        let searchQuery = '?catogery_type=' + category;
+
+        for (var i = 0; i < prodFilters.length; i++) {
+            let filter = prodFilters[i];
+            if (filter.value != null && filter.value != "") {
+                searchQuery += '&parameters['+ i + '][name]=' + filter.name + '&parameters['+ i + '][value]=' + filter.value;
+            }
+        }
+
+        url = BASE_URL + BUYER_ITEMS + searchQuery //+ `&page=1&count=100`;
+
+        const response = await fetch(url, {
             method: 'GET',
             headers: {
                 "Content-Type": "application/json",
@@ -930,75 +961,12 @@ const FillProduct = ({ navigation, route }) => {
                                         <Text style={styles.categoryText}>{route.params.type}</Text>
                                     </View>
                                     <View style={{ alignItems: 'center' }}>
-                                        <View style={styles.parameterContainer}>
-                                            <Text style={styles.parameterText}>{'Product Name'}</Text>
-                                            <TextInput onChangeText={(value) => setQuery(value)}
-                                                value={query} style={styles.parameterInput} placeholder='Item Name 1' />
-                                            {mode === MODE_BUYER ? <TouchableOpacity style={{ marginHorizontal: 10 }}>
-                                                {/* <Svg style={{ height: 24, width: 24, transform: [{ rotateZ: '-90deg' }] }} viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                                <Path
-                                    d="M20 25a1 1 0 0 1-.71-.29l-8-8a1 1 0 0 1 0-1.42l8-8a1 1 0 1 1 1.42 1.42L13.41 16l7.3 7.29a1 1 0 0 1 0 1.42A1 1 0 0 1 20 25Z"
-                                    data-name="Layer 2"
-                                    fill={'#000000'}
-                                />
-                                <Path
-                                    style={{
-                                        fill: "none",
-                                    }}
-                                    d="M0 0h32v32H0z"
-                                />
-                            </Svg> */}
-                                            </TouchableOpacity> : <></>}
-                                        </View>
                                         {route.params.parameters ?
                                             route.params.parameters.map((parameter, index) => {
                                                 return (
-                                                    parameter.type === 'options' ?
-                                                        <Pressable key={index} onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type, 0)]} style={styles.parameterContainer}>
-                                                            <Text style={styles.parameterText}>{parameter.name}</Text>
-                                                            <FlatList showsHorizontalScrollIndicator={false} style={{ marginLeft: '2%' }} horizontal renderItem={item => (<OptionRender {...item} selected={prodFilters.find(o => o.name === parameter.name)?.value} onPress={(value) => prodFilters.find(o => o.name === parameter.name)?.value === value ? [setProdFilters([]), getBuyerProducts(route.params.type, 0)] : addToFilter(parameter.name, value)} />)} data={parameter.options} />
-                                                        </Pressable>
-                                                        :
-                                                        <View key={index} style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-evenly' }}>
-                                                            <Pressable onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type, 0)]} style={{
-                                                                width: '45%',
-                                                                paddingVertical: 5,
-                                                                backgroundColor: '#F8F8F8',
-                                                                borderRadius: 5,
-                                                                flexDirection: 'row',
-                                                                alignItems: 'center',
-                                                                paddingHorizontal: '2%',
-                                                                marginTop: '3%'
-                                                            }}>
-                                                                <Text style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    color: '#B3B1B0',
-                                                                    width: '70%'
-                                                                }}>{'Min ' + parameter.name}</Text>
-                                                                <View style={{ paddingVertical: 1, marginHorizontal: 10, width: 35, backgroundColor: '#FFFFFF' }}>
-                                                                    <Text style={{ fontFamily: 'Poppins', textAlign: 'center', color: '#B3B1B0' }}>{parameter.min_default}</Text>
-                                                                </View>
-                                                            </Pressable>
-                                                            <Pressable onPress={() => [setProdFilters([]), getBuyerProducts(route.params.type, 0)]} style={{
-                                                                width: '45%',
-                                                                paddingVertical: 5,
-                                                                backgroundColor: '#F8F8F8',
-                                                                borderRadius: 5,
-                                                                flexDirection: 'row',
-                                                                alignItems: 'center',
-                                                                paddingHorizontal: '2%',
-                                                                marginTop: '3%'
-                                                            }}>
-                                                                <Text style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    color: '#B3B1B0',
-                                                                    width: '70%'
-                                                                }}>{'Max ' + parameter.name}</Text>
-                                                                <View style={{ paddingVertical: 1, marginHorizontal: 10, width: 35, backgroundColor: '#FFFFFF' }}>
-                                                                    <Text style={{ fontFamily: 'Poppins', textAlign: 'center', color: '#B3B1B0' }}>{parameter.max_default}</Text>
-                                                                </View>
-                                                            </Pressable>
-                                                        </View>
+                                                    parameter.input_type != 'drop_down' ?
+                                                        <EntryFilter parameter={parameter} addFilterHandler={addFilterHandler}/> :
+                                                        <DropDownFilter parameter={parameter} addFilterHandler={addFilterHandler}/>
                                                 )
                                             })
                                             : <></>}
