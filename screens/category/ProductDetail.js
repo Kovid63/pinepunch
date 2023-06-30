@@ -396,6 +396,14 @@ const ProductDetail = ({ navigation, route }) => {
             </View>
           ))
         }
+        {
+          customParameter?.map((customParameter, index) => (
+            <View key={index} style={{ flexDirection: 'row' }}>
+              <Text style={{ fontFamily: 'Poppins', fontSize: 14, color: '#B3B1B0' }}>{customParameter.name + ': '}</Text>
+              <Text style={{ fontFamily: 'Poppins', fontSize: 14, color: '#B3B1B0' }}>{customParameter.value}</Text>
+            </View>
+          ))
+        }
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: '10%', marginTop: '5%' }}>
           <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{quantity + unit}</Text>
           <Text style={{ fontFamily: 'PoppinsSemiBold', fontSize: 18 }}>{'Rs ' + price}</Text>
