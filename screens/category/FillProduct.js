@@ -982,6 +982,7 @@ const FillProduct = ({ navigation, route }) => {
                                     unit: item.item.quantity_um,
                                     image: item.item.images?.toString()?.replace(/\[/g, '')?.replace(/\]/g, '')?.replace(/"/g, '')?.replace(/\\/g, '')?.split(','),
                                     id: item.item.id,
+                                    parameters: item.item.parameters,
                                     merchantId: item.item.merchant_id
                                 })} {...item} />} numColumns={2} />
                         }

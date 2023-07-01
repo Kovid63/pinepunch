@@ -389,7 +389,7 @@ const ProductDetail = ({ navigation, route }) => {
         </View>
         {
 
-          [...parameters, ...customParameter??'']?.map((parameter, index) => (
+          [...parameters??'', ...customParameter??'']?.map((parameter, index) => (
             <View key={index} style={{ flexDirection: 'row' }}>
               <Text style={{ fontFamily: 'Poppins', fontSize: 14, color: '#B3B1B0' }}>{parameter.name + ': '}</Text>
               <Text style={{ fontFamily: 'Poppins', fontSize: 14, color: '#B3B1B0' }}>{parameter.value}</Text>

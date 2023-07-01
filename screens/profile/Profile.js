@@ -129,13 +129,13 @@ const Profile = ({ navigation }) => {
       } else {
         if (type === 'Banner') {
           const bgUrl = await getImageUrl(result.assets[0].uri, 'merchant_buyer_background', sessionId, () => { });
-          setMerchantData({ ...merchantData, buyer_background_image_url: bgUrl });
-          updateDetails({ buyer_background_image_url: bgUrl });
+          setMerchantData({ ...merchantData, seller_background_image_url: bgUrl });
+          updateDetails({ seller_background_image_url: bgUrl });
           setRefreshing(false);
         } else {
           const profUrl = await getImageUrl(result.assets[0].uri, 'merchant_buyer_logo', sessionId, () => { });
-          setMerchantData({ ...merchantData, buyer_profile_image_url: profUrl });
-          updateDetails({ buyer_profile_image_url: profUrl });
+          setMerchantData({ ...merchantData, seller_profile_image_url: profUrl });
+          updateDetails({ seller_profile_image_url: profUrl });
           setRefreshing(false);
         }
       }
@@ -205,14 +205,14 @@ const Profile = ({ navigation }) => {
               :
               <View>
                 <View style={[styles.bannerContainer, { justifyContent: 'center', alignItems: 'center' }]}>
-                  <Image style={[styles.bannerImage, { backgroundColor: colors.black[5] }]} source={{ uri: merchantData.buyer_background_image_url }} />
+                  <Image style={[styles.bannerImage, { backgroundColor: '#FDC89F' }]} source={{ uri: merchantData.seller_background_image_url }} />
                   {initialScreen === 'ProfileStack' && <Text style={{ position: 'absolute', textAlign: 'center', fontFamily: 'PoppinsBold', fontSize: 20, width: '95%' }}>{'Your Identity is under review. It would take 2 - 3 working days.'}</Text>}
                   {initialScreen === 'ProfileStack'? <></>: <View style={{ position: 'absolute', right: 40, top: 5 }}>
                     <EditProfileIcon onPress={() => imagePickHandler('Banner', MODE_BUYER)} />
                   </View>}
                 </View>
-                { initialScreen === 'ProfileStack'? <></>:<View style={[styles.profileImageContainer, { backgroundColor: 'silver', borderRadius: 60 }]}>
-                  {merchantData.buyer_profile_image_url ? <Image style={{ height: '100%', width: '100%', borderRadius: 60 }} source={{ uri: merchantData.buyer_profile_image_url }} /> : <Text style={{ fontFamily: 'PoppinsBold', color: "#FFFFFF", marginTop: 45, alignSelf: 'center' }}>{'Add Logo'}</Text>}
+                { initialScreen === 'ProfileStack'? <></>:<View style={[styles.profileImageContainer, { backgroundColor: colors.primary[0], borderRadius: 60 }]}>
+                  {merchantData.buyer_profile_image_url ? <Image style={{ height: '100%', width: '100%', borderRadius: 60 }} source={{ uri: merchantData.seller_profile_image_url }} /> : <Text style={{ fontFamily: 'PoppinsBold', color: "#FFFFFF", marginTop: 45, alignSelf: 'center' }}>{'Add Logo'}</Text>}
                   <View style={{ position: 'absolute', right: 0 }}>
                     <EditProfileIcon onPress={() => imagePickHandler('Profile', MODE_BUYER)} />
                   </View>
@@ -221,11 +221,11 @@ const Profile = ({ navigation }) => {
           }
           <View style={[styles.profileNameContainer, {paddingHorizontal: '8%'}]}>
             <Text style={styles.profileName}>{merchantData.name}</Text>
-            {mode === MODE_SELLER && <Text style={{
+            <Text style={{
               fontFamily: 'PoppinsBold',
               fontSize: 18,
               textAlign: 'center'
-            }}>{merchantData.seller_profile_description ? merchantData.seller_profile_description : 'About Company'}</Text>}
+            }}>{merchantData.seller_profile_description ? merchantData.seller_profile_description : 'About Company'}</Text>
           </View>
           {/* {mode === MODE_SELLER && <View style={{ overflow: 'hidden' }}>
           <View
